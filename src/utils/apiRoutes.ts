@@ -1,4 +1,4 @@
-const host = 'https://kyodobackend-production.up.railway.app';
+const host = 'http://localhost:4758';
 
 //auth routes
 export const registerRoute = host + '/auth/register';

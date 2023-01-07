@@ -50,7 +50,7 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-const socket: Socket = io("ws://localhost:5050");
+const socket: Socket = io("http://localhost:4758");
 const timeBtwMessages: number = 2500; //in milliseconds
 
 function Chat() {
