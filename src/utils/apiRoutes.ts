@@ -1,6 +1,4 @@
-import {variables} from './configs';
-
-const host = variables.HOST;
+const host = 'https://kyodobackend-production.up.railway.app';
 
 //auth routes
 export const registerRoute = host + '/auth/register';

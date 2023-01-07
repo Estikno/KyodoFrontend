@@ -12,7 +12,3 @@ export const toastOptions: ToastOptions = {
 };
 
 export const specialCharacters = /[ `!@#$%^&*()+\-=[\]{};':"\\|,.<>/?~·¨çñ]/;
-
-export const variables = {
-    HOST: "http://kyodobackend-production.up.railway.app"
-}
