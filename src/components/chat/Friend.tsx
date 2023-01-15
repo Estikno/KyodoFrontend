@@ -1,9 +1,9 @@
 import React from "react";
 
 //mantine
-import { Group, Text, Image, Indicator } from "@mantine/core";
+import { Group, Text, Image, Indicator, Stack } from "@mantine/core";
 
-function Friend({ name, avatarUrl}: { name: string; avatarUrl: string;}) {
+function Friend({ name, avatarUrl }: { name: string; avatarUrl: string }) {
     return (
         <Group
             sx={(theme) => ({
@@ -19,14 +19,19 @@ function Friend({ name, avatarUrl}: { name: string; avatarUrl: string;}) {
                 },
             })}
         >
-            <Indicator color="green" size={15} withBorder position="bottom-end" offset={7}>
-                <Image
-                    width={50}
-                    height={50}
-                    src={avatarUrl}
-                />
+            <Indicator
+                color="green"
+                size={15}
+                withBorder
+                position="bottom-end"
+                offset={7}
+            >
+                <Image width={50} height={50} src={avatarUrl} />
             </Indicator>
-            <Text size={"lg"}>{name}</Text>
+            <Stack spacing={"xs"} sx={{ height: "100%"}}>
+                <Text size={"lg"}>{name}</Text>
+                <Text size={"xs"}>Hi how are you</Text>
+            </Stack>
         </Group>
     );
 }

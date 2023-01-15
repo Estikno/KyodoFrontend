@@ -10,11 +10,21 @@ import {
     Image,
     Title,
     useMantineTheme,
+    TextInput,
 } from "@mantine/core";
 
 import { AiFillSetting } from "react-icons/ai";
+import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 
-function LeftSide({ children, avatarUrl, username }: { children: JSX.Element | JSX.Element[]; avatarUrl: string | undefined; username: string | undefined}) {
+function LeftSide({
+    children,
+    avatarUrl,
+    username,
+}: {
+    children: JSX.Element | JSX.Element[];
+    avatarUrl: string | undefined;
+    username: string | undefined;
+}) {
     const theme = useMantineTheme();
 
     return (
@@ -23,29 +33,37 @@ function LeftSide({ children, avatarUrl, username }: { children: JSX.Element | J
             spacing={0}
             justify="flex-start"
             sx={{
-                height: "100%",
+                height: "30vh",
                 width: "100%",
+                padding: "10px",
             }}
         >
-            <FriendsContainer>{children}</FriendsContainer>
-            <Group
+            <Stack
+                align="center"
+                justify="space-between"
                 sx={{
-                    height: "8vh",
+                    height: "100%",
                     width: "100%",
-                    backgroundColor: theme.colors.dark[6],
-                    padding: "10px 12px",
+                    backgroundColor: "red",
+                    padding: "10px",
                 }}
             >
-                <Image
-                    width={60}
-                    height={60}
-                    src={avatarUrl}
-                />
-                <Text>{username}</Text>
-                <Title order={2}>
-                    <AiFillSetting />
+                <Title
+                    order={3}
+                    sx={{
+                        backgroundColor: "red",
+                        width: "100%",
+                    }}
+                >
+                    Chats
                 </Title>
-            </Group>
+                <TextInput
+                    placeholder="Search users"
+                    icon={<HiOutlineMagnifyingGlass />}
+                    sx={{ width: "100%" }}
+                />
+            </Stack>
+            <FriendsContainer>{children}</FriendsContainer>
         </Stack>
     );
 }

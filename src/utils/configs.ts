@@ -12,3 +12,5 @@ export const toastOptions: ToastOptions = {
 };
 
 export const specialCharacters = /[ `!@#$%^&*()+\-=[\]{};':"\\|,.<>/?~·¨çñ]/;
+
+export const apiRoute = "http://127.0.0.1:4758"; //"https://kyodobackend-production.up.railway.app";

@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import ReCaptcha, {ReCAPTCHA as IRecaptcha} from "react-google-recaptcha";
 
 //options, helpers or utils already made by me
-import {
-    toastOptions,
-    specialCharacters,
-} from "../utils/configs";
+import { toastOptions, specialCharacters } from "../utils/configs";
 import { callRegister } from "../utils/callApi";
 import { useSignIn, useIsAuthenticated, useSignOut } from "react-auth-kit";
 
@@ -41,6 +39,9 @@ import { useMediaQuery } from "@mantine/hooks";
 function Register() {
     //creates a navigate function to navigate to another route
     const navigate = useNavigate();
+
+    //captcha
+    const captcha = useRef<IRecaptcha>(null);
 
     //auth's funtions
     const signIn = useSignIn();
@@ -101,17 +102,6 @@ function Register() {
 
                 return null;
             },
-            confirmEmail: (value: string, values) => {
-                if (!value || value.trim.length > 0) {
-                    return "Confirm Email is required";
-                }
-
-                if (value !== values.email) {
-                    return "Emails must match";
-                }
-
-                return null;
-            },
             password: (value: string) => {
                 if (!value || value.trim.length > 0) {
                     return "Password is required";
@@ -154,10 +144,9 @@ function Register() {
      * ! The async function has to be defined inside the useEffect function because useEffect does not support calling async functions
      */
     useEffect(() => {
-        if(isAuthenticated()){
+        if (isAuthenticated()) {
             navigate("/profile");
-        }
-        else{
+        } else {
             signOut();
         }
 
@@ -199,6 +188,8 @@ function Register() {
             );
         }
 
+        if(!captcha.current?.getValue()) return toast.error("You must complete the captcha", toastOptions);
+
         //all the form values are already validated
 
         const { username, email, password } = form.values;
@@ -226,7 +217,7 @@ function Register() {
                     tokenType: "Bearer",
                     authState: {
                         username: username,
-                    }
+                    },
                 });
 
                 setVisible(true);
@@ -244,6 +235,8 @@ function Register() {
             }
         }
     };
+
+    const onchangeRecaptcha = () => {};
 
     return (
         <>
@@ -328,22 +321,6 @@ function Register() {
                                             withAsterisk
                                             {...form.getInputProps("email")}
                                         />
-                                        <TextInput
-                                            placeholder="you@email.com"
-                                            label="Confirm Email"
-                                            radius="md"
-                                            size={
-                                                moreThan1800px
-                                                    ? "md"
-                                                    : lessThan800px
-                                                    ? "xs"
-                                                    : "sm"
-                                            }
-                                            withAsterisk
-                                            {...form.getInputProps(
-                                                "confirmEmail"
-                                            )}
-                                        />
                                         <PasswordInput
                                             placeholder="password"
                                             label="Password"
@@ -375,6 +352,18 @@ function Register() {
                                                 "confirmPassword"
                                             )}
                                         />
+
+                                        <Space h="sm" />
+
+                                        <Group position="center">
+                                            <ReCaptcha
+                                                sitekey="6LedrN8jAAAAAOEE-VmfNn80nEYfipvTSNVGcg8S"
+                                                theme="dark"
+                                                onChange={onchangeRecaptcha}
+                                                ref={captcha}
+                                                size="normal"
+                                            />
+                                        </Group>
 
                                         <Space h="sm" />
 

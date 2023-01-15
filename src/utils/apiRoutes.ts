@@ -1,4 +1,6 @@
-const host = 'http://localhost:4758';
+import {apiRoute} from './configs';
+
+const host = apiRoute;
 
 //auth routes
 export const registerRoute = host + '/auth/register';

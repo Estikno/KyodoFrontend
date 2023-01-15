@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
 import cookie from "js-cookie";
+import Filter from 'bad-words';
 
 import Navbar from "../components/navbar/Navbar";
 import Friend from "../components/chat/Friend";
@@ -12,9 +13,10 @@ import Bar from "../components/chat/Bar";
 import MobileFriendContainer from "../components/chat/MobileFriendsContainer";
 import LeftSide from "../components/chat/LeftSide";
 import RightSide from "../components/chat/RightSide";
+import ChatNavbar from "../components/chat/ChatNavbar";
 
 //options, helpers or utils already made by me
-import { toastOptions } from "../utils/configs";
+import { toastOptions, apiRoute } from "../utils/configs";
 import { getAllUsers, getUserInfo } from "../utils/callApi";
 import * as apiRoutes from "../utils/apiRoutes";
 import { useIsAuthenticated, useSignOut } from "react-auth-kit";
@@ -50,12 +52,15 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-const socket: Socket = io("http://localhost:4758");
+const socket: Socket = io(apiRoute);
 const timeBtwMessages: number = 2500; //in milliseconds
 
 function Chat() {
     //creates a navigate function to navigate to another route
     const navigate = useNavigate();
+
+    //filter
+    const filter = new Filter();
 
     //auth's funtions
     const isAuthenticated = useIsAuthenticated();
@@ -89,11 +94,10 @@ function Chat() {
         if (userInfo) {
             socket.on("all-msg", (message: string[]) => {
                 const finalArray: IMessage[] = message.map((msg) => {
-                    console.log(msg);
                     if (msg.startsWith(userInfo.username)) {
-                        return { message: msg, fromSelf: true };
+                        return { message: filter.clean(msg), fromSelf: true };
                     } else {
-                        return { message: msg, fromSelf: false };
+                        return { message: filter.clean(msg), fromSelf: false };
                     }
                 });
 
@@ -109,7 +113,7 @@ function Chat() {
                 setMessages([
                     ...messages,
                     {
-                        message: message.message,
+                        message: filter.clean(message.message),
                         fromSelf:
                             message.username === userInfo.username
                                 ? true
@@ -144,10 +148,7 @@ function Chat() {
             const usersData = await getAllUsers(token);
 
             if (!usersData.status)
-                return toast.error(
-                    "An error occurred while getting users",
-                    toastOptions
-                );
+                return toast.error("There was an error getting the users information", toastOptions);
             if (!Array.isArray(usersData.user))
                 return toast.error("User has to be an array", toastOptions);
 
@@ -223,13 +224,10 @@ function Chat() {
 
     return (
         <>
-            <Navbar />
 
             <LoadingOverlay visible={visible} overlayBlur={8} />
             {userInfo?.verified ? (
                 <>
-                    <Bar open={open} setOpen={setOpen} />
-
                     <MobileFriendContainer open={open} setOpen={setOpen}>
                         {friends.map((friend) => (
                             <Friend
@@ -240,16 +238,19 @@ function Chat() {
                         ))}
                     </MobileFriendContainer>
 
-                    <Center sx={{ height: lessThan500px ? "88vh" : "85vh" }}>
+                    <Center sx={{ height: "100vh" }}>
                         <Grid
                             grow
                             style={{ width: "100%", height: "100%" }}
-                            columns={12}
+                            columns={24}
                         >
+                            <Grid.Col span={1} sx={{backgroundColor: "#36404A"}}>
+                                <ChatNavbar />
+                            </Grid.Col>
                             <Grid.Col
-                                span={3}
+                                span={5}
                                 sx={() => ({
-                                    backgroundColor: theme.colors.dark[4],
+                                    backgroundColor: "#303841",
                                     padding: "0",
                                 })}
                                 className={classes.friends}
@@ -267,7 +268,7 @@ function Chat() {
                                     ))}
                                 </LeftSide>
                             </Grid.Col>
-                            <Grid.Col span={9} sx={{ padding: "0" }}>
+                            <Grid.Col span={18} sx={{ padding: "0", backgroundColor: "#262E35"}}>
                                 <RightSide
                                     sendMessage={sendMessage}
                                     actualMessage={actualMessage}
@@ -296,7 +297,7 @@ function Chat() {
                 </>
             ) : (
                 <>
-                    <Center style={{ width: "100%", height: "90vh" }}>
+                    <Center style={{ width: "100%", height: "100vh" }}>
                         <Card
                             shadow="sm"
                             p={"lg"}
