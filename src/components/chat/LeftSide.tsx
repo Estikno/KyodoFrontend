@@ -33,7 +33,7 @@ function LeftSide({
             spacing={0}
             justify="flex-start"
             sx={{
-                height: "30vh",
+                height: "100vh",
                 width: "100%",
                 padding: "10px",
             }}
@@ -42,16 +42,14 @@ function LeftSide({
                 align="center"
                 justify="space-between"
                 sx={{
-                    height: "100%",
+                    height: "14vh",
                     width: "100%",
-                    backgroundColor: "red",
                     padding: "10px",
                 }}
             >
                 <Title
                     order={3}
                     sx={{
-                        backgroundColor: "red",
                         width: "100%",
                     }}
                 >
@@ -60,7 +58,18 @@ function LeftSide({
                 <TextInput
                     placeholder="Search users"
                     icon={<HiOutlineMagnifyingGlass />}
-                    sx={{ width: "100%" }}
+                    sx={(theme) => ({
+                        width: "100%",
+                        backgroundColor: "#36404A",
+                        borderRadius: theme.radius.md,
+                        input: {
+                            "::placeholder": {
+                                color: "#9BB0C7"
+                            }
+                        }
+                    })}
+                    variant="unstyled"
+                    size="md"
                 />
             </Stack>
             <FriendsContainer>{children}</FriendsContainer>

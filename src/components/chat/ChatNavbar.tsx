@@ -1,6 +1,13 @@
 import React from "react";
 
-import { Stack, Image, Title, Avatar } from "@mantine/core";
+import {
+    Stack,
+    Image,
+    Title,
+    Avatar,
+    UnstyledButton,
+    Tooltip,
+} from "@mantine/core";
 
 import { MdPersonOutline, MdLanguage } from "react-icons/md";
 import { HiOutlineChatBubbleOvalLeftEllipsis } from "react-icons/hi2";
@@ -27,30 +34,57 @@ function ChatNavbar() {
                 height={50}
             />
             <Stack align="center" justify="space-between" spacing={"lg"}>
-                <Title order={2}>
-                    <MdPersonOutline />
-                </Title>
-                <Title order={2}>
-                    <HiOutlineChatBubbleOvalLeftEllipsis />
-                </Title>
-                <Title order={2}>
-                    <RiGroupLine />
-                </Title>
-                <Title order={2}>
-                    <RiContactsLine />
-                </Title>
-                <Title order={2}>
-                    <RiSettings2Line />
-                </Title>
+                <Tooltip label="Profile">
+                    <UnstyledButton>
+                        <Title order={2}>
+                            <MdPersonOutline />
+                        </Title>
+                    </UnstyledButton>
+                </Tooltip>
+
+                <Tooltip label="Chats">
+                    <UnstyledButton>
+                        <Title order={2}>
+                            <HiOutlineChatBubbleOvalLeftEllipsis />
+                        </Title>
+                    </UnstyledButton>
+                </Tooltip>
+                <Tooltip label="Groups">
+                    <UnstyledButton>
+                        <Title order={2}>
+                            <RiGroupLine />
+                        </Title>
+                    </UnstyledButton>
+                </Tooltip>
+                <Tooltip label="Contacts">
+                    <UnstyledButton>
+                        <Title order={2}>
+                            <RiContactsLine />
+                        </Title>
+                    </UnstyledButton>
+                </Tooltip>
+                <Tooltip label="Settings">
+                    <UnstyledButton>
+                        <Title order={2}>
+                            <RiSettings2Line />
+                        </Title>
+                    </UnstyledButton>
+                </Tooltip>
             </Stack>
             <Stack align="center" justify="space-between" spacing={"lg"}>
-                <Title order={2}>
-                    <MdLanguage />
-                </Title>
-                <Title order={2}>
-                    <BiSun />
-                </Title>
-                <Avatar radius="xl" size="md" color="blue" />
+                <UnstyledButton>
+                    <Title order={2}>
+                        <MdLanguage />
+                    </Title>
+                </UnstyledButton>
+                <UnstyledButton>
+                    <Title order={2}>
+                        <BiSun />
+                    </Title>
+                </UnstyledButton>
+                <UnstyledButton>
+                    <Avatar radius="xl" size="md" color="blue" />
+                </UnstyledButton>
             </Stack>
         </Stack>
     );

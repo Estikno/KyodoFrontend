@@ -53,22 +53,39 @@ function RightSide({
             sx={{ height: "100%" }}
         >
             <Group
-                sx={{ width: "100%", height: "12vh", borderBottom: ".1rem solid", borderColor: "#36404A" }}
+                sx={{
+                    width: "100%",
+                    height: "12vh",
+                    borderBottom: ".1rem solid",
+                    borderColor: "#36404A",
+                }}
                 position="apart"
             >
                 <Group spacing={"xs"} sx={{ marginLeft: "20px" }}>
                     <Avatar radius="xl" size="md" color="blue" />
                     <Text fz={"lg"} fw={700}>
                         Patricio Estrella
-                        <GoPrimitiveDot style={{ paddingTop: "5px", color: "green"}} />
+                        <GoPrimitiveDot
+                            style={{ paddingTop: "5px", color: "green" }}
+                        />
                     </Text>
                 </Group>
                 <Group sx={{ marginRight: "20px" }} spacing={"xl"}>
-                    <Title order={3}><HiOutlineMagnifyingGlass /></Title>
-                    <Title order={3}><IoCallOutline /></Title>
-                    <Title order={3}><AiOutlineVideoCamera /></Title>
-                    <Title order={3}><MdPersonOutline /></Title>
-                    <Title order={3}><BiDotsHorizontalRounded /></Title>
+                    <Title order={3}>
+                        <HiOutlineMagnifyingGlass />
+                    </Title>
+                    <Title order={3}>
+                        <IoCallOutline />
+                    </Title>
+                    <Title order={3}>
+                        <AiOutlineVideoCamera />
+                    </Title>
+                    <Title order={3}>
+                        <MdPersonOutline />
+                    </Title>
+                    <Title order={3}>
+                        <BiDotsHorizontalRounded />
+                    </Title>
                 </Group>
             </Group>
             <ScrollArea
@@ -100,7 +117,7 @@ function RightSide({
                     width: "100%",
                     padding: "0 1rem",
                     borderTop: ".1rem solid",
-                    borderColor: "#36404A"
+                    borderColor: "#36404A",
                 }}
             >
                 <form
@@ -118,8 +135,8 @@ function RightSide({
                         }}
                     >
                         <TextInput
-                            placeholder="Message"
-                            style={{
+                            placeholder="Enter Message..."
+                            sx={(theme) => ({
                                 width: lesstThan768px
                                     ? lessThan457px
                                         ? "65%"
@@ -127,12 +144,22 @@ function RightSide({
                                     : lessthan1500px
                                     ? "83%"
                                     : "85%",
-                            }}
+                                input: {
+                                    "::placeholder": {
+                                        color: "#9BB0C7",
+                                    },
+                                    paddingLeft: "15px",
+                                    paddingRight: "15px",
+                                },
+                                backgroundColor: "#36404A",
+                                borderRadius: theme.radius.md,
+                            })}
                             onChange={(event) =>
                                 setActualMessage(event.currentTarget.value)
                             }
                             value={actualMessage}
                             size="md"
+                            variant="unstyled"
                         />
                         <Title order={4}>
                             <BsFillEmojiSmileFill />

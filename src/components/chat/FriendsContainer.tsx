@@ -12,7 +12,7 @@ function FriendsContainer({ children }: { children: JSX.Element | JSX.Element[] 
             type="scroll"
             sx={{
                 width: "100%",
-                height: lessThan500px ? "80vh" : "77vh",
+                height: "100%",
             }}
             style={{ padding: "5px" }}
         >
