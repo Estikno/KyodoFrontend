@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
 import cookie from "js-cookie";
-import Filter from 'bad-words';
+import Filter from "bad-words";
 
 import Navbar from "../components/navbar/Navbar";
 import Friend from "../components/chat/Friend";
@@ -148,7 +148,10 @@ function Chat() {
             const usersData = await getAllUsers(token);
 
             if (!usersData.status)
-                return toast.error("There was an error getting the users information", toastOptions);
+                return toast.error(
+                    "There was an error getting the users information",
+                    toastOptions
+                );
             if (!Array.isArray(usersData.user))
                 return toast.error("User has to be an array", toastOptions);
 
@@ -224,7 +227,6 @@ function Chat() {
 
     return (
         <>
-
             <LoadingOverlay visible={visible} overlayBlur={8} />
             {userInfo?.verified ? (
                 <>
@@ -244,7 +246,14 @@ function Chat() {
                             style={{ width: "100%", height: "100%" }}
                             columns={24}
                         >
-                            <Grid.Col span={1} sx={{backgroundColor: "#36404A"}}>
+                            <Grid.Col
+                                span={1}
+                                sx={{
+                                    backgroundColor: "#36404A",
+                                    borderRight: ".25rem solid",
+                                    borderColor: "#2F3741",
+                                }}
+                            >
                                 <ChatNavbar />
                             </Grid.Col>
                             <Grid.Col
@@ -268,7 +277,13 @@ function Chat() {
                                     ))}
                                 </LeftSide>
                             </Grid.Col>
-                            <Grid.Col span={18} sx={{ padding: "0", backgroundColor: "#262E35"}}>
+                            <Grid.Col
+                                span={18}
+                                sx={{
+                                    padding: "0",
+                                    backgroundColor: "#262E35",
+                                }}
+                            >
                                 <RightSide
                                     sendMessage={sendMessage}
                                     actualMessage={actualMessage}
