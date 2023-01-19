@@ -16,16 +16,27 @@ import {
 import { MdPersonOutline, MdLanguage } from "react-icons/md";
 import { HiOutlineChatBubbleOvalLeftEllipsis } from "react-icons/hi2";
 import { RiSettings2Line, RiGroupLine, RiContactsLine } from "react-icons/ri";
-import { BiSun } from "react-icons/bi";
+import { BiSun, BiMoon } from "react-icons/bi";
 import { IconType } from "react-icons/lib";
 
 const menuStyle = createStyles((theme) => ({
     dropdown: {
         backgroundColor: "#313A43",
+        borderColor:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[2]
+                : theme.colors.gray[2],
     },
     item: {
+        color:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[7]
+                : theme.colors.gray[7],
         "&[data-hovered]": {
-            backgroundColor: "#7269EF",
+            backgroundColor:
+                theme.colorScheme === "dark"
+                    ? theme.colors.dark[4]
+                    : theme.colors.gray[4],
             color: "white",
         },
     },
@@ -222,7 +233,7 @@ function ChatNavbar() {
                                     : theme.colors.gray[6]
                             }
                         >
-                            <BiSun />
+                            {(dark ? <BiSun /> : <BiMoon />)}
                         </Title>
                     </UnstyledButton>
                 </Tooltip>
