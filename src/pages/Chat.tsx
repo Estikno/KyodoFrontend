@@ -33,6 +33,7 @@ import {
     Title,
     Stack,
     LoadingOverlay,
+    useMantineColorScheme,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IUserInfo } from "../interfaces/IApiResponses";
@@ -68,6 +69,8 @@ function Chat() {
 
     const theme = useMantineTheme();
     const { classes } = useStyles();
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const dark = colorScheme === "dark";
 
     const lessThan500px = useMediaQuery(`(max-width: 500px)`);
 
@@ -249,9 +252,9 @@ function Chat() {
                             <Grid.Col
                                 span={1}
                                 sx={{
-                                    backgroundColor: "#36404A",
+                                    backgroundColor: dark ? theme.colors.dark[0] : theme.colors.gray[0],
                                     borderRight: ".25rem solid",
-                                    borderColor: "#2F3741",
+                                    borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[5],
                                 }}
                             >
                                 <ChatNavbar />
@@ -259,7 +262,7 @@ function Chat() {
                             <Grid.Col
                                 span={5}
                                 sx={() => ({
-                                    backgroundColor: "#303841",
+                                    backgroundColor: dark ? theme.colors.dark[1] : theme.colors.gray[1],
                                     padding: "0",
                                 })}
                                 className={classes.friends}

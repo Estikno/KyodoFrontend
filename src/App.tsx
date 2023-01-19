@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { MantineProvider } from "@mantine/core";
+import {
+    MantineProvider,
+    ColorSchemeProvider,
+    ColorScheme,
+} from "@mantine/core";
 import { RequireAuth } from "react-auth-kit";
 
 //pages
@@ -16,38 +20,72 @@ import EmailConfirm from "./pages/EmailConfirm";
  * * The path is the route that the component will be rendered to
  */
 export default function App() {
+    const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
+
+    const toggleColorScheme = (value?: ColorScheme) => {
+        setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+    };
+
     return (
-        <MantineProvider
-            withGlobalStyles
-            withNormalizeCSS
-            theme={{ colorScheme: "dark" }}
-        >
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route
-                        path="/profile"
-                        element={
-                            <RequireAuth loginPath="/login">
-                                <Profile />
-                            </RequireAuth>
-                        }
-                    />
-                    <Route
-                        path="/"
-                        element={
-                            <RequireAuth loginPath="/login">
-                                <Chat />
-                            </RequireAuth>
-                        }
-                    />
-                    <Route
-                        path="/email-confirm/:token"
-                        element={<EmailConfirm />}
-                    />
-                </Routes>
-            </BrowserRouter>
-        </MantineProvider>
+        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+            <MantineProvider
+                withGlobalStyles
+                withNormalizeCSS
+                theme={{
+                    colorScheme: colorScheme,
+                    colors: {
+                        dark: [
+                            "#36404A",
+                            "#303841",
+                            "#262E35",
+                            "#3E4A56",
+                            "#7269EF",
+                            "#2F3741",
+                            "#A6B0CF",
+                            "#E1E9F1",
+                            "#050607"
+                        ],
+                        gray: [
+                            "#FFFFFF",
+                            "#F5F7FB",
+                            "#FFFFFF",
+                            "#F7F7FF",
+                            "#7269EF",
+                            "#ECEDF6",
+                            "#878A92",
+                            "#495057",
+                            "#191919"
+                        ]
+                    },
+                }}
+            >
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route
+                            path="/profile"
+                            element={
+                                <RequireAuth loginPath="/login">
+                                    <Profile />
+                                </RequireAuth>
+                            }
+                        />
+                        <Route
+                            path="/"
+                            element={
+                                <RequireAuth loginPath="/login">
+                                    <Chat />
+                                </RequireAuth>
+                            }
+                        />
+                        <Route
+                            path="/email-confirm/:token"
+                            element={<EmailConfirm />}
+                        />
+                    </Routes>
+                </BrowserRouter>
+            </MantineProvider>
+        </ColorSchemeProvider>
     );
 }

@@ -9,6 +9,8 @@ import {
     Tooltip,
     Menu,
     createStyles,
+    useMantineTheme,
+    useMantineColorScheme,
 } from "@mantine/core";
 
 import { MdPersonOutline, MdLanguage } from "react-icons/md";
@@ -30,6 +32,9 @@ const menuStyle = createStyles((theme) => ({
 
 function ChatNavbar() {
     const menuClass = menuStyle();
+    const theme = useMantineTheme();
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const dark = colorScheme === "dark";
 
     return (
         <Stack
@@ -50,68 +55,143 @@ function ChatNavbar() {
                 height={"auto"}
             />
             <Stack align="center" justify="space-between" spacing={"md"}>
-                <Tooltip label="Profile">
+                <Tooltip
+                    label="Profile"
+                    color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
+                    openDelay={250}
+                >
                     <UnstyledButton
                         sx={(theme) => ({
-                            backgroundColor: true ? "#3E4A56" : "#ffffff0",
+                            backgroundColor: true
+                                ? dark
+                                    ? theme.colors.dark[3]
+                                    : theme.colors.gray[3]
+                                : "#ffffff0",
                             padding: "10px 15px",
                             borderRadius: theme.radius.md,
                         })}
                     >
-                        <Title order={2}>
+                        <Title
+                            order={2}
+                            color={
+                                dark
+                                    ? theme.colors.dark[6]
+                                    : theme.colors.gray[6]
+                            }
+                        >
                             <MdPersonOutline />
                         </Title>
                     </UnstyledButton>
                 </Tooltip>
 
-                <Tooltip label="Chats">
+                <Tooltip
+                    label="Chats"
+                    color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
+                    openDelay={250}
+                >
                     <UnstyledButton
                         sx={(theme) => ({
-                            backgroundColor: true ? "#3E4A56" : "#ffffff0",
+                            backgroundColor: false
+                                ? dark
+                                    ? theme.colors.dark[3]
+                                    : theme.colors.gray[3]
+                                : "#ffffff0",
                             padding: "10px 15px",
                             borderRadius: theme.radius.md,
                         })}
                     >
-                        <Title order={2}>
+                        <Title
+                            order={2}
+                            color={
+                                dark
+                                    ? theme.colors.dark[6]
+                                    : theme.colors.gray[6]
+                            }
+                        >
                             <HiOutlineChatBubbleOvalLeftEllipsis />
                         </Title>
                     </UnstyledButton>
                 </Tooltip>
-                <Tooltip label="Groups">
+                <Tooltip
+                    label="Groups"
+                    color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
+                    openDelay={250}
+                >
                     <UnstyledButton
                         sx={(theme) => ({
-                            backgroundColor: true ? "#3E4A56" : "#ffffff0",
+                            backgroundColor: false
+                                ? dark
+                                    ? theme.colors.dark[3]
+                                    : theme.colors.gray[3]
+                                : "#ffffff0",
                             padding: "10px 15px",
                             borderRadius: theme.radius.md,
                         })}
                     >
-                        <Title order={2}>
+                        <Title
+                            order={2}
+                            color={
+                                dark
+                                    ? theme.colors.dark[6]
+                                    : theme.colors.gray[6]
+                            }
+                        >
                             <RiGroupLine />
                         </Title>
                     </UnstyledButton>
                 </Tooltip>
-                <Tooltip label="Contacts">
+                <Tooltip
+                    label="Contacts"
+                    color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
+                    openDelay={250}
+                >
                     <UnstyledButton
                         sx={(theme) => ({
-                            backgroundColor: true ? "#3E4A56" : "#ffffff0",
+                            backgroundColor: false
+                                ? dark
+                                    ? theme.colors.dark[3]
+                                    : theme.colors.gray[3]
+                                : "#ffffff0",
                             padding: "10px 15px",
                             borderRadius: theme.radius.md,
                         })}
                     >
-                        <Title order={2}>
+                        <Title
+                            order={2}
+                            color={
+                                dark
+                                    ? theme.colors.dark[6]
+                                    : theme.colors.gray[6]
+                            }
+                        >
                             <RiContactsLine />
                         </Title>
                     </UnstyledButton>
                 </Tooltip>
-                <Tooltip label="Settings">
+                <Tooltip
+                    label="Settings"
+                    color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
+                    openDelay={250}
+                >
                     <UnstyledButton
                         sx={(theme) => ({
-                            backgroundColor: true ? "#3E4A56" : "#ffffff0",
+                            backgroundColor: false
+                                ? dark
+                                    ? theme.colors.dark[3]
+                                    : theme.colors.gray[3]
+                                : "#ffffff0",
                             padding: "10px 15px",
                             borderRadius: theme.radius.md,
                         })}
                     >
-                        <Title order={2}>
+                        <Title
+                            order={2}
+                            color={
+                                dark
+                                    ? theme.colors.dark[6]
+                                    : theme.colors.gray[6]
+                            }
+                        >
                             <RiSettings2Line />
                         </Title>
                     </UnstyledButton>
@@ -128,12 +208,23 @@ function ChatNavbar() {
                     <Menu.Target>
                         <UnstyledButton
                             sx={(theme) => ({
-                                backgroundColor: true ? "#3E4A56" : "#ffffff0",
+                                backgroundColor: false
+                                    ? dark
+                                        ? theme.colors.dark[3]
+                                        : theme.colors.gray[3]
+                                    : "#ffffff0",
                                 padding: "10px 15px 8px 15px",
                                 borderRadius: theme.radius.md,
                             })}
                         >
-                            <Title order={2}>
+                            <Title
+                                order={2}
+                                color={
+                                    dark
+                                        ? theme.colors.dark[6]
+                                        : theme.colors.gray[6]
+                                }
+                            >
                                 <MdLanguage />
                             </Title>
                         </UnstyledButton>
@@ -167,16 +258,31 @@ function ChatNavbar() {
                     </Menu.Dropdown>
                 </Menu>
 
-                <Tooltip label="Dark / Light Mode">
-                    <UnstyledButton>
-                        <Title order={2}>
+                <Tooltip
+                    label="Dark / Light Mode"
+                    color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
+                    openDelay={250}
+                >
+                    <UnstyledButton onClick={() => toggleColorScheme()}>
+                        <Title
+                            order={2}
+                            color={
+                                dark
+                                    ? theme.colors.dark[6]
+                                    : theme.colors.gray[6]
+                            }
+                        >
                             <BiSun />
                         </Title>
                     </UnstyledButton>
                 </Tooltip>
                 <UnstyledButton
                     sx={(theme) => ({
-                        backgroundColor: true ? "#3E4A56" : "#ffffff0",
+                        backgroundColor: false
+                            ? dark
+                                ? theme.colors.dark[3]
+                                : theme.colors.gray[3]
+                            : "#ffffff0",
                         padding: "8px 8px",
                         borderRadius: theme.radius.md,
                     })}
