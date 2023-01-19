@@ -43,7 +43,8 @@ export default function App() {
                             "#2F3741",
                             "#A6B0CF",
                             "#E1E9F1",
-                            "#050607"
+                            "#050607",
+                            "#1A2D3F",
                         ],
                         gray: [
                             "#FFFFFF",
@@ -54,7 +55,8 @@ export default function App() {
                             "#ECEDF6",
                             "#878A92",
                             "#495057",
-                            "#191919"
+                            "#191919",
+                            "#1A2D3F",
                         ]
                     },
                 }}

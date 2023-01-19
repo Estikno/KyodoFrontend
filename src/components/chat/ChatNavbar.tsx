@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
     Stack,
@@ -17,6 +17,7 @@ import { MdPersonOutline, MdLanguage } from "react-icons/md";
 import { HiOutlineChatBubbleOvalLeftEllipsis } from "react-icons/hi2";
 import { RiSettings2Line, RiGroupLine, RiContactsLine } from "react-icons/ri";
 import { BiSun } from "react-icons/bi";
+import { IconType } from "react-icons/lib";
 
 const menuStyle = createStyles((theme) => ({
     dropdown: {
@@ -30,11 +31,100 @@ const menuStyle = createStyles((theme) => ({
     },
 }));
 
+const useStyles = createStyles((theme) => ({
+    link: {
+        borderRadius: theme.radius.md,
+        padding: "10px 15px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[6]
+                : theme.colors.gray[6],
+
+        "&:hover": {
+            backgroundColor:
+                theme.colorScheme === "dark"
+                    ? theme.colors.dark[3]
+                    : theme.colors.gray[3],
+        },
+    },
+
+    active: {
+        "&, &:hover": {
+            backgroundColor:
+                theme.colorScheme === "dark"
+                    ? theme.colors.dark[9]
+                    : theme.colors.gray[9],
+        },
+    },
+}));
+
+interface NavbarLinkProps {
+    icon: IconType;
+    label: string;
+    active?: boolean;
+    onClick?(): void;
+}
+
+function NavbarLink({
+    icon: Icon,
+    label,
+    active,
+    onClick: _onclick,
+}: NavbarLinkProps) {
+    const { classes, cx } = useStyles();
+    const theme = useMantineTheme();
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const dark = colorScheme === "dark";
+
+    return (
+        <Tooltip
+            label={label}
+            color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
+            openDelay={250}
+            position="right"
+        >
+            <UnstyledButton
+                onClick={_onclick}
+                className={cx(classes.link, { [classes.active]: active })}
+            >
+                <Title
+                    order={2}
+                    color={dark ? theme.colors.dark[6] : theme.colors.gray[6]}
+                >
+                    <Icon />
+                </Title>
+            </UnstyledButton>
+        </Tooltip>
+    );
+}
+
+const mockdata: NavbarLinkProps[] = [
+    { icon: MdPersonOutline, label: "Profile" },
+    { icon: HiOutlineChatBubbleOvalLeftEllipsis, label: "Chats" },
+    { icon: RiGroupLine, label: "Groups" },
+    { icon: RiContactsLine, label: "Contacts" },
+    { icon: RiSettings2Line, label: "Settings" },
+];
+
 function ChatNavbar() {
     const menuClass = menuStyle();
     const theme = useMantineTheme();
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
+
+    const [active, setActive] = useState<number>(0);
+
+    const links = mockdata.map((link, index) => (
+        <NavbarLink
+            {...link}
+            key={link.label}
+            active={index === active}
+            onClick={() => setActive(index)}
+        />
+    ));
 
     return (
         <Stack
@@ -55,147 +145,7 @@ function ChatNavbar() {
                 height={"auto"}
             />
             <Stack align="center" justify="space-between" spacing={"md"}>
-                <Tooltip
-                    label="Profile"
-                    color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
-                    openDelay={250}
-                >
-                    <UnstyledButton
-                        sx={(theme) => ({
-                            backgroundColor: true
-                                ? dark
-                                    ? theme.colors.dark[3]
-                                    : theme.colors.gray[3]
-                                : "#ffffff0",
-                            padding: "10px 15px",
-                            borderRadius: theme.radius.md,
-                        })}
-                    >
-                        <Title
-                            order={2}
-                            color={
-                                dark
-                                    ? theme.colors.dark[6]
-                                    : theme.colors.gray[6]
-                            }
-                        >
-                            <MdPersonOutline />
-                        </Title>
-                    </UnstyledButton>
-                </Tooltip>
-
-                <Tooltip
-                    label="Chats"
-                    color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
-                    openDelay={250}
-                >
-                    <UnstyledButton
-                        sx={(theme) => ({
-                            backgroundColor: false
-                                ? dark
-                                    ? theme.colors.dark[3]
-                                    : theme.colors.gray[3]
-                                : "#ffffff0",
-                            padding: "10px 15px",
-                            borderRadius: theme.radius.md,
-                        })}
-                    >
-                        <Title
-                            order={2}
-                            color={
-                                dark
-                                    ? theme.colors.dark[6]
-                                    : theme.colors.gray[6]
-                            }
-                        >
-                            <HiOutlineChatBubbleOvalLeftEllipsis />
-                        </Title>
-                    </UnstyledButton>
-                </Tooltip>
-                <Tooltip
-                    label="Groups"
-                    color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
-                    openDelay={250}
-                >
-                    <UnstyledButton
-                        sx={(theme) => ({
-                            backgroundColor: false
-                                ? dark
-                                    ? theme.colors.dark[3]
-                                    : theme.colors.gray[3]
-                                : "#ffffff0",
-                            padding: "10px 15px",
-                            borderRadius: theme.radius.md,
-                        })}
-                    >
-                        <Title
-                            order={2}
-                            color={
-                                dark
-                                    ? theme.colors.dark[6]
-                                    : theme.colors.gray[6]
-                            }
-                        >
-                            <RiGroupLine />
-                        </Title>
-                    </UnstyledButton>
-                </Tooltip>
-                <Tooltip
-                    label="Contacts"
-                    color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
-                    openDelay={250}
-                >
-                    <UnstyledButton
-                        sx={(theme) => ({
-                            backgroundColor: false
-                                ? dark
-                                    ? theme.colors.dark[3]
-                                    : theme.colors.gray[3]
-                                : "#ffffff0",
-                            padding: "10px 15px",
-                            borderRadius: theme.radius.md,
-                        })}
-                    >
-                        <Title
-                            order={2}
-                            color={
-                                dark
-                                    ? theme.colors.dark[6]
-                                    : theme.colors.gray[6]
-                            }
-                        >
-                            <RiContactsLine />
-                        </Title>
-                    </UnstyledButton>
-                </Tooltip>
-                <Tooltip
-                    label="Settings"
-                    color={dark ? theme.colors.dark[8] : theme.colors.gray[8]}
-                    openDelay={250}
-                >
-                    <UnstyledButton
-                        sx={(theme) => ({
-                            backgroundColor: false
-                                ? dark
-                                    ? theme.colors.dark[3]
-                                    : theme.colors.gray[3]
-                                : "#ffffff0",
-                            padding: "10px 15px",
-                            borderRadius: theme.radius.md,
-                        })}
-                    >
-                        <Title
-                            order={2}
-                            color={
-                                dark
-                                    ? theme.colors.dark[6]
-                                    : theme.colors.gray[6]
-                            }
-                        >
-                            <RiSettings2Line />
-                        </Title>
-                    </UnstyledButton>
-                </Tooltip>
+                {links}
             </Stack>
             <Stack align="center" justify="space-between" spacing={"md"}>
                 <Menu
