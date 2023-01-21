@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import EmailConfirm from "./pages/EmailConfirm";
+import Error404 from './pages/Error404';
 
 /**
  * Imports the components that will be used in the application and renders them
@@ -85,6 +86,7 @@ export default function App() {
                             path="/email-confirm/:token"
                             element={<EmailConfirm />}
                         />
+                        <Route path="*" element={<Error404 />} />
                     </Routes>
                 </BrowserRouter>
             </MantineProvider>

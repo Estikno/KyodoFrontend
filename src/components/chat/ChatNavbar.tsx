@@ -15,7 +15,7 @@ import {
 
 import { MdPersonOutline, MdLanguage } from "react-icons/md";
 import { HiOutlineChatBubbleOvalLeftEllipsis } from "react-icons/hi2";
-import { RiSettings2Line, RiGroupLine, RiContactsLine } from "react-icons/ri";
+import { RiSettings2Line, RiGroupLine } from "react-icons/ri";
 import { BiSun, BiMoon } from "react-icons/bi";
 import { IconType } from "react-icons/lib";
 
@@ -116,24 +116,27 @@ const mockdata: NavbarLinkProps[] = [
     { icon: MdPersonOutline, label: "Profile" },
     { icon: HiOutlineChatBubbleOvalLeftEllipsis, label: "Chats" },
     { icon: RiGroupLine, label: "Groups" },
-    { icon: RiContactsLine, label: "Contacts" },
     { icon: RiSettings2Line, label: "Settings" },
 ];
 
-function ChatNavbar() {
+function ChatNavbar({
+    setSelectedWindow,
+    selectedWindow,
+}: {
+    setSelectedWindow: React.Dispatch<React.SetStateAction<number>>;
+    selectedWindow: number;
+}) {
     const menuClass = menuStyle();
     const theme = useMantineTheme();
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
 
-    const [active, setActive] = useState<number>(0);
-
     const links = mockdata.map((link, index) => (
         <NavbarLink
             {...link}
             key={link.label}
-            active={index === active}
-            onClick={() => setActive(index)}
+            active={index === selectedWindow}
+            onClick={() => setSelectedWindow(index)}
         />
     ));
 

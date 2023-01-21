@@ -10,7 +10,7 @@ import {
     Avatar,
 } from "@mantine/core";
 
-function Message({ position, message }: { position: string; message: string }) {
+function Message({ position, message, displayAvatar }: { position: string; message: string; displayAvatar: boolean}) {
     const theme = useMantineTheme();
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
@@ -53,7 +53,7 @@ function Message({ position, message }: { position: string; message: string }) {
                     {message}
                 </Text>
             </Group>
-            <Avatar radius={"xl"} color="blue" />
+            <Avatar radius={"xl"} color="blue" sx={{display: (displayAvatar) ? "" : "none"}} />
         </Stack>
     );
 }

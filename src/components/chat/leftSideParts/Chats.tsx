@@ -1,6 +1,6 @@
 import React from "react";
 
-import FriendsContainer from "./FriendsContainer";
+import FriendsContainer from "../FriendsContainer";
 
 //mantine
 import {
@@ -61,10 +61,16 @@ function LeftSide({
                 </Title>
                 <TextInput
                     placeholder="Search users"
-                    icon={<HiOutlineMagnifyingGlass color={dark ? "#9BB0C7" : "#7A7FA6"}/>}
+                    icon={
+                        <HiOutlineMagnifyingGlass
+                            color={dark ? "#9BB0C7" : "#7A7FA6"}
+                        />
+                    }
                     sx={(theme) => ({
                         width: "100%",
-                        backgroundColor: dark ? theme.colors.dark[0] : "#E6EBF5",
+                        backgroundColor: dark
+                            ? theme.colors.dark[0]
+                            : "#E6EBF5",
                         borderRadius: theme.radius.md,
                         input: {
                             color: dark ? "#9BB0C7" : "#7A7FA6",

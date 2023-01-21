@@ -11,9 +11,12 @@ import Friend from "../components/chat/Friend";
 import Message from "../components/chat/Message";
 import Bar from "../components/chat/Bar";
 import MobileFriendContainer from "../components/chat/MobileFriendsContainer";
-import LeftSide from "../components/chat/LeftSide";
 import RightSide from "../components/chat/RightSide";
 import ChatNavbar from "../components/chat/ChatNavbar";
+
+//navbar options
+import Chats from "../components/chat/leftSideParts/Chats";
+import ChatProfile from "../components/chat/leftSideParts/ChatProfile";
 
 //options, helpers or utils already made by me
 import { toastOptions, apiRoute } from "../utils/configs";
@@ -88,6 +91,7 @@ function Chat() {
     const [actualMessage, setActualMessage] = useState<string>("");
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [lastMessageDate, setLastMessageDate] = useState<Date>();
+    const [selectedWindow, setSelectedWindow] = useState<number>(1);
 
     const [visible, setVisible] = useState<boolean>(true);
 
@@ -98,9 +102,17 @@ function Chat() {
             socket.on("all-msg", (message: IRecieveMessage[]) => {
                 const finalArray: IMessage[] = message.map((msg) => {
                     if (msg.username === userInfo.username) {
-                        return { message: msg.message, fromSelf: true };
+                        return {
+                            message: msg.message,
+                            fromSelf: true,
+                            username: msg.username,
+                        };
                     } else {
-                        return { message: msg.message, fromSelf: false };
+                        return {
+                            message: msg.message,
+                            fromSelf: false,
+                            username: msg.username,
+                        };
                     }
                 });
 
@@ -121,12 +133,13 @@ function Chat() {
                             message.username === userInfo.username
                                 ? true
                                 : false,
+                        username: userInfo.username,
                     },
                 ]);
 
                 viewport.current?.scrollTo({
                     top: viewport.current.scrollHeight,
-                    behavior: "smooth",
+                    behavior: "auto",
                 });
 
                 dummy.current?.scrollIntoView({ behavior: "smooth" });
@@ -212,6 +225,13 @@ function Chat() {
             );
         }
 
+        if (actualMessage.length > 250) {
+            return toast.error(
+                "You can't send more than 250 characters",
+                toastOptions
+            );
+        }
+
         if (socket && userInfo) {
             /*const newMessage: IMessage = {
                 message: finalMessage,
@@ -260,7 +280,10 @@ function Chat() {
                                         : theme.colors.gray[5],
                                 }}
                             >
-                                <ChatNavbar />
+                                <ChatNavbar
+                                    setSelectedWindow={setSelectedWindow}
+                                    selectedWindow={selectedWindow}
+                                />
                             </Grid.Col>
                             <Grid.Col
                                 span={5}
@@ -272,18 +295,28 @@ function Chat() {
                                 })}
                                 className={classes.friends}
                             >
-                                <LeftSide
-                                    avatarUrl={userInfo?.avatarUrl}
-                                    username={userInfo?.username}
-                                >
-                                    {friends.map((friend) => (
-                                        <Friend
-                                            name={friend.username}
-                                            key={friend.username}
-                                            avatarUrl={friend.avatarUrl}
-                                        />
-                                    ))}
-                                </LeftSide>
+                                {selectedWindow === 0 ? (
+                                    <ChatProfile />
+                                ) : selectedWindow === 1 ? (
+                                    <Chats
+                                        avatarUrl={userInfo?.avatarUrl}
+                                        username={userInfo?.username}
+                                    >
+                                        {friends.map((friend) => (
+                                            <Friend
+                                                name={friend.username}
+                                                key={friend.username}
+                                                avatarUrl={friend.avatarUrl}
+                                            />
+                                        ))}
+                                    </Chats>
+                                ) : selectedWindow === 2 ? (
+                                    <></>
+                                ) : selectedWindow === 3 ? (
+                                    <></>
+                                ) : (
+                                    <></>
+                                )}
                             </Grid.Col>
                             <Grid.Col
                                 span={18}
@@ -301,7 +334,7 @@ function Chat() {
                                     viewport={viewport}
                                     dummy={dummy}
                                 >
-                                    {messages.map((message) => (
+                                    {messages.map((message, index) => (
                                         <Message
                                             key={`${message.message}/${
                                                 ((Math.random() *
@@ -312,6 +345,15 @@ function Chat() {
                                             message={message.message}
                                             position={
                                                 message.fromSelf ? "r" : "l"
+                                            }
+                                            displayAvatar={
+                                                messages[index + 1]
+                                                    ? messages[index + 1]
+                                                          .username ===
+                                                      message.username
+                                                        ? false
+                                                        : true
+                                                    : true
                                             }
                                         />
                                     ))}
