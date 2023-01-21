@@ -16,7 +16,7 @@ function FriendsContainer({ children }: { children: JSX.Element | JSX.Element[] 
             }}
             style={{ padding: "5px" }}
         >
-            <Stack spacing="xs">{children}</Stack>
+            <Stack spacing={5}>{children}</Stack>
         </ScrollArea>
     );
 }

@@ -37,7 +37,7 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IUserInfo } from "../interfaces/IApiResponses";
-import IMessage from "../interfaces/IMessage";
+import IMessage, { IRecieveMessage } from "../interfaces/IMessage";
 
 const useStyles = createStyles((theme) => ({
     burger: {
@@ -95,12 +95,12 @@ function Chat() {
 
     useEffect(() => {
         if (userInfo) {
-            socket.on("all-msg", (message: string[]) => {
+            socket.on("all-msg", (message: IRecieveMessage[]) => {
                 const finalArray: IMessage[] = message.map((msg) => {
-                    if (msg.startsWith(userInfo.username)) {
-                        return { message: filter.clean(msg), fromSelf: true };
+                    if (msg.username === userInfo.username) {
+                        return { message: msg.message, fromSelf: true };
                     } else {
-                        return { message: filter.clean(msg), fromSelf: false };
+                        return { message: msg.message, fromSelf: false };
                     }
                 });
 
@@ -213,14 +213,13 @@ function Chat() {
         }
 
         if (socket && userInfo) {
-            const finalMessage = userInfo.username + ": " + actualMessage;
             /*const newMessage: IMessage = {
                 message: finalMessage,
                 fromSelf: true,
             };*/
             //setMessages([...messages, newMessage]);
             socket.emit("send-msg", {
-                message: finalMessage,
+                message: actualMessage,
                 person: userInfo.username,
             });
         }
@@ -252,9 +251,13 @@ function Chat() {
                             <Grid.Col
                                 span={1}
                                 sx={{
-                                    backgroundColor: dark ? theme.colors.dark[0] : theme.colors.gray[0],
-                                    borderRight: ".25rem solid",
-                                    borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[5],
+                                    backgroundColor: dark
+                                        ? theme.colors.dark[0]
+                                        : theme.colors.gray[0],
+                                    borderRight: ".15rem solid",
+                                    borderColor: dark
+                                        ? theme.colors.dark[5]
+                                        : theme.colors.gray[5],
                                 }}
                             >
                                 <ChatNavbar />
@@ -262,7 +265,9 @@ function Chat() {
                             <Grid.Col
                                 span={5}
                                 sx={() => ({
-                                    backgroundColor: dark ? theme.colors.dark[1] : theme.colors.gray[1],
+                                    backgroundColor: dark
+                                        ? theme.colors.dark[1]
+                                        : theme.colors.gray[1],
                                     padding: "0",
                                 })}
                                 className={classes.friends}
@@ -284,7 +289,9 @@ function Chat() {
                                 span={18}
                                 sx={{
                                     padding: "0",
-                                    backgroundColor: "#262E35",
+                                    backgroundColor: dark
+                                        ? theme.colors.dark[2]
+                                        : theme.colors.gray[2],
                                 }}
                             >
                                 <RightSide
@@ -335,7 +342,7 @@ function Chat() {
                                 </Title>
                                 <Image
                                     src="https://res.cloudinary.com/kyodo/image/upload/v1672939191/kyodo/icons/cross_wf1uzx.png"
-                                    alt="tick"
+                                    alt="cross"
                                     height={200}
                                     width={200}
                                 />

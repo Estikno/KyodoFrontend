@@ -21,7 +21,7 @@ import { IconType } from "react-icons/lib";
 
 const menuStyle = createStyles((theme) => ({
     dropdown: {
-        backgroundColor: "#313A43",
+        backgroundColor: theme.colorScheme === "dark" ? "#313A43" : "#FFFFFF",
         borderColor:
             theme.colorScheme === "dark"
                 ? theme.colors.dark[2]
@@ -233,7 +233,7 @@ function ChatNavbar() {
                                     : theme.colors.gray[6]
                             }
                         >
-                            {(dark ? <BiSun /> : <BiMoon />)}
+                            {dark ? <BiSun /> : <BiMoon />}
                         </Title>
                     </UnstyledButton>
                 </Tooltip>

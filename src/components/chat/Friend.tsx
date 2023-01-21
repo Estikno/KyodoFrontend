@@ -1,9 +1,23 @@
 import React from "react";
 
 //mantine
-import { Group, Text, Image, Indicator, Stack, Avatar, Badge } from "@mantine/core";
+import {
+    Group,
+    Text,
+    Image,
+    Indicator,
+    Stack,
+    Avatar,
+    Badge,
+    useMantineTheme,
+    useMantineColorScheme
+} from "@mantine/core";
 
 function Friend({ name, avatarUrl }: { name: string; avatarUrl: string }) {
+    const theme = useMantineTheme();
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const dark = colorScheme === "dark";
+
     return (
         <Group
             position="apart"
@@ -13,12 +27,12 @@ function Friend({ name, avatarUrl }: { name: string; avatarUrl: string }) {
                 padding: "10px 15px",
 
                 "&:hover": {
-                    backgroundColor: "#36404A",
+                    backgroundColor: dark ? theme.colors.dark[0] : "#E6EBF5",
                 },
             })}
         >
             <Group>
-                <Indicator
+               <Indicator
                     color="green"
                     size={12}
                     withBorder
@@ -28,18 +42,20 @@ function Friend({ name, avatarUrl }: { name: string; avatarUrl: string }) {
                     <Avatar src={avatarUrl} radius="xl" size={"md"} />
                 </Indicator>
                 <Stack spacing={5} sx={{ height: "100%" }}>
-                    <Text size={"lg"} fw={700}>
+                    <Text size={"lg"} fw={700} color={dark ? theme.colors.dark[7] : theme.colors.gray[7]}>
                         {name}
                     </Text>
-                    <Text size={"xs"}>Hi how are you</Text>
+                    <Text size={"xs"} color={dark ? "#8B94B6" : "#8186A0"}>Hi how are you</Text>
                 </Stack>
             </Group>
-            <Stack sx={{ height: "100%"}}>
-                <Text fz={"sm"} sx={{color: "#A3AFD2"}}>02:50</Text>
-                <Badge color="pink">2</Badge>
+            <Stack sx={{ height: "100%" }}>
+                <Text fz={"sm"} sx={{ color: dark ? "#8B94B6" : "#8186A0" }}>
+                    02:50
+                </Text>
+                <Badge color={"pink"}>2</Badge>
             </Stack>
         </Group>
-    );
+    ); 
 }
 
 export default Friend;

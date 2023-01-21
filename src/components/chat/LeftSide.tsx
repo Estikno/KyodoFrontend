@@ -11,6 +11,7 @@ import {
     Title,
     useMantineTheme,
     TextInput,
+    useMantineColorScheme,
 } from "@mantine/core";
 
 import { AiFillSetting } from "react-icons/ai";
@@ -26,6 +27,8 @@ function LeftSide({
     username: string | undefined;
 }) {
     const theme = useMantineTheme();
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const dark = colorScheme === "dark";
 
     return (
         <Stack
@@ -52,21 +55,23 @@ function LeftSide({
                     sx={{
                         width: "100%",
                     }}
+                    color={dark ? theme.colors.dark[7] : theme.colors.gray[7]}
                 >
                     Chats
                 </Title>
                 <TextInput
                     placeholder="Search users"
-                    icon={<HiOutlineMagnifyingGlass />}
+                    icon={<HiOutlineMagnifyingGlass color={dark ? "#9BB0C7" : "#7A7FA6"}/>}
                     sx={(theme) => ({
                         width: "100%",
-                        backgroundColor: "#36404A",
+                        backgroundColor: dark ? theme.colors.dark[0] : "#E6EBF5",
                         borderRadius: theme.radius.md,
                         input: {
+                            color: dark ? "#9BB0C7" : "#7A7FA6",
                             "::placeholder": {
-                                color: "#9BB0C7"
-                            }
-                        }
+                                color: dark ? "#9BB0C7" : "#7A7FA6",
+                            },
+                        },
                     })}
                     variant="unstyled"
                     size="md"

@@ -11,6 +11,7 @@ import {
     UnstyledButton,
     Avatar,
     Text,
+    useMantineColorScheme
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -39,6 +40,8 @@ function RightSide({
     dummy: React.RefObject<HTMLSpanElement>;
 }) {
     const theme = useMantineTheme();
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const dark = colorScheme === "dark";
 
     const lesstThan768px = useMediaQuery("(max-width: 768px)");
     const lessThan500px = useMediaQuery(`(max-width: 500px)`);
@@ -56,21 +59,21 @@ function RightSide({
                 sx={{
                     width: "100%",
                     height: "12vh",
-                    borderBottom: ".1rem solid",
-                    borderColor: "#36404A",
+                    borderBottom: dark ? ".1rem solid" : ".12rem solid",
+                    borderColor: dark ? theme.colors.dark[0] : theme.colors.gray[1],
                 }}
                 position="apart"
             >
                 <Group spacing={"xs"} sx={{ marginLeft: "20px" }}>
                     <Avatar radius="xl" size="md" color="blue" />
-                    <Text fz={"lg"} fw={700}>
+                    <Text fz={"lg"} fw={700} color={dark ? theme.colors.dark[7] : theme.colors.gray[7]}>
                         Patricio Estrella
                         <GoPrimitiveDot
                             style={{ paddingTop: "5px", color: "green" }}
                         />
                     </Text>
                 </Group>
-                <Group sx={{ marginRight: "20px" }} spacing={"xl"}>
+                <Group sx={{ marginRight: "20px", color: dark ? "#9FB4D2" : "#858DA6" }} spacing={"xl"}>
                     <Title order={3}>
                         <HiOutlineMagnifyingGlass />
                     </Title>
@@ -102,9 +105,10 @@ function RightSide({
                         width: "100%",
                         height: "100%",
                     })}
+                    spacing="xl"
                 >
                     {children}
-                    <span ref={dummy} style={{ color: "#262E35" }}>
+                    <span ref={dummy} style={{ color: dark ? theme.colors.dark[2] : theme.colors.gray[2] }}>
                         s
                     </span>
                 </Stack>
@@ -116,8 +120,8 @@ function RightSide({
                     height: "12vh",
                     width: "100%",
                     padding: "0 1rem",
-                    borderTop: ".1rem solid",
-                    borderColor: "#36404A",
+                    borderTop: dark ? ".1rem solid" : ".12rem solid",
+                    borderColor: dark ? theme.colors.dark[0] : theme.colors.gray[1],
                 }}
             >
                 <form
@@ -145,13 +149,14 @@ function RightSide({
                                     ? "83%"
                                     : "85%",
                                 input: {
+                                    color: dark ? "#9BB0C7" : "#7A7FA6",
                                     "::placeholder": {
-                                        color: "#9BB0C7",
+                                        color: dark ? "#9BB0C7" : "#7A7FA6"
                                     },
                                     paddingLeft: "15px",
                                     paddingRight: "15px",
                                 },
-                                backgroundColor: "#36404A",
+                                backgroundColor: dark ? theme.colors.dark[0] : "#E6EBF5",
                                 borderRadius: theme.radius.md,
                             })}
                             onChange={(event) =>
@@ -161,18 +166,18 @@ function RightSide({
                             size="md"
                             variant="unstyled"
                         />
-                        <Title order={4}>
+                        <Title order={4} color={dark ? theme.colors.dark[4] : theme.colors.gray[4]}>
                             <BsFillEmojiSmileFill />
                         </Title>
-                        <Title order={4}>
+                        <Title order={4} color={dark ? theme.colors.dark[4] : theme.colors.gray[4]}>
                             <FaPaperclip />
                         </Title>
-                        <Title order={4}>
+                        <Title order={4} color={dark ? theme.colors.dark[4] : theme.colors.gray[4]}>
                             <BsImage />
                         </Title>
 
                         <UnstyledButton type="submit">
-                            <Title order={3}>
+                            <Title order={3} color={dark ? theme.colors.dark[4] : theme.colors.gray[4]}>
                                 <FaPaperPlane />
                             </Title>
                         </UnstyledButton>
