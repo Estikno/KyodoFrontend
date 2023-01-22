@@ -17,6 +17,7 @@ import ChatNavbar from "../components/chat/ChatNavbar";
 //navbar options
 import Chats from "../components/chat/leftSideParts/Chats";
 import ChatProfile from "../components/chat/leftSideParts/ChatProfile";
+import ChatSettings from '../components/chat/leftSideParts/ChatSettings';
 
 //options, helpers or utils already made by me
 import { toastOptions, apiRoute } from "../utils/configs";
@@ -311,9 +312,7 @@ function Chat() {
                                         ))}
                                     </Chats>
                                 ) : selectedWindow === 2 ? (
-                                    <></>
-                                ) : selectedWindow === 3 ? (
-                                    <></>
+                                    <ChatSettings />
                                 ) : (
                                     <></>
                                 )}

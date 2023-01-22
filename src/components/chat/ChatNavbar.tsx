@@ -15,32 +15,12 @@ import {
 
 import { MdPersonOutline, MdLanguage } from "react-icons/md";
 import { HiOutlineChatBubbleOvalLeftEllipsis } from "react-icons/hi2";
-import { RiSettings2Line, RiGroupLine } from "react-icons/ri";
+import { RiSettings2Line } from "react-icons/ri";
 import { BiSun, BiMoon } from "react-icons/bi";
 import { IconType } from "react-icons/lib";
 
-const menuStyle = createStyles((theme) => ({
-    dropdown: {
-        backgroundColor: theme.colorScheme === "dark" ? "#313A43" : "#FFFFFF",
-        borderColor:
-            theme.colorScheme === "dark"
-                ? theme.colors.dark[2]
-                : theme.colors.gray[2],
-    },
-    item: {
-        color:
-            theme.colorScheme === "dark"
-                ? theme.colors.dark[7]
-                : theme.colors.gray[7],
-        "&[data-hovered]": {
-            backgroundColor:
-                theme.colorScheme === "dark"
-                    ? theme.colors.dark[4]
-                    : theme.colors.gray[4],
-            color: "white",
-        },
-    },
-}));
+//styles
+import menuStyle from '../../utils/MantineStyles/MenuStyles';
 
 const useStyles = createStyles((theme) => ({
     link: {
@@ -87,7 +67,7 @@ function NavbarLink({
 }: NavbarLinkProps) {
     const { classes, cx } = useStyles();
     const theme = useMantineTheme();
-    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const { colorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
 
     return (
@@ -115,7 +95,6 @@ function NavbarLink({
 const mockdata: NavbarLinkProps[] = [
     { icon: MdPersonOutline, label: "Profile" },
     { icon: HiOutlineChatBubbleOvalLeftEllipsis, label: "Chats" },
-    { icon: RiGroupLine, label: "Groups" },
     { icon: RiSettings2Line, label: "Settings" },
 ];
 

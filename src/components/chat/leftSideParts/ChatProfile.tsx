@@ -20,67 +20,9 @@ import { GoPrimitiveDot } from "react-icons/go";
 import { BsFillPersonFill } from "react-icons/bs";
 import { RiAttachmentLine } from "react-icons/ri";
 
-const accordionStyles = createStyles((theme) => ({
-    control: {
-        backgroundColor:
-            theme.colorScheme === "dark"
-                ? theme.colors.dark[0]
-                : theme.colors.gray[0],
-        color:
-            theme.colorScheme === "dark"
-                ? theme.colors.dark[7]
-                : theme.colors.gray[7],
-    },
-    item: {
-        border: "1px solid",
-        borderColor:
-            theme.colorScheme === "dark"
-                ? theme.colors.dark[0]
-                : theme.colors.gray[0],
-        borderRadius: theme.radius.sm,
-
-        "&[data-active]": {
-            backgroundColor:
-                theme.colorScheme === "dark"
-                    ? theme.colors.dark[2]
-                    : theme.colors.gray[2],
-            borderColor:
-                theme.colorScheme === "dark"
-                    ? theme.colors.dark[2]
-                    : theme.colors.gray[0],
-            border: theme.colorScheme === "dark" ? "1px solid" : "",
-        },
-    },
-}));
-
-const menuStyle = createStyles((theme) => ({
-    dropdown: {
-        backgroundColor: theme.colorScheme === "dark" ? "#313A43" : "#FFFFFF",
-        borderColor:
-            theme.colorScheme === "dark"
-                ? theme.colors.dark[0]
-                : theme.colors.gray[0],
-    },
-    item: {
-        color:
-            theme.colorScheme === "dark"
-                ? theme.colors.dark[7]
-                : theme.colors.gray[7],
-        "&[data-hovered]": {
-            backgroundColor:
-                theme.colorScheme === "dark"
-                    ? theme.colors.dark[4]
-                    : theme.colors.gray[4],
-            color: "white",
-        },
-    },
-    divider: {
-        borderColor:
-            theme.colorScheme === "dark"
-                ? theme.colors.dark[0]
-                : theme.colors.gray[1],
-    },
-}));
+//styles
+import menuStyle from "../../../utils/MantineStyles/MenuStyles";
+import accordionStyles from "../../../utils/MantineStyles/AccordionStyles";
 
 function ChatProfile() {
     const theme = useMantineTheme();
