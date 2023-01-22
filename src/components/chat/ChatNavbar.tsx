@@ -165,9 +165,10 @@ function ChatNavbar({
                 <Menu
                     shadow={"md"}
                     position="top-start"
-                    offset={20}
+                    offset={10}
                     width={150}
                     classNames={menuClass.classes}
+                    transition="slide-up"
                 >
                     <Menu.Target>
                         <UnstyledButton
