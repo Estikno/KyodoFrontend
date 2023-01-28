@@ -14,6 +14,7 @@ import {
     createStyles,
     Menu,
     UnstyledButton,
+    ScrollArea,
 } from "@mantine/core";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { GoPrimitiveDot } from "react-icons/go";
@@ -112,76 +113,78 @@ function ChatProfile() {
                 If several languages coalesce, the grammar of the resulting
                 language is more simple and regular than that of the individual.
             </Text>
-            <Accordion
-                variant="separated"
-                defaultValue="About"
-                sx={{ width: "100%" }}
-                classNames={AccordionStyles.classes}
-                transitionDuration={250}
-            >
-                <Accordion.Item value="About">
-                    <Accordion.Control icon={<BsFillPersonFill />}>
-                        About
-                    </Accordion.Control>
-                    <Accordion.Panel>
-                        <Stack sx={{ width: "100%" }} align="flex-start">
-                            <Stack spacing={0}>
-                                <Text color={dark ? "#9AA1B9" : "#858DA6"}>
-                                    Name
-                                </Text>
-                                <Text
-                                    color={
-                                        dark
-                                            ? theme.colors.dark[7]
-                                            : theme.colors.gray[7]
-                                    }
-                                >
-                                    Patricio
-                                </Text>
+            <ScrollArea sx={{ height: "100%", width: "100%" }} type="scroll">
+                <Accordion
+                    variant="separated"
+                    defaultValue="About"
+                    sx={{ width: "100%" }}
+                    classNames={AccordionStyles.classes}
+                    transitionDuration={250}
+                >
+                    <Accordion.Item value="About">
+                        <Accordion.Control icon={<BsFillPersonFill />}>
+                            About
+                        </Accordion.Control>
+                        <Accordion.Panel>
+                            <Stack sx={{ width: "100%" }} align="flex-start">
+                                <Stack spacing={0}>
+                                    <Text color={dark ? "#9AA1B9" : "#858DA6"}>
+                                        Name
+                                    </Text>
+                                    <Text
+                                        color={
+                                            dark
+                                                ? theme.colors.dark[7]
+                                                : theme.colors.gray[7]
+                                        }
+                                    >
+                                        Patricio
+                                    </Text>
+                                </Stack>
+                                <Stack spacing={0}>
+                                    <Text color={dark ? "#9AA1B9" : "#858DA6"}>
+                                        Email
+                                    </Text>
+                                    <Text
+                                        color={
+                                            dark
+                                                ? theme.colors.dark[7]
+                                                : theme.colors.gray[7]
+                                        }
+                                    >
+                                        patrick@gmail.com
+                                    </Text>
+                                </Stack>
+                                <Stack spacing={0}>
+                                    <Text color={dark ? "#9AA1B9" : "#858DA6"}>
+                                        Localtion
+                                    </Text>
+                                    <Text
+                                        color={
+                                            dark
+                                                ? theme.colors.dark[7]
+                                                : theme.colors.gray[7]
+                                        }
+                                    >
+                                        florida
+                                    </Text>
+                                </Stack>
                             </Stack>
-                            <Stack spacing={0}>
-                                <Text color={dark ? "#9AA1B9" : "#858DA6"}>
-                                    Email
-                                </Text>
-                                <Text
-                                    color={
-                                        dark
-                                            ? theme.colors.dark[7]
-                                            : theme.colors.gray[7]
-                                    }
-                                >
-                                    patrick@gmail.com
-                                </Text>
-                            </Stack>
-                            <Stack spacing={0}>
-                                <Text color={dark ? "#9AA1B9" : "#858DA6"}>
-                                    Localtion
-                                </Text>
-                                <Text
-                                    color={
-                                        dark
-                                            ? theme.colors.dark[7]
-                                            : theme.colors.gray[7]
-                                    }
-                                >
-                                    florida
-                                </Text>
-                            </Stack>
-                        </Stack>
-                    </Accordion.Panel>
-                </Accordion.Item>
-                <Accordion.Item value="Attached Files">
-                    <Accordion.Control icon={<RiAttachmentLine />}>
-                        Attached Files
-                    </Accordion.Control>
-                    <Accordion.Panel>
-                        <Text color={dark ? "#9AA1B9" : "#858DA6"}>
-                            Colors, fonts, shadows and many other parts are
-                            customizable to fit your design needs
-                        </Text>
-                    </Accordion.Panel>
-                </Accordion.Item>
-            </Accordion>
+                        </Accordion.Panel>
+                    </Accordion.Item>
+                    <Accordion.Item value="Attached Files">
+                        <Accordion.Control icon={<RiAttachmentLine />}>
+                            Attached Files
+                        </Accordion.Control>
+                        <Accordion.Panel>
+                            <Text color={dark ? "#9AA1B9" : "#858DA6"}>
+                                Colors, fonts, shadows and many other parts are
+                                customizable to fit your design needs
+                            </Text>
+                        </Accordion.Panel>
+                    </Accordion.Item>
+                </Accordion>
+            </ScrollArea>
         </Stack>
     );
 }
