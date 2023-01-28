@@ -17,7 +17,9 @@ import ChatNavbar from "../components/chat/ChatNavbar";
 //navbar options
 import Chats from "../components/chat/leftSideParts/Chats";
 import ChatProfile from "../components/chat/leftSideParts/ChatProfile";
-import ChatSettings from '../components/chat/leftSideParts/ChatSettings';
+import ChatSettings from "../components/chat/leftSideParts/ChatSettings";
+
+import ScreenMessage from "../components/ScreenMessage";
 
 //options, helpers or utils already made by me
 import { toastOptions, apiRoute } from "../utils/configs";
@@ -71,6 +73,7 @@ function Chat() {
     const isAuthenticated = useIsAuthenticated();
     const signOut = useSignOut();
 
+    //mantine
     const theme = useMantineTheme();
     const { classes } = useStyles();
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -263,10 +266,10 @@ function Chat() {
                         ))}
                     </MobileFriendContainer>
 
-                    <Center sx={{ height: "100vh" }}>
+                    <Center sx={{ height: "100vh", width: "100vw" }}>
                         <Grid
                             grow
-                            style={{ width: "100%", height: "100%" }}
+                            sx={{ width: "100%", height: "100%" }}
                             columns={24}
                         >
                             <Grid.Col
@@ -336,9 +339,10 @@ function Chat() {
                                     {messages.map((message, index) => (
                                         <Message
                                             key={`${message.message}/${
-                                                ((Math.random() *
-                                                    Math.random()) ^
-                                                    2) *
+                                                message.username
+                                            }/${
+                                                Math.random() *
+                                                Math.random() *
                                                 Math.random()
                                             }`}
                                             message={message.message}
@@ -362,38 +366,13 @@ function Chat() {
                     </Center>
                 </>
             ) : (
-                <>
-                    <Center style={{ width: "100%", height: "100vh" }}>
-                        <Card
-                            shadow="sm"
-                            p={"lg"}
-                            radius="md"
-                            withBorder
-                            sx={{ width: "30%" }}
-                        >
-                            <Stack
-                                align={"center"}
-                                justify="center"
-                                spacing={"md"}
-                            >
-                                <Title order={2} ta="center">
-                                    Sorry, but it seems that your email address
-                                    has not been verified yet. Please check your
-                                    email address to verify your email.
-                                </Title>
-                                <Image
-                                    src="https://res.cloudinary.com/kyodo/image/upload/v1672939191/kyodo/icons/cross_wf1uzx.png"
-                                    alt="cross"
-                                    height={200}
-                                    width={200}
-                                />
-                                <Text fz={"xl"} ta="center">
-                                    Please verify your email to access the chat.
-                                </Text>
-                            </Stack>
-                        </Card>
-                    </Center>
-                </>
+                <ScreenMessage
+                    message="Sorry, but it seems that your email address has not been
+                verified yet. Please check your email address to verify
+                your email."
+                    text="Please verify your email to access the chat."
+                    tick={false}
+                />
             )}
             <ToastContainer />
         </>

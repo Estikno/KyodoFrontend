@@ -6,19 +6,14 @@ import { useParams } from "react-router";
 import { toastOptions } from "../utils/configs";
 import { emailVerification } from "../utils/callApi";
 
+//components
+import ScreenMessage from "../components/ScreenMessage";
+
 //interfaces
 import { IAuthResponse } from "../interfaces/IApiResponses";
 
 //mantine
-import {
-    Center,
-    Card,
-    Image,
-    Text,
-    Title,
-    Stack,
-    LoadingOverlay,
-} from "@mantine/core";
+import { LoadingOverlay } from "@mantine/core";
 
 function EmailConfirm() {
     const { token } = useParams();
@@ -53,52 +48,24 @@ function EmailConfirm() {
 
     return (
         <>
-            <Center style={{ width: "100%", height: "100vh" }}>
-                <Card
-                    shadow="sm"
-                    p={"lg"}
-                    radius="md"
-                    withBorder
-                    sx={{ width: "30%" }}
-                >
-                    <LoadingOverlay visible={visible} overlayBlur={5} />
-                    <Stack align={"center"} justify="center" spacing={"md"}>
-                        {isVerified ? (
-                            <>
-                                <Title order={2} ta="center">
-                                    Congratulations! Your email has been
-                                    successfully verified!
-                                </Title>
-                                <Image
-                                    src="https://res.cloudinary.com/kyodo/image/upload/v1672936699/kyodo/icons/ttick_fzspjf.png"
-                                    alt="tick"
-                                    height={200}
-                                    width={200}
-                                />
-                                <Text fz={"xl"} ta="center">
-                                    Now you can chat with everyone
-                                </Text>
-                            </>
-                        ) : (
-                            <>
-                                <Title order={2} ta="center">
-                                    The url is not valid! Please use a valid url
-                                    to verify your email.
-                                </Title>
-                                <Image
-                                    src="https://res.cloudinary.com/kyodo/image/upload/v1672939191/kyodo/icons/cross_wf1uzx.png"
-                                    alt="tick"
-                                    height={200}
-                                    width={200}
-                                />
-                                <Text fz={"xl"} ta="center">
-                                    Please try a valid url.
-                                </Text>
-                            </>
-                        )}
-                    </Stack>
-                </Card>
-            </Center>
+            <LoadingOverlay visible={visible} overlayBlur={5} />
+
+            {isVerified ? (
+                <ScreenMessage
+                    message="Congratulations! Your email has been
+                successfully verified!"
+                    text="Now you can chat with everyone"
+                    tick={true}
+                />
+            ) : (
+                <ScreenMessage
+                    message="The url is not valid! Please use a valid url
+                to verify your email."
+                    text="Please try a valid url"
+                    tick={false}
+                />
+            )}
+
             <ToastContainer />
         </>
     );

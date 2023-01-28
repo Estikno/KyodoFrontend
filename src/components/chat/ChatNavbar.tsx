@@ -1,5 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
+import { useSignOut } from "react-auth-kit";
+
+//mantine
 import {
     Stack,
     Image,
@@ -15,12 +19,12 @@ import {
 
 import { MdPersonOutline, MdLanguage } from "react-icons/md";
 import { HiOutlineChatBubbleOvalLeftEllipsis } from "react-icons/hi2";
-import { RiSettings2Line } from "react-icons/ri";
-import { BiSun, BiMoon } from "react-icons/bi";
+import { RiSettings2Line, RiLogoutCircleRLine } from "react-icons/ri";
+import { BiSun, BiMoon, BiEditAlt } from "react-icons/bi";
 import { IconType } from "react-icons/lib";
 
 //styles
-import menuStyle from '../../utils/MantineStyles/MenuStyles';
+import menuStyle from "../../utils/MantineStyles/MenuStyles";
 
 const useStyles = createStyles((theme) => ({
     link: {
@@ -110,6 +114,9 @@ function ChatNavbar({
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
 
+    const _signOut = useSignOut();
+    const navigate = useNavigate();
+
     const links = mockdata.map((link, index) => (
         <NavbarLink
             {...link}
@@ -132,7 +139,7 @@ function ChatNavbar({
         >
             <Image
                 src={
-                    "https://res.cloudinary.com/kyodo/image/upload/v1673968570/kyodo/icons/Logo_jlsedv.png"
+                    "https://res.cloudinary.com/kyodo/image/upload/v1674571454/kyodo/icons/logo_dj9gkd.png"
                 }
                 width={30}
                 height={"auto"}
@@ -220,19 +227,55 @@ function ChatNavbar({
                         </Title>
                     </UnstyledButton>
                 </Tooltip>
-                <UnstyledButton
-                    sx={(theme) => ({
-                        backgroundColor: false
-                            ? dark
-                                ? theme.colors.dark[3]
-                                : theme.colors.gray[3]
-                            : "#ffffff0",
-                        padding: "8px 8px",
-                        borderRadius: theme.radius.md,
-                    })}
+
+                <Menu
+                    shadow={"md"}
+                    position="top-start"
+                    offset={10}
+                    width={150}
+                    classNames={menuClass.classes}
+                    transition="slide-up"
                 >
-                    <Avatar radius="xl" size="md" color="blue" />
-                </UnstyledButton>
+                    <Menu.Target>
+                        <UnstyledButton
+                            sx={(theme) => ({
+                                backgroundColor: false
+                                    ? dark
+                                        ? theme.colors.dark[3]
+                                        : theme.colors.gray[3]
+                                    : "#ffffff0",
+                                padding: "8px 8px",
+                                borderRadius: theme.radius.md,
+                            })}
+                        >
+                            <Avatar radius="xl" size="md" color="blue" />
+                        </UnstyledButton>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                        <Menu.Item
+                            rightSection={<BiEditAlt />}
+                            onClick={(e) => setSelectedWindow(0)}
+                        >
+                            Profile
+                        </Menu.Item>
+                        <Menu.Item
+                            rightSection={<RiSettings2Line />}
+                            onClick={(e) => setSelectedWindow(2)}
+                        >
+                            Settings
+                        </Menu.Item>
+                        <Menu.Divider />
+                        <Menu.Item
+                            rightSection={<RiLogoutCircleRLine />}
+                            onClick={(e) => {
+                                _signOut();
+                                navigate("/login");
+                            }}
+                        >
+                            Log out
+                        </Menu.Item>
+                    </Menu.Dropdown>
+                </Menu>
             </Stack>
         </Stack>
     );
