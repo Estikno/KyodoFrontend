@@ -19,6 +19,9 @@ import Chats from "../components/chat/leftSideParts/Chats";
 import ChatProfile from "../components/chat/leftSideParts/ChatProfile";
 import ChatSettings from "../components/chat/leftSideParts/ChatSettings";
 
+//mobile
+import MobileChatNavbar from "../components/chat/MobileChatNavbar";
+
 import ScreenMessage from "../components/ScreenMessage";
 
 //css
@@ -55,7 +58,7 @@ const useStyles = createStyles((theme) => ({
         },
     },
 
-    friends: {
+    chat: {
         [theme.fn.smallerThan("md")]: {
             display: "none",
         },
@@ -83,6 +86,7 @@ function Chat() {
     const dark = colorScheme === "dark";
 
     const lessThan500px = useMediaQuery(`(max-width: 500px)`);
+    const lessthan991px = useMediaQuery(`(max-width: 991px)`);
 
     const viewport = useRef<HTMLDivElement>(null);
     const dummy = useRef<HTMLSpanElement>(null);
@@ -259,7 +263,7 @@ function Chat() {
             <LoadingOverlay visible={visible} overlayBlur={8} />
             {userInfo?.verified ? (
                 <>
-                    <MobileFriendContainer open={open} setOpen={setOpen}>
+                    {/*<MobileFriendContainer open={open} setOpen={setOpen}>
                         {friends.map((friend) => (
                             <Friend
                                 name={friend.username}
@@ -267,11 +271,11 @@ function Chat() {
                                 avatarUrl={friend.avatarUrl}
                             />
                         ))}
-                    </MobileFriendContainer>
+                        </MobileFriendContainer>*/}
 
-                    <Center sx={{ height: "100vh", width: "100vw" }}>
+                    <Center sx={{ height: lessthan991px ? "90vh" : "100vh", width: "100vw" }}>
                         <Grid
-                            sx={{ width: "100%", height: "100vh", padding: 0 }}
+                            sx={{ width: "100%", height: "100%", padding: 0 }}
                             columns={24}
                         >
                             <Grid.Col
@@ -282,6 +286,7 @@ function Chat() {
                                         : theme.colors.gray[0],
                                     minWidth: "80px",
                                     height: "100%",
+                                    display: lessthan991px ? "none" : "",
                                 }}
                             >
                                 <ChatNavbar
@@ -290,16 +295,15 @@ function Chat() {
                                 />
                             </Grid.Col>
                             <Grid.Col
-                                span={5}
+                                span={lessthan991px ? 24 : 5}
                                 sx={() => ({
                                     backgroundColor: dark
                                         ? theme.colors.dark[1]
                                         : theme.colors.gray[1],
                                     padding: "0",
-                                    minWidth: "391px",
+                                    minWidth: lessthan991px ? "" : "391px",
                                     height: "100%",
                                 })}
-                                className={classes.friends}
                             >
                                 {selectedWindow === 0 ? (
                                     <ChatProfile />
@@ -331,6 +335,7 @@ function Chat() {
                                         : theme.colors.gray[2],
                                     height: "100%",
                                 }}
+                                className={classes.chat}
                             >
                                 <RightSide
                                     sendMessage={sendMessage}
@@ -367,6 +372,10 @@ function Chat() {
                             </Grid.Col>
                         </Grid>
                     </Center>
+                    <MobileChatNavbar
+                        setSelectedWindow={setSelectedWindow}
+                        selectedWindow={selectedWindow}
+                    />
                 </>
             ) : (
                 <ScreenMessage

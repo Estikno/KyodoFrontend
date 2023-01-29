@@ -36,7 +36,7 @@ function LeftSide({
             spacing={0}
             justify="flex-start"
             sx={{
-                height: "100vh",
+                height: "100%",
                 width: "100%",
                 padding: "10px",
             }}
