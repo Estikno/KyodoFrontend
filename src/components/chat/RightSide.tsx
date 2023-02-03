@@ -11,7 +11,7 @@ import {
     UnstyledButton,
     Avatar,
     Text,
-    useMantineColorScheme
+    useMantineColorScheme,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -40,13 +40,11 @@ function RightSide({
     dummy: React.RefObject<HTMLSpanElement>;
 }) {
     const theme = useMantineTheme();
-    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const { colorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
 
-    const lesstThan768px = useMediaQuery("(max-width: 768px)");
-    const lessThan500px = useMediaQuery(`(max-width: 500px)`);
-    const lessThan457px = useMediaQuery(`(max-width: 457px)`);
-    const lessthan1500px = useMediaQuery(`(max-width: 1500px)`);
+    const lesstThan1200px = useMediaQuery("(max-width: 1200px)");
+    const lessthan1600px = useMediaQuery(`(max-width: 1600px)`);
 
     return (
         <Stack
@@ -60,20 +58,34 @@ function RightSide({
                     width: "100%",
                     height: "12vh",
                     borderBottom: dark ? ".1rem solid" : ".12rem solid",
-                    borderColor: dark ? theme.colors.dark[0] : theme.colors.gray[1],
+                    borderColor: dark
+                        ? theme.colors.dark[0]
+                        : theme.colors.gray[1],
                 }}
                 position="apart"
             >
                 <Group spacing={"xs"} sx={{ marginLeft: "20px" }}>
                     <Avatar radius="xl" size="md" color="blue" />
-                    <Text fz={"lg"} fw={700} color={dark ? theme.colors.dark[7] : theme.colors.gray[7]}>
+                    <Text
+                        fz={"lg"}
+                        fw={700}
+                        color={
+                            dark ? theme.colors.dark[7] : theme.colors.gray[7]
+                        }
+                    >
                         Patricio Estrella
                         <GoPrimitiveDot
                             style={{ paddingTop: "5px", color: "green" }}
                         />
                     </Text>
                 </Group>
-                <Group sx={{ marginRight: "20px", color: dark ? "#9FB4D2" : "#858DA6" }} spacing={"xl"}>
+                <Group
+                    sx={{
+                        marginRight: "20px",
+                        color: dark ? "#9FB4D2" : "#858DA6",
+                    }}
+                    spacing={"xl"}
+                >
                     <Title order={3}>
                         <HiOutlineMagnifyingGlass />
                     </Title>
@@ -108,7 +120,14 @@ function RightSide({
                     spacing="xl"
                 >
                     {children}
-                    <span ref={dummy} style={{ color: dark ? theme.colors.dark[2] : theme.colors.gray[2] }}>
+                    <span
+                        ref={dummy}
+                        style={{
+                            color: dark
+                                ? theme.colors.dark[2]
+                                : theme.colors.gray[2],
+                        }}
+                    >
                         s
                     </span>
                 </Stack>
@@ -121,7 +140,9 @@ function RightSide({
                     width: "100%",
                     padding: "0 1rem",
                     borderTop: dark ? ".1rem solid" : ".12rem solid",
-                    borderColor: dark ? theme.colors.dark[0] : theme.colors.gray[1],
+                    borderColor: dark
+                        ? theme.colors.dark[0]
+                        : theme.colors.gray[1],
                 }}
             >
                 <form
@@ -141,22 +162,22 @@ function RightSide({
                         <TextInput
                             placeholder="Enter Message..."
                             sx={(theme) => ({
-                                width: lesstThan768px
-                                    ? lessThan457px
-                                        ? "65%"
-                                        : "78%"
-                                    : lessthan1500px
-                                    ? "83%"
+                                width: lesstThan1200px
+                                    ? "70%"
+                                    : lessthan1600px
+                                    ? "80%"
                                     : "85%",
                                 input: {
                                     color: dark ? "#9BB0C7" : "#7A7FA6",
                                     "::placeholder": {
-                                        color: dark ? "#9BB0C7" : "#7A7FA6"
+                                        color: dark ? "#9BB0C7" : "#7A7FA6",
                                     },
                                     paddingLeft: "15px",
                                     paddingRight: "15px",
                                 },
-                                backgroundColor: dark ? theme.colors.dark[0] : "#E6EBF5",
+                                backgroundColor: dark
+                                    ? theme.colors.dark[0]
+                                    : "#E6EBF5",
                                 borderRadius: theme.radius.md,
                             })}
                             onChange={(event) =>
@@ -166,18 +187,46 @@ function RightSide({
                             size="md"
                             variant="unstyled"
                         />
-                        <Title order={4} color={dark ? theme.colors.dark[4] : theme.colors.gray[4]}>
+                        <Title
+                            order={4}
+                            color={
+                                dark
+                                    ? theme.colors.dark[4]
+                                    : theme.colors.gray[4]
+                            }
+                        >
                             <BsFillEmojiSmileFill />
                         </Title>
-                        <Title order={4} color={dark ? theme.colors.dark[4] : theme.colors.gray[4]}>
+                        <Title
+                            order={4}
+                            color={
+                                dark
+                                    ? theme.colors.dark[4]
+                                    : theme.colors.gray[4]
+                            }
+                        >
                             <FaPaperclip />
                         </Title>
-                        <Title order={4} color={dark ? theme.colors.dark[4] : theme.colors.gray[4]}>
+                        <Title
+                            order={4}
+                            color={
+                                dark
+                                    ? theme.colors.dark[4]
+                                    : theme.colors.gray[4]
+                            }
+                        >
                             <BsImage />
                         </Title>
 
                         <UnstyledButton type="submit">
-                            <Title order={3} color={dark ? theme.colors.dark[4] : theme.colors.gray[4]}>
+                            <Title
+                                order={3}
+                                color={
+                                    dark
+                                        ? theme.colors.dark[4]
+                                        : theme.colors.gray[4]
+                                }
+                            >
                                 <FaPaperPlane />
                             </Title>
                         </UnstyledButton>

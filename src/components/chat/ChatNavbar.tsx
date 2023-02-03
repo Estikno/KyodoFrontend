@@ -133,8 +133,10 @@ function ChatNavbar({
             sx={{
                 height: "100%",
                 width: "100%",
-                paddingTop: "10px",
-                paddingBottom: "10px",
+                paddingTop: ".7rem",
+                paddingBottom: ".7rem",
+                paddingLeft: ".7rem",
+                paddingRight: ".7rem"
             }}
         >
             <Image
@@ -164,7 +166,7 @@ function ChatNavbar({
                                         ? theme.colors.dark[3]
                                         : theme.colors.gray[3]
                                     : "#ffffff0",
-                                padding: "10px 15px 8px 15px",
+                                padding: ".7rem 1.05rem .56rem 1.05rem",
                                 borderRadius: theme.radius.md,
                             })}
                         >
