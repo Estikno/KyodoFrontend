@@ -13,7 +13,7 @@ import {
     useMantineColorScheme
 } from "@mantine/core";
 
-function Friend({ name, avatarUrl }: { name: string; avatarUrl: string }) {
+function Friend({ name, avatarUrl, onClick: _onClick }: { name: string; avatarUrl: string; onClick(): void; }) {
     const theme = useMantineTheme();
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
@@ -30,6 +30,7 @@ function Friend({ name, avatarUrl }: { name: string; avatarUrl: string }) {
                     backgroundColor: dark ? theme.colors.dark[0] : "#E6EBF5",
                 },
             })}
+            onClick={_onClick}
         >
             <Group>
                <Indicator

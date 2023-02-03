@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
 import { io, Socket } from "socket.io-client";
 import cookie from "js-cookie";
 import Filter from "bad-words";
@@ -30,7 +29,6 @@ import ScreenMessage from "../components/ScreenMessage";
 //options, helpers or utils already made by me
 import { toastOptions, apiRoute } from "../utils/configs";
 import { getAllUsers, getUserInfo } from "../utils/callApi";
-import * as apiRoutes from "../utils/apiRoutes";
 import { useIsAuthenticated, useSignOut } from "react-auth-kit";
 
 //mantine
@@ -39,17 +37,16 @@ import {
     Center,
     useMantineTheme,
     createStyles,
-    Card,
-    Image,
-    Text,
-    Title,
-    Stack,
     LoadingOverlay,
     useMantineColorScheme,
+    Title,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IUserInfo } from "../interfaces/IApiResponses";
-import IMessage, { IRecieveMessage } from "../interfaces/IMessage";
+import IMessage, {
+    IRecieveMessage,
+    ISendMessage,
+} from "../interfaces/IMessage";
 
 const useStyles = createStyles((theme) => ({
     burger: {
@@ -103,6 +100,7 @@ function Chat() {
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [lastMessageDate, setLastMessageDate] = useState<Date>();
     const [selectedWindow, setSelectedWindow] = useState<number>(1);
+    const [selectedFriend, setSelectedFriend] = useState<number>(-1);
 
     const [visible, setVisible] = useState<boolean>(true);
 
@@ -117,12 +115,14 @@ function Chat() {
                             message: msg.message,
                             fromSelf: true,
                             username: msg.username,
+                            id_room: msg.id_room,
                         };
                     } else {
                         return {
                             message: msg.message,
                             fromSelf: false,
                             username: msg.username,
+                            id_room: msg.id_room,
                         };
                     }
                 });
@@ -135,7 +135,7 @@ function Chat() {
                 });
             });
 
-            socket.on("msg", (message) => {
+            socket.on("msg", (message: IRecieveMessage) => {
                 setMessages([
                     ...messages,
                     {
@@ -145,6 +145,7 @@ function Chat() {
                                 ? true
                                 : false,
                         username: userInfo.username,
+                        id_room: message.id_room,
                     },
                 ]);
 
@@ -183,6 +184,7 @@ function Chat() {
                 return toast.error("User has to be an array", toastOptions);
 
             setFriends(usersData.user);
+            console.log(usersData.user);
 
             const userData = await getUserInfo(token);
 
@@ -243,16 +245,29 @@ function Chat() {
             );
         }
 
-        if (socket && userInfo) {
+        if (socket && userInfo && selectedFriend >= 0) {
             /*const newMessage: IMessage = {
                 message: finalMessage,
                 fromSelf: true,
             };*/
             //setMessages([...messages, newMessage]);
-            socket.emit("send-msg", {
-                message: actualMessage,
-                person: userInfo.username,
-            });
+
+            if(friends[selectedFriend].idRoom){
+                socket.emit("send-msg", {
+                    person: userInfo.username,
+                    message: actualMessage,
+                    username_to: friends[selectedFriend].username,
+                    id_room: friends[selectedFriend].idRoom
+                } as ISendMessage);
+            }
+            else{
+                socket.emit("send-msg", {
+                    person: userInfo.username,
+                    message: actualMessage,
+                    username_to: friends[selectedFriend].username,
+                    id_room: "12345678"
+                } as ISendMessage);
+            }
         }
 
         setActualMessage("");
@@ -273,7 +288,12 @@ function Chat() {
                         ))}
                         </MobileFriendContainer>*/}
 
-                    <Center sx={{ height: lessthan991px ? "90vh" : "100vh", width: "100vw" }}>
+                    <Center
+                        sx={{
+                            height: lessthan991px ? "90vh" : "100vh",
+                            width: "100vw",
+                        }}
+                    >
                         <Grid
                             sx={{ width: "100%", height: "100%", padding: 0 }}
                             columns={24}
@@ -312,11 +332,14 @@ function Chat() {
                                         avatarUrl={userInfo?.avatarUrl}
                                         username={userInfo?.username}
                                     >
-                                        {friends.map((friend) => (
+                                        {friends.map((friend, index) => (
                                             <Friend
                                                 name={friend.username}
                                                 key={friend.username}
                                                 avatarUrl={friend.avatarUrl}
+                                                onClick={() =>
+                                                    setSelectedFriend(index)
+                                                }
                                             />
                                         ))}
                                     </Chats>
@@ -344,30 +367,42 @@ function Chat() {
                                     viewport={viewport}
                                     dummy={dummy}
                                 >
-                                    {messages.map((message, index) => (
-                                        <Message
-                                            key={`${message.message}/${
-                                                message.username
-                                            }/${
-                                                Math.random() *
-                                                Math.random() *
-                                                Math.random()
-                                            }`}
-                                            message={message.message}
-                                            position={
-                                                message.fromSelf ? "r" : "l"
-                                            }
-                                            displayAvatar={
-                                                messages[index + 1]
-                                                    ? messages[index + 1]
-                                                          .username ===
-                                                      message.username
-                                                        ? false
-                                                        : true
-                                                    : true
-                                            }
-                                        />
-                                    ))}
+                                    {selectedFriend >= 0 ? (
+                                        messages.map((message, index) =>
+                                            message.id_room ===
+                                            friends[selectedFriend].idRoom ? (
+                                                <Message
+                                                    key={`${message.message}/${
+                                                        message.username
+                                                    }/${index.toString()}`}
+                                                    message={message.message}
+                                                    position={
+                                                        message.fromSelf
+                                                            ? "r"
+                                                            : "l"
+                                                    }
+                                                    displayAvatar={
+                                                        messages[index + 1]
+                                                            ? messages[
+                                                                  index + 1
+                                                              ].username ===
+                                                              message.username
+                                                                ? false
+                                                                : true
+                                                            : true
+                                                    }
+                                                />
+                                            ) : (
+                                                <></>
+                                            )
+                                        )
+                                    ) : (
+                                        <>
+                                            <Title order={1}>
+                                                NO HAY USUARIOS
+                                            </Title>
+                                        </>
+                                    )}
                                 </RightSide>
                             </Grid.Col>
                         </Grid>
