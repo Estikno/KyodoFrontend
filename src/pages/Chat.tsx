@@ -252,20 +252,19 @@ function Chat() {
             };*/
             //setMessages([...messages, newMessage]);
 
-            if(friends[selectedFriend].idRoom){
+            if (friends[selectedFriend].idRoom) {
                 socket.emit("send-msg", {
                     person: userInfo.username,
                     message: actualMessage,
                     username_to: friends[selectedFriend].username,
-                    id_room: friends[selectedFriend].idRoom
+                    id_room: friends[selectedFriend].idRoom,
                 } as ISendMessage);
-            }
-            else{
+            } else {
                 socket.emit("send-msg", {
                     person: userInfo.username,
                     message: actualMessage,
                     username_to: friends[selectedFriend].username,
-                    id_room: "12345678"
+                    id_room: "1",
                 } as ISendMessage);
             }
         }
@@ -393,7 +392,12 @@ function Chat() {
                                                     }
                                                 />
                                             ) : (
-                                                <></>
+                                                <div
+                                                    key={`${message.message}/${
+                                                        message.username
+                                                    }/${index.toString()}`}
+                                                    style={{display: "none"}}
+                                                ></div>
                                             )
                                         )
                                     ) : (
