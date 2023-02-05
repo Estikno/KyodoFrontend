@@ -5,11 +5,8 @@ import { io, Socket } from "socket.io-client";
 import cookie from "js-cookie";
 import Filter from "bad-words";
 
-import Navbar from "../components/navbar/Navbar";
 import Friend from "../components/chat/Friend";
 import Message from "../components/chat/Message";
-import Bar from "../components/chat/Bar";
-import MobileFriendContainer from "../components/chat/MobileFriendsContainer";
 import RightSide from "../components/chat/RightSide";
 import ChatNavbar from "../components/chat/ChatNavbar";
 
@@ -21,6 +18,7 @@ import ChatSettings from "../components/chat/leftSideParts/ChatSettings";
 //mobile
 import MobileChatNavbar from "../components/chat/MobileChatNavbar";
 
+//other
 import ScreenMessage from "../components/ScreenMessage";
 
 //css
@@ -82,13 +80,11 @@ function Chat() {
     const { colorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
 
-    const lessThan500px = useMediaQuery(`(max-width: 500px)`);
     const lessthan991px = useMediaQuery(`(max-width: 991px)`);
 
     const viewport = useRef<HTMLDivElement>(null);
     const dummy = useRef<HTMLSpanElement>(null);
 
-    const [open, setOpen] = useState<boolean>(false);
     const [friends, setFriends] = useState<IUserInfo[]>([]);
     const [userInfo, setUserInfo] = useState<IUserInfo>({
         verified: true,

@@ -1,188 +1,212 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+
+//components
 import NavLink from "./NavLink";
 import NavLogo from "./NavLogo";
+
+//mantine
 import {
-    Navbar as Navb,
-    Anchor,
     Burger,
     Header,
-    MediaQuery,
     createStyles,
-    Text,
     Group,
     Button,
     useMantineTheme,
-    Stack,
     Divider,
-    Title,
-    Menu,
-    Radio,
     Drawer,
+    Box,
+    ScrollArea,
+    useMantineColorScheme,
+    Center,
 } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { useMediaQuery, useDisclosure } from "@mantine/hooks";
+
+//icons
 import Logo from "../../assets/logo.svg";
 import { GiEarthAfricaEurope } from "react-icons/gi";
 
 const useStyles = createStyles((theme) => ({
-    navbar: {
-        [theme.fn.largerThan("sm")]: {
+    link: {
+        display: "flex",
+        alignItems: "center",
+        height: "100%",
+        paddingLeft: theme.spacing.md,
+        paddingRight: theme.spacing.md,
+        textDecoration: "none",
+        color:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[7]
+                : theme.colors.gray[7],
+        fontWeight: 500,
+        fontSize: theme.fontSizes.sm,
+
+        [theme.fn.smallerThan("sm")]: {
+            height: 42,
+            display: "flex",
+            alignItems: "center",
+            width: "100%",
+        },
+
+        ...theme.fn.hover({
+            backgroundColor:
+                theme.colorScheme === "dark"
+                    ? theme.colors.dark[0]
+                    : theme.colors.gray[0],
+        }),
+    },
+
+    button: {
+        borderColor:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[2]
+                : theme.colors.gray[2],
+        backgroundColor:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[0]
+                : theme.colors.gray[0],
+
+        ...theme.fn.hover({
+            backgroundColor:
+                theme.colorScheme === "dark"
+                    ? theme.colors.dark[1]
+                    : theme.colors.gray[1],
+        }),
+    },
+
+    hiddenMobile: {
+        [theme.fn.smallerThan("sm")]: {
             display: "none",
         },
     },
 
-    links: {
-        [theme.fn.smallerThan("sm")]: {
+    hiddenDesktop: {
+        [theme.fn.largerThan("sm")]: {
             display: "none",
         },
     },
 }));
 
 function Navbar() {
-    const theme = useMantineTheme();
-    const { classes } = useStyles();
+    const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
+        useDisclosure(false);
+    const { classes, theme } = useStyles();
+
+    const _theme = useMantineTheme();
     const [opened, setOpened] = useState(false);
     const [deskMenuOpen, setDeskMenuOpen] = useState(false);
+    const { colorScheme } = useMantineColorScheme();
+    const dark = colorScheme === "dark";
 
     const lessThan500px = useMediaQuery(`(max-width: 500px)`);
 
     return (
-        <>
-            <Header height={lessThan500px ? "8vh" : "10vh"}>
-                <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+        <Box>
+            <Header
+                height={60}
+                px="md"
+                sx={{
+                    backgroundColor: dark
+                        ? _theme.colors.dark[1]
+                        : _theme.colors.gray[1],
+                }}
+            >
+                <Center sx={{ width: "100%", height: "100%" }}>
                     <Group
                         position="apart"
-                        style={{
-                            backgroundColor: theme.colors.dark[9],
+                        sx={{
                             height: "100%",
-                            padding: "0.5rem calc((100vw - 1000px) / 2)",
+                            width: "100%",
+                            padding: "0 calc((100vw - 1000px) / 3)",
                         }}
                     >
-                        <NavLogo Logo={Logo} />
+                        <NavLogo
+                            Logo={
+                                "https://res.cloudinary.com/kyodo/image/upload/v1674571454/kyodo/icons/logo_dj9gkd.png"
+                            }
+                        />
+
+                        <Group
+                            sx={{ height: "100%" }}
+                            spacing={0}
+                            className={classes.hiddenMobile}
+                        >
+                            <Link className={classes.link} to={"/register"}>
+                                Download
+                            </Link>
+                            <Link className={classes.link} to={"/register"}>
+                                Chat
+                            </Link>
+                            <Link className={classes.link} to={"/register"}>
+                                Support
+                            </Link>
+                            <Link className={classes.link} to={"/register"}>
+                                Contact
+                            </Link>
+                        </Group>
+
+                        <Group className={classes.hiddenMobile}>
+                            <Button
+                                className={classes.button}
+                                variant="default"
+                            >
+                                Log in
+                            </Button>
+                            <Button>Sign up</Button>
+                        </Group>
+
                         <Burger
-                            opened={opened}
-                            onClick={() => setOpened((o) => !o)}
-                            size={lessThan500px ? "sm" : "md"}
-                            style={{
-                                marginLeft: "1rem",
-                                marginRight: "1rem",
-                            }}
+                            opened={drawerOpened}
+                            onClick={toggleDrawer}
+                            className={classes.hiddenDesktop}
                         />
                     </Group>
-                </MediaQuery>
-                {/**Computer navbar */}
-                <Group
-                    className={classes.links}
-                    position="apart"
-                    style={{
-                        backgroundColor: theme.colors.dark[9],
-                        height: "100%",
-                        padding: "0.5rem calc((100vw - 1000px) / 2)",
-                    }}
-                >
-                    <NavLogo Logo={Logo} />
-                    <Group position="center" spacing="xl">
-                        <NavLink name="Chat" to="/" />
-                        <NavLink name="Profile" to="/profile" />
-                        <NavLink name="About" to="/" />
-                        <NavLink name="Sign Up" to="/register" />
-                    </Group>
-                    <Group
-                        style={{
-                            marginLeft: "1rem",
-                            marginRight: "1rem",
-                            height: "100%",
-                        }}
-                    >
-                        <Menu
-                            opened={deskMenuOpen}
-                            onChange={setDeskMenuOpen}
-                            withArrow
-                        >
-                            <Menu.Target>
-                                <Stack
-                                    style={{
-                                        height: "100%",
-                                    }}
-                                    justify="center"
-                                >
-                                    <Title
-                                        order={1}
-                                        style={{
-                                            height: "60%",
-                                            cursor: "pointer",
-                                        }}
-                                        onClick={() =>
-                                            setDeskMenuOpen(!deskMenuOpen)
-                                        }
-                                    >
-                                        <GiEarthAfricaEurope />
-                                    </Title>
-                                </Stack>
-                            </Menu.Target>
-                            <Menu.Dropdown>
-                                <Radio.Group
-                                    orientation="vertical"
-                                    defaultValue="english"
-                                >
-                                    <Radio
-                                        value="english"
-                                        label={<Text size="md">English</Text>}
-                                    />
-                                    <Radio
-                                        value="spanish"
-                                        label={<Text size="md">Spanish</Text>}
-                                    />
-                                    <Radio
-                                        value="french"
-                                        label={<Text size="md">French</Text>}
-                                    />
-                                    <Radio
-                                        value="deutch"
-                                        label={<Text size="md">Deutch</Text>}
-                                    />
-                                </Radio.Group>
-                            </Menu.Dropdown>
-                        </Menu>
-                        <Anchor component={Link} to="/login">
-                            <Button style={{ padding: "0 1.5rem" }}>
-                                <Text size="xl" weight={700}>
-                                    Sign In
-                                </Text>
-                            </Button>
-                        </Anchor>
-                    </Group>
-                </Group>
+                </Center>
             </Header>
+
             <Drawer
-                opened={opened}
-                onClose={() => setOpened(false)}
+                opened={drawerOpened}
+                onClose={closeDrawer}
+                size="100%"
                 padding="md"
-                size="40%"
-                position="top"
-                overlayColor={
-                    theme.colors.dark[8]
-                }
-                overlayOpacity={0.55}
-                overlayBlur={3}
+                title="Navigation"
+                className={classes.hiddenDesktop}
+                zIndex={1000000}
             >
-                <Stack
-                    align="center"
-                    justify="space-around"
-                    sx={() => ({
-                        padding: "1rem 0",
-                    })}
-                >
-                    <NavLink name="Chat" to="/"/>
-                    <NavLink name="Profile" to="/profile"/>
-                    <NavLink name="About" to="/"/>
-                    <NavLink name="Sign Up" to="/register"/>
-                    <Divider size="md" style={{ width: "90%" }} />
-                    <NavLink name="Sign In" to="/login"/>
-                </Stack>
+                <ScrollArea sx={{ height: "calc(100vh - 60px)" }} mx="-md">
+                    <Divider
+                        my="sm"
+                        color={
+                            theme.colorScheme === "dark" ? "dark.5" : "gray.1"
+                        }
+                    />
+
+                    <Link className={classes.link} to={"/register"}>
+                        Hola
+                    </Link>
+                    <Link className={classes.link} to={"/register"}>
+                        Learn
+                    </Link>
+                    <Link className={classes.link} to={"/register"}>
+                        Academy
+                    </Link>
+
+                    <Divider
+                        my="sm"
+                        color={
+                            theme.colorScheme === "dark" ? "dark.5" : "gray.1"
+                        }
+                    />
+
+                    <Group position="center" grow pb="xl" px="md">
+                        <Button variant="default" className={classes.button}>
+                            Log in
+                        </Button>
+                        <Button>Sign up</Button>
+                    </Group>
+                </ScrollArea>
             </Drawer>
-            
-        </>
+        </Box>
     );
 }
 
