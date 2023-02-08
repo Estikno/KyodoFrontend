@@ -13,7 +13,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import EmailConfirm from "./pages/EmailConfirm";
-import Error404 from './pages/Error404';
+import Error404 from "./pages/Error404";
 import Home from "./pages/Home";
 
 /**
@@ -29,7 +29,10 @@ export default function App() {
     };
 
     return (
-        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+        <ColorSchemeProvider
+            colorScheme={colorScheme}
+            toggleColorScheme={toggleColorScheme}
+        >
             <MantineProvider
                 withGlobalStyles
                 withNormalizeCSS
@@ -59,7 +62,7 @@ export default function App() {
                             "#495057",
                             "#191919",
                             "#1A2D3F",
-                        ]
+                        ],
                     },
                 }}
             >
@@ -76,7 +79,7 @@ export default function App() {
                             }
                         />
                         <Route
-                            path="/"
+                            path="/chat"
                             element={
                                 <RequireAuth loginPath="/login">
                                     <Chat />
@@ -87,7 +90,7 @@ export default function App() {
                             path="/email-confirm/:token"
                             element={<EmailConfirm />}
                         />
-                        <Route path="/home" element={<Home />} />
+                        <Route path="/" element={<Home />} />
                         <Route path="*" element={<Error404 />} />
                     </Routes>
                 </BrowserRouter>
