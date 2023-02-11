@@ -392,7 +392,7 @@ function Chat() {
                                                     key={`${message.message}/${
                                                         message.username
                                                     }/${index.toString()}`}
-                                                    style={{display: "none"}}
+                                                    style={{ display: "none" }}
                                                 ></div>
                                             )
                                         )

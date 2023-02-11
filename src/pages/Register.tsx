@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import ReCaptcha, {ReCAPTCHA as IRecaptcha} from "react-google-recaptcha";
+import ReCaptcha, { ReCAPTCHA as IRecaptcha } from "react-google-recaptcha";
 
 //options, helpers or utils already made by me
 import { toastOptions, specialCharacters } from "../utils/configs";
 import { callRegister } from "../utils/callApi";
 import { useSignIn, useIsAuthenticated, useSignOut } from "react-auth-kit";
+import TextInputStyle from "../utils/MantineStyles/TextInputStyle";
 
 //components
 import Navbar from "../components/navbar/Navbar";
@@ -21,7 +22,6 @@ import "react-toastify/dist/ReactToastify.css";
 //mantine
 import {
     Center,
-    SimpleGrid,
     TextInput,
     Checkbox,
     Button,
@@ -31,6 +31,9 @@ import {
     Text,
     Box,
     MediaQuery,
+    Stack,
+    useMantineColorScheme,
+    useMantineTheme,
     LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -52,14 +55,18 @@ function Register() {
     const moreThan1800px = useMediaQuery(`(min-width: 1800px)`);
     const lessThan800px = useMediaQuery(`(max-width: 800px)`);
 
+    const theme = useMantineTheme();
+    const { colorScheme } = useMantineColorScheme();
+    const dark = colorScheme === "dark";
+
+    const textInputClasses = TextInputStyle();
+
     //creates a state for the form values, such as username, password, etc.
     const form = useForm({
         initialValues: {
             username: "",
             email: "",
-            confirmEmail: "",
             password: "",
-            confirmPassword: "",
             termsOfService: false,
         },
 
@@ -109,17 +116,6 @@ function Register() {
 
                 if (value.length < 8) {
                     return "Password must be at least 8 characters";
-                }
-
-                return null;
-            },
-            confirmPassword: (value: string, values) => {
-                if (!value || value.trim.length > 0) {
-                    return "Confirm Password is required";
-                }
-
-                if (value !== values.password) {
-                    return "Passwords must match";
                 }
 
                 return null;
@@ -188,7 +184,8 @@ function Register() {
             );
         }
 
-        if(!captcha.current?.getValue()) return toast.error("You must complete the captcha", toastOptions);
+        if (!captcha.current?.getValue())
+            return toast.error("You must complete the captcha", toastOptions);
 
         //all the form values are already validated
 
@@ -240,193 +237,174 @@ function Register() {
 
     return (
         <>
-            <Navbar></Navbar>
-            <Center style={{ width: "100%", height: "90vh" }}>
-                <SimpleGrid
-                    cols={2}
-                    style={{
-                        height: "70vh",
-                        width: lessThan800px ? "90vw" : "60vw",
-                    }}
-                    breakpoints={[
-                        { minWidth: 1281, cols: 2 },
-                        { maxWidth: 1279, cols: 1 },
-                    ]}
+            <Navbar />
+            <Center
+                style={{
+                    width: "100%",
+                    height: "90vh",
+                    backgroundColor: dark
+                        ? theme.colors.dark[2]
+                        : theme.colors.gray[2],
+                }}
+            >
+                <Box
+                    sx={(theme) => ({
+                        backgroundColor: dark
+                            ? theme.colors.dark[1]
+                            : theme.colors.light[5],
+                        borderRadius: theme.radius.md,
+                        height: "50vh",
+                    })}
                 >
-                    <LeftSide
-                        MainTitle="Sign Up"
-                        Text="Create an account to start chatting with everyone!"
-                    />
-                    <Box
-                        sx={(theme) => ({
-                            backgroundColor:
-                                theme.colorScheme === "dark"
-                                    ? theme.colors.dark[5]
-                                    : theme.colors.light[5],
-                            borderRadius: theme.radius.md,
-                        })}
+                    <Center
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                        }}
                     >
-                        <Center style={{ width: "100%", height: "100%" }}>
-                            <MediaQuery
-                                largerThan={1800}
-                                styles={{
-                                    width: "70%",
-                                    height: "85%",
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleSubmit();
+                            }}
+                        >
+                            <Stack
+                                align={"stretch"}
+                                justify={"center"}
+                                sx={{
+                                    height: "100%",
+                                    width: "500px",
+                                    margin: "1.5rem",
                                 }}
                             >
-                                <MediaQuery
-                                    smallerThan={850}
-                                    styles={{
-                                        width: "90%",
-                                        height: "80%",
-                                    }}
+                                <LoadingOverlay
+                                    visible={visible}
+                                    overlayBlur={2}
+                                />
+                                <Text
+                                    fw={700}
+                                    fz={25}
+                                    ta="center"
+                                    color={
+                                        dark
+                                            ? theme.colors.dark[7]
+                                            : theme.colors.gray[7]
+                                    }
                                 >
-                                    <form
-                                        onSubmit={(e) => {
-                                            e.preventDefault();
-                                            handleSubmit();
-                                        }}
-                                        style={{ height: "auto" }}
+                                    Create an account
+                                </Text>
+                                <TextInput
+                                    variant="unstyled"
+                                    placeholder="Username"
+                                    label="Username"
+                                    radius="md"
+                                    size={
+                                        moreThan1800px
+                                            ? "md"
+                                            : lessThan800px
+                                            ? "xs"
+                                            : "sm"
+                                    }
+                                    withAsterisk
+                                    {...form.getInputProps("username")}
+                                    classNames={textInputClasses.classes}
+                                />
+                                <TextInput
+                                    variant="unstyled"
+                                    placeholder="you@email.com"
+                                    label="Email"
+                                    radius="md"
+                                    size={
+                                        moreThan1800px
+                                            ? "md"
+                                            : lessThan800px
+                                            ? "xs"
+                                            : "sm"
+                                    }
+                                    withAsterisk
+                                    {...form.getInputProps("email")}
+                                    classNames={textInputClasses.classes}
+                                />
+                                <TextInput
+                                    variant="unstyled"
+                                    placeholder="password"
+                                    label="Password"
+                                    radius="md"
+                                    type={"password"}
+                                    size={
+                                        moreThan1800px
+                                            ? "md"
+                                            : lessThan800px
+                                            ? "xs"
+                                            : "sm"
+                                    }
+                                    withAsterisk
+                                    {...form.getInputProps("password")}
+                                    classNames={textInputClasses.classes}
+                                />
+                                <Group position="center">
+                                    <ReCaptcha
+                                        sitekey="6LedrN8jAAAAAOEE-VmfNn80nEYfipvTSNVGcg8S"
+                                        theme="dark"
+                                        onChange={onchangeRecaptcha}
+                                        ref={captcha}
+                                        size="normal"
+                                    />
+                                </Group>
+
+                                <Checkbox
+                                    label="I agree to sell my privacy"
+                                    size={
+                                        moreThan1800px
+                                            ? "md"
+                                            : lessThan800px
+                                            ? "xs"
+                                            : "sm"
+                                    }
+                                    {...form.getInputProps("termsOfService", {
+                                        type: "checkbox",
+                                    })}
+                                />
+
+                                <Group position="center" grow>
+                                    <Button
+                                        size={
+                                            moreThan1800px
+                                                ? "md"
+                                                : lessThan800px
+                                                ? "xs"
+                                                : "sm"
+                                        }
+                                        type="submit"
                                     >
-                                        <LoadingOverlay
-                                            visible={visible}
-                                            overlayBlur={2}
-                                        />
-                                        <TextInput
-                                            placeholder="Username"
-                                            label="Username"
-                                            description="The username can't contain special characters, such as: @_./, etc"
-                                            radius="md"
-                                            size={
-                                                moreThan1800px
-                                                    ? "md"
-                                                    : lessThan800px
-                                                    ? "xs"
-                                                    : "sm"
-                                            }
-                                            withAsterisk
-                                            {...form.getInputProps("username")}
-                                        />
-                                        <TextInput
-                                            placeholder="you@email.com"
-                                            label="Email"
-                                            radius="md"
-                                            size={
-                                                moreThan1800px
-                                                    ? "md"
-                                                    : lessThan800px
-                                                    ? "xs"
-                                                    : "sm"
-                                            }
-                                            withAsterisk
-                                            {...form.getInputProps("email")}
-                                        />
-                                        <PasswordInput
-                                            placeholder="password"
-                                            label="Password"
-                                            description="Password must be at least 8 characters long"
-                                            radius="md"
-                                            size={
-                                                moreThan1800px
-                                                    ? "md"
-                                                    : lessThan800px
-                                                    ? "xs"
-                                                    : "sm"
-                                            }
-                                            withAsterisk
-                                            {...form.getInputProps("password")}
-                                        />
-                                        <PasswordInput
-                                            placeholder="password"
-                                            label="Confirm Password"
-                                            radius="md"
-                                            size={
-                                                moreThan1800px
-                                                    ? "md"
-                                                    : lessThan800px
-                                                    ? "xs"
-                                                    : "sm"
-                                            }
-                                            withAsterisk
-                                            {...form.getInputProps(
-                                                "confirmPassword"
-                                            )}
-                                        />
+                                        Sign Up
+                                    </Button>
+                                </Group>
 
-                                        <Space h="sm" />
-
-                                        <Group position="center">
-                                            <ReCaptcha
-                                                sitekey="6LedrN8jAAAAAOEE-VmfNn80nEYfipvTSNVGcg8S"
-                                                theme="dark"
-                                                onChange={onchangeRecaptcha}
-                                                ref={captcha}
-                                                size="normal"
-                                            />
-                                        </Group>
-
-                                        <Space h="sm" />
-
-                                        <Checkbox
-                                            label="I agree to sell my privacy"
-                                            size={
-                                                moreThan1800px
-                                                    ? "md"
-                                                    : lessThan800px
-                                                    ? "xs"
-                                                    : "sm"
-                                            }
-                                            {...form.getInputProps(
-                                                "termsOfService",
-                                                { type: "checkbox" }
-                                            )}
-                                        />
-
-                                        <Space h="sm" />
-
-                                        <Group position="center" grow>
-                                            <Button
-                                                size={
-                                                    moreThan1800px
-                                                        ? "md"
-                                                        : lessThan800px
-                                                        ? "xs"
-                                                        : "sm"
-                                                }
-                                                type="submit"
-                                            >
-                                                Sign Up
-                                            </Button>
-                                        </Group>
-
-                                        <Space h="sm" />
-
-                                        <Text
-                                            size={
-                                                moreThan1800px
-                                                    ? "md"
-                                                    : lessThan800px
-                                                    ? "xs"
-                                                    : "sm"
-                                            }
-                                        >
-                                            Have an account?{" "}
-                                            <Link
-                                                to="/login"
-                                                style={{
-                                                    color: "white",
-                                                    fontWeight: "bold",
-                                                }}
-                                            >
-                                                Login
-                                            </Link>
-                                        </Text>
-                                    </form>
-                                </MediaQuery>
-                            </MediaQuery>
-                        </Center>
-                    </Box>
-                </SimpleGrid>
+                                <Text
+                                    size={
+                                        moreThan1800px
+                                            ? "md"
+                                            : lessThan800px
+                                            ? "xs"
+                                            : "sm"
+                                    }
+                                >
+                                    Have an account?{" "}
+                                    <Link
+                                        to="/login"
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        Login
+                                    </Link>
+                                </Text>
+                            </Stack>
+                        </form>
+                    </Center>
+                </Box>
             </Center>
             <ToastContainer />
         </>
