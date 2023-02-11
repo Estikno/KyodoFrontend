@@ -19,12 +19,15 @@ import {
     ScrollArea,
     useMantineColorScheme,
     Center,
+    UnstyledButton,
+    Title,
 } from "@mantine/core";
 import { useMediaQuery, useDisclosure } from "@mantine/hooks";
 
 //icons
 import Logo from "../../assets/logo.svg";
 import { GiEarthAfricaEurope } from "react-icons/gi";
+import { BiSun, BiMoon } from "react-icons/bi";
 
 const useStyles = createStyles((theme) => ({
     link: {
@@ -95,7 +98,7 @@ function Navbar() {
     const _theme = useMantineTheme();
     const [opened, setOpened] = useState(false);
     const [deskMenuOpen, setDeskMenuOpen] = useState(false);
-    const { colorScheme } = useMantineColorScheme();
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
 
     const lessThan500px = useMediaQuery(`(max-width: 500px)`);
@@ -146,6 +149,19 @@ function Navbar() {
                         </Group>
 
                         <Group className={classes.hiddenMobile}>
+                            <UnstyledButton onClick={() => toggleColorScheme()} >
+                                <Title
+                                    order={2}
+                                    color={
+                                        dark
+                                            ? theme.colors.dark[6]
+                                            : theme.colors.gray[6]
+                                    }
+                                    ta={"center"}
+                                >
+                                    {dark ? <BiSun /> : <BiMoon />}
+                                </Title>
+                            </UnstyledButton>
                             <Button
                                 className={classes.button}
                                 variant="default"

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { AnimationOnScroll } from "react-animation-on-scroll";
 
 //components
 import Navbar from "../components/navbar/Navbar";
@@ -86,93 +87,119 @@ function Home() {
             }}
             position="center"
         >
-            {index % 2 === 0 ? (
-                <SimpleGrid
-                    cols={2}
-                    spacing={lessthan1100px ? (lessthan915px ? 50 : 100) : 300}
-                    breakpoints={[{ maxWidth: "sm", cols: 1, spacing: "md" }]}
-                >
-                    <Image
-                        src={data.image}
-                        sx={{
-                            minWidth: "200px",
-                            maxWidth: "400px",
-                            minHeight: "100px",
-                        }}
-                    />
-                    <Stack
-                        align={"flex-start"}
-                        justify={"center"}
-                        sx={{
-                            minWidth: "100px",
-                            maxWidth: "400px",
-                        }}
+            <AnimationOnScroll
+                offset={100}
+                animateOnce={true}
+                animateIn="animate__fadeInUp"
+            >
+                {index % 2 === 0 ? (
+                    <SimpleGrid
+                        cols={2}
+                        spacing={
+                            lessthan1100px ? (lessthan915px ? 50 : 100) : 300
+                        }
+                        breakpoints={[
+                            { maxWidth: "sm", cols: 1, spacing: "md" },
+                        ]}
                     >
-                        <Title
-                            order={1}
-                            color={
-                                dark
-                                    ? theme.colors.dark[7]
-                                    : theme.colors.gray[7]
-                            }
-                        >
-                            {data.title}
-                        </Title>
-                        <Text color={dark ? "#9AA1B9" : "#858DA6"} fz={"lg"}>
-                            {data.text}
-                        </Text>
-                    </Stack>
-                </SimpleGrid>
-            ) : (
-                <SimpleGrid
-                    cols={2}
-                    spacing={lessthan1100px ? (lessthan915px ? 50 : 100) : 300}
-                    breakpoints={[{ maxWidth: "sm", cols: 1, spacing: "md" }]}
-                >
-                    <MediaQuery largerThan={"sm"} styles={{ display: "none" }}>
                         <Image
+                            src={data.image}
                             sx={{
                                 minWidth: "200px",
                                 maxWidth: "400px",
                                 minHeight: "100px",
                             }}
-                            src={data.image}
                         />
-                    </MediaQuery>
-                    <Stack
-                        align={"flex-start"}
-                        justify={"center"}
-                        sx={{
-                            minWidth: "100px",
-                            maxWidth: "400px",
-                        }}
-                    >
-                        <Title
-                            order={1}
-                            color={
-                                dark
-                                    ? theme.colors.dark[7]
-                                    : theme.colors.gray[7]
-                            }
-                        >
-                            {data.title}
-                        </Title>
-                        <Text color={dark ? "#9AA1B9" : "#858DA6"} fz={"lg"}>
-                            {data.text}
-                        </Text>
-                    </Stack>
-                    <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
-                        <Image
+                        <Stack
+                            align={"flex-start"}
+                            justify={"center"}
                             sx={{
-                                minWidth: "200px",
+                                minWidth: "100px",
                                 maxWidth: "400px",
-                                minHeight: "100px",
                             }}
-                            src={data.image}
-                        />
-                    </MediaQuery>
-                </SimpleGrid>
-            )}
+                        >
+                            <Title
+                                order={1}
+                                color={
+                                    dark
+                                        ? theme.colors.dark[7]
+                                        : theme.colors.gray[7]
+                                }
+                            >
+                                {data.title}
+                            </Title>
+                            <Text
+                                color={dark ? "#9AA1B9" : "#858DA6"}
+                                fz={"lg"}
+                            >
+                                {data.text}
+                            </Text>
+                        </Stack>
+                    </SimpleGrid>
+                ) : (
+                    <SimpleGrid
+                        cols={2}
+                        spacing={
+                            lessthan1100px ? (lessthan915px ? 50 : 100) : 300
+                        }
+                        breakpoints={[
+                            { maxWidth: "sm", cols: 1, spacing: "md" },
+                        ]}
+                    >
+                        <MediaQuery
+                            largerThan={"sm"}
+                            styles={{ display: "none" }}
+                        >
+                            <Image
+                                sx={{
+                                    minWidth: "200px",
+                                    maxWidth: "400px",
+                                    minHeight: "100px",
+                                }}
+                                src={data.image}
+                            />
+                        </MediaQuery>
+                        <Stack
+                            align={"flex-start"}
+                            justify={"center"}
+                            sx={{
+                                minWidth: "100px",
+                                maxWidth: "400px",
+                            }}
+                        >
+                            <Title
+                                order={1}
+                                color={
+                                    dark
+                                        ? theme.colors.dark[7]
+                                        : theme.colors.gray[7]
+                                }
+                            >
+                                {data.title}
+                            </Title>
+                            <Text
+                                color={dark ? "#9AA1B9" : "#858DA6"}
+                                fz={"lg"}
+                            >
+                                {data.text}
+                            </Text>
+                        </Stack>
+                        <MediaQuery
+                            smallerThan={"sm"}
+                            styles={{ display: "none" }}
+                        >
+                            <Image
+                                sx={{
+                                    minWidth: "200px",
+                                    maxWidth: "400px",
+                                    minHeight: "100px",
+                                }}
+                                src={data.image}
+                            />
+                        </MediaQuery>
+                    </SimpleGrid>
+                )}
+            </AnimationOnScroll>
         </Group>
     ));
 
@@ -196,7 +223,7 @@ function Home() {
                         backgroundColor: dark
                             ? theme.colors.dark[1]
                             : theme.colors.gray[1],
-                        height: "500px",
+                        height: "700px",
                         width: "100%",
                     }}
                 >
