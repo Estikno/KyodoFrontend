@@ -14,7 +14,6 @@ import CheckBoxStyle from "../utils/MantineStyles/CheckBoxStyle";
 
 //components
 import Navbar from "../components/navbar/Navbar";
-import LeftSide from "../components/auth/LeftSide";
 
 //interfaces
 import { IAuthResponse } from "../interfaces/IApiResponses";
@@ -29,11 +28,8 @@ import {
     Checkbox,
     Button,
     Group,
-    Space,
-    PasswordInput,
     Text,
     Box,
-    MediaQuery,
     Stack,
     useMantineColorScheme,
     useMantineTheme,

@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
-import cookie from 'js-cookie';
+import ReCaptcha, { ReCAPTCHA as IRecaptcha } from "react-google-recaptcha";
 
 //options, helpers or utils components already made by me
-import {
-    toastOptions,
-    specialCharacters,
-} from "../utils/configs";
+import { toastOptions, specialCharacters } from "../utils/configs";
 import { callLogin } from "../utils/callApi";
-import * as apiRoutes from "../utils/apiRoutes";
-import { useSignIn, useIsAuthenticated, useSignOut, useAuthUser } from "react-auth-kit";
+import {
+    useSignIn,
+    useIsAuthenticated,
+    useSignOut,
+    useAuthUser,
+} from "react-auth-kit";
+
+//styles
+import TextInputStyle from "../utils/MantineStyles/TextInputStyle";
 
 //components
 import Navbar from "../components/navbar/Navbar";
-import LeftSide from "../components/auth/LeftSide";
 
 //interfaces
 import { IAuthResponse } from "../interfaces/IApiResponses";
@@ -26,7 +28,6 @@ import "react-toastify/dist/ReactToastify.css";
 //mantine
 import {
     Center,
-    SimpleGrid,
     TextInput,
     Button,
     Group,
@@ -34,8 +35,10 @@ import {
     PasswordInput,
     Text,
     Box,
-    MediaQuery,
     LoadingOverlay,
+    useMantineColorScheme,
+    useMantineTheme,
+    Stack,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
@@ -43,6 +46,9 @@ import { useMediaQuery } from "@mantine/hooks";
 function Login() {
     //creates a navigate function to navigate to another route
     const navigate = useNavigate();
+
+    //captcha
+    const captcha = useRef<IRecaptcha>(null);
 
     //auth's funtions
     const signIn = useSignIn();
@@ -53,6 +59,14 @@ function Login() {
     //mantine
     const moreThan1800px = useMediaQuery(`(min-width: 1800px)`);
     const lessThan800px = useMediaQuery(`(max-width: 800px)`);
+    const lessThan550px = useMediaQuery(`(max-width: 550px)`);
+    const lessThan350px = useMediaQuery(`(max-width: 350px)`);
+
+    const theme = useMantineTheme();
+    const { colorScheme } = useMantineColorScheme();
+    const dark = colorScheme === "dark";
+
+    const textInputClasses = TextInputStyle();
 
     //creates a state for the form values, such as username, password, etc.
     const form = useForm({
@@ -103,39 +117,13 @@ function Login() {
      * If there is it will confirm the user
      * If the confirmation is successful, it will navigate to the home page
      * If not it will remove the user from local storage
-     * ! The async function has to be defined inside the useEffect function because useEffect does not support calling async functions
      */
     useEffect(() => {
-        if(isAuthenticated()){
+        if (isAuthenticated()) {
             navigate("/profile");
-        }
-        else{
+        } else {
             signOut();
         }
-
-        /*//confirms if the token is valid, if not it will delete it, however if is valid it will redirect the user to the profile page
-        const tokenStorage: string = localStorageControllers.getLocalStorage(
-            namesLocalStorageData.kyodo_token
-        );
-
-        const confirmLocalStorageData = async (token: string) => {
-            const { data } = await axios.get(apiRoutes.verifyToken, {
-                headers: { token: token },
-            });
-
-            if (data.status) {
-                navigate("/profile");
-            } else {
-                localStorageControllers.removeLocalStorage(
-                    namesLocalStorageData.kyodo_token
-                );
-            }
-        };
-
-        if (tokenStorage) {
-            //navigate("/profile");
-            confirmLocalStorageData(tokenStorage);
-        }*/
     }, []);
 
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -150,6 +138,9 @@ function Login() {
                 toastOptions
             );
         }
+
+        if (!captcha.current?.getValue())
+            return toast.error("You must complete the captcha", toastOptions);
 
         //all the form values are already validated
 
@@ -179,7 +170,7 @@ function Login() {
                     tokenType: "Bearer",
                     authState: {
                         username: username,
-                    }
+                    },
                 });
 
                 setVisible(true);
@@ -198,139 +189,151 @@ function Login() {
         }
     };
 
+    const onchangeRecaptcha = () => {};
+
     return (
         <>
-            <Navbar></Navbar>
-            <Center style={{ width: "100%", height: "90vh" }}>
-                <SimpleGrid
-                    cols={2}
-                    style={{
-                        height: "70vh",
-                        width: lessThan800px ? "90vw" : "60vw",
-                    }}
-                    breakpoints={[
-                        { minWidth: 1281, cols: 2 },
-                        { maxWidth: 1279, cols: 1 },
-                    ]}
+            <Navbar />
+            <Center
+                style={{
+                    width: "100%",
+                    height: "calc(100vh - 60px)",
+                    backgroundColor: dark
+                        ? theme.colors.dark[2]
+                        : theme.colors.gray[2],
+                }}
+            >
+                <Box
+                    sx={(theme) => ({
+                        backgroundColor: dark
+                            ? theme.colors.dark[1]
+                            : theme.colors.gray[5],
+                        borderRadius: theme.radius.md,
+                        height: "500px",
+                    })}
                 >
-                    <LeftSide
-                        MainTitle="Sign In"
-                        Text="Connect to your account to continue chatting!"
-                    />
-                    <Box
-                        sx={(theme) => ({
-                            backgroundColor:
-                                theme.colorScheme === "dark"
-                                    ? theme.colors.dark[5]
-                                    : theme.colors.light[5],
-                            borderRadius: theme.radius.md,
-                        })}
-                    >
-                        <Center style={{ width: "100%", height: "100%" }}>
-                            <MediaQuery
-                                largerThan={1800}
-                                styles={{
-                                    width: "70%",
-                                    height: "85%",
+                    <Center sx={{ width: "100%", height: "100%" }}>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleSubmit();
+                            }}
+                            style={{ height: "auto" }}
+                        >
+                            <Stack
+                                align={"stretch"}
+                                justify={"center"}
+                                sx={{
+                                    height: "100%",
+                                    margin: "1.5rem",
+                                    width: lessThan550px
+                                        ? "300px"
+                                        : lessThan350px
+                                        ? "200px"
+                                        : "500px",
                                 }}
                             >
-                                <MediaQuery
-                                    smallerThan={850}
-                                    styles={{
-                                        width: "90%",
-                                        height: "80%",
-                                    }}
+                                <LoadingOverlay
+                                    visible={visible}
+                                    overlayBlur={2}
+                                />
+                                <Text
+                                    fw={700}
+                                    fz={25}
+                                    ta="center"
+                                    color={
+                                        dark
+                                            ? theme.colors.dark[7]
+                                            : theme.colors.gray[7]
+                                    }
                                 >
-                                    <form
-                                        onSubmit={(e) => {
-                                            e.preventDefault();
-                                            handleSubmit();
-                                        }}
-                                        style={{ height: "auto" }}
+                                    Hi again
+                                </Text>
+                                <TextInput
+                                    placeholder="Username"
+                                    label="Username"
+                                    radius="md"
+                                    variant="unstyled"
+                                    size={
+                                        moreThan1800px
+                                            ? "md"
+                                            : lessThan800px
+                                            ? "xs"
+                                            : "sm"
+                                    }
+                                    withAsterisk
+                                    {...form.getInputProps("username")}
+                                    classNames={textInputClasses.classes}
+                                />
+
+                                <TextInput
+                                    variant="unstyled"
+                                    placeholder="password"
+                                    label="Password"
+                                    radius="md"
+                                    type={"password"}
+                                    size={
+                                        moreThan1800px
+                                            ? "md"
+                                            : lessThan800px
+                                            ? "xs"
+                                            : "sm"
+                                    }
+                                    withAsterisk
+                                    {...form.getInputProps("password")}
+                                    classNames={textInputClasses.classes}
+                                />
+
+                                <Group position="center">
+                                    <ReCaptcha
+                                        sitekey="6LedrN8jAAAAAOEE-VmfNn80nEYfipvTSNVGcg8S"
+                                        theme={dark ? "dark" : "light"}
+                                        onChange={onchangeRecaptcha}
+                                        ref={captcha}
+                                        size="normal"
+                                    />
+                                </Group>
+
+                                <Group position="center" grow>
+                                    <Button
+                                        size={
+                                            moreThan1800px
+                                                ? "md"
+                                                : lessThan800px
+                                                ? "xs"
+                                                : "sm"
+                                        }
+                                        type="submit"
                                     >
-                                        <LoadingOverlay
-                                            visible={visible}
-                                            overlayBlur={2}
-                                        />
-                                        <TextInput
-                                            placeholder="Username"
-                                            label="Username"
-                                            description="The username can't contain special characters, such as: @_./, etc"
-                                            radius="md"
-                                            size={
-                                                moreThan1800px
-                                                    ? "md"
-                                                    : lessThan800px
-                                                    ? "xs"
-                                                    : "sm"
-                                            }
-                                            withAsterisk
-                                            {...form.getInputProps("username")}
-                                        />
+                                        Sign In
+                                    </Button>
+                                </Group>
 
-                                        <Space h="sm" />
-
-                                        <PasswordInput
-                                            placeholder="password"
-                                            label="Password"
-                                            description="Password must be at least 8 characters long"
-                                            radius="md"
-                                            size={
-                                                moreThan1800px
-                                                    ? "md"
-                                                    : lessThan800px
-                                                    ? "xs"
-                                                    : "sm"
-                                            }
-                                            withAsterisk
-                                            {...form.getInputProps("password")}
-                                        />
-
-                                        <Space h="sm" />
-
-                                        <Group position="center" grow>
-                                            <Button
-                                                size={
-                                                    moreThan1800px
-                                                        ? "md"
-                                                        : lessThan800px
-                                                        ? "xs"
-                                                        : "sm"
-                                                }
-                                                type="submit"
-                                            >
-                                                Sign In
-                                            </Button>
-                                        </Group>
-
-                                        <Space h="sm" />
-
-                                        <Text
-                                            size={
-                                                moreThan1800px
-                                                    ? "md"
-                                                    : lessThan800px
-                                                    ? "xs"
-                                                    : "sm"
-                                            }
-                                        >
-                                            Don't have an account?{" "}
-                                            <Link
-                                                to="/register"
-                                                style={{
-                                                    color: "white",
-                                                    fontWeight: "bold",
-                                                }}
-                                            >
-                                                Sign Up
-                                            </Link>
-                                        </Text>
-                                    </form>
-                                </MediaQuery>
-                            </MediaQuery>
-                        </Center>
-                    </Box>
-                </SimpleGrid>
+                                <Text
+                                    size={
+                                        moreThan1800px
+                                            ? "md"
+                                            : lessThan800px
+                                            ? "xs"
+                                            : "sm"
+                                    }
+                                    color={dark ? "#9AA1B9" : "#858DA6"}
+                                >
+                                    Don't have an account?{" "}
+                                    <Link
+                                        to="/register"
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        Sign Up
+                                    </Link>
+                                </Text>
+                            </Stack>
+                        </form>
+                    </Center>
+                </Box>
             </Center>
             <ToastContainer />
         </>
