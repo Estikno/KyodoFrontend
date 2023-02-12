@@ -7,7 +7,10 @@ import ReCaptcha, { ReCAPTCHA as IRecaptcha } from "react-google-recaptcha";
 import { toastOptions, specialCharacters } from "../utils/configs";
 import { callRegister } from "../utils/callApi";
 import { useSignIn, useIsAuthenticated, useSignOut } from "react-auth-kit";
+
+//styles
 import TextInputStyle from "../utils/MantineStyles/TextInputStyle";
+import CheckBoxStyle from "../utils/MantineStyles/CheckBoxStyle";
 
 //components
 import Navbar from "../components/navbar/Navbar";
@@ -54,12 +57,15 @@ function Register() {
     //mantine
     const moreThan1800px = useMediaQuery(`(min-width: 1800px)`);
     const lessThan800px = useMediaQuery(`(max-width: 800px)`);
+    const lessThan550px = useMediaQuery(`(max-width: 550px)`);
+    const lessThan350px = useMediaQuery(`(max-width: 350px)`);
 
     const theme = useMantineTheme();
     const { colorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
 
     const textInputClasses = TextInputStyle();
+    const checkBoxClasses = CheckBoxStyle();
 
     //creates a state for the form values, such as username, password, etc.
     const form = useForm({
@@ -137,7 +143,6 @@ function Register() {
      * If there is it will confirm the user
      * If the confirmation is successful, it will navigate to the home page
      * If not it will remove the user from local storage
-     * ! The async function has to be defined inside the useEffect function because useEffect does not support calling async functions
      */
     useEffect(() => {
         if (isAuthenticated()) {
@@ -145,30 +150,6 @@ function Register() {
         } else {
             signOut();
         }
-
-        /*//confirms if the token is valid, if not it will delete it, however if is valid it will redirect the user to the profile page
-        const tokenStorage: string = localStorageControllers.getLocalStorage(
-            namesLocalStorageData.kyodo_token
-        );
-
-        const confirmLocalStorageData = async (token: string) => {
-            const { data } = await axios.get(apiRoutes.verifyToken, {
-                headers: { token: token },
-            });
-
-            if (data.status) {
-                navigate("/profile");
-            } else {
-                localStorageControllers.removeLocalStorage(
-                    namesLocalStorageData.kyodo_token
-                );
-            }
-        };
-
-        if (tokenStorage) {
-            //navigate("/profile");
-            confirmLocalStorageData(tokenStorage);
-        }*/
     }, []);
 
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -241,7 +222,7 @@ function Register() {
             <Center
                 style={{
                     width: "100%",
-                    height: "90vh",
+                    height: "calc(100vh - 60px)",
                     backgroundColor: dark
                         ? theme.colors.dark[2]
                         : theme.colors.gray[2],
@@ -251,9 +232,9 @@ function Register() {
                     sx={(theme) => ({
                         backgroundColor: dark
                             ? theme.colors.dark[1]
-                            : theme.colors.light[5],
+                            : theme.colors.gray[5],
                         borderRadius: theme.radius.md,
-                        height: "50vh",
+                        height: "620px",
                     })}
                 >
                     <Center
@@ -273,8 +254,12 @@ function Register() {
                                 justify={"center"}
                                 sx={{
                                     height: "100%",
-                                    width: "500px",
                                     margin: "1.5rem",
+                                    width: lessThan550px
+                                        ? "300px"
+                                        : lessThan350px
+                                        ? "200px"
+                                        : "500px",
                                 }}
                             >
                                 <LoadingOverlay
@@ -345,7 +330,7 @@ function Register() {
                                 <Group position="center">
                                     <ReCaptcha
                                         sitekey="6LedrN8jAAAAAOEE-VmfNn80nEYfipvTSNVGcg8S"
-                                        theme="dark"
+                                        theme={dark ? "dark" : "light"}
                                         onChange={onchangeRecaptcha}
                                         ref={captcha}
                                         size="normal"
@@ -364,6 +349,7 @@ function Register() {
                                     {...form.getInputProps("termsOfService", {
                                         type: "checkbox",
                                     })}
+                                    classNames={checkBoxClasses.classes}
                                 />
 
                                 <Group position="center" grow>
@@ -389,6 +375,7 @@ function Register() {
                                             ? "xs"
                                             : "sm"
                                     }
+                                    color={dark ? "#9AA1B9" : "#858DA6"}
                                 >
                                     Have an account?{" "}
                                     <Link

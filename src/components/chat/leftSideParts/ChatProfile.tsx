@@ -23,7 +23,7 @@ import { RiAttachmentLine } from "react-icons/ri";
 
 //styles
 import menuStyle from "../../../utils/MantineStyles/MenuStyles";
-import accordionStyles from "../../../utils/MantineStyles/AccordionStyles";
+import accordionStyles from "../../../utils/MantineStyles/AccordionStyle";
 
 function ChatProfile() {
     const theme = useMantineTheme();

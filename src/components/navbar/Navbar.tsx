@@ -157,7 +157,6 @@ function Navbar() {
                                             ? theme.colors.dark[6]
                                             : theme.colors.gray[6]
                                     }
-                                    ta={"center"}
                                 >
                                     {dark ? <BiSun /> : <BiMoon />}
                                 </Title>
