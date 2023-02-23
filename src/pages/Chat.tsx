@@ -106,21 +106,12 @@ function Chat() {
         if (userInfo) {
             socket.on("all-msg", (message: IRecieveMessage[]) => {
                 const finalArray: IMessage[] = message.map((msg) => {
-                    if (msg.username === userInfo.username) {
-                        return {
-                            message: msg.message,
-                            fromSelf: true,
-                            username: msg.username,
-                            id_room: msg.id_room,
-                        };
-                    } else {
-                        return {
-                            message: msg.message,
-                            fromSelf: false,
-                            username: msg.username,
-                            id_room: msg.id_room,
-                        };
-                    }
+                    return {
+                        message: msg.message,
+                        fromSelf: msg.username === userInfo.username,
+                        username: msg.username,
+                        id_room: msg.id_room,
+                    };
                 });
 
                 setMessages(finalArray);
@@ -136,10 +127,7 @@ function Chat() {
                     ...messages,
                     {
                         message: filter.clean(message.message),
-                        fromSelf:
-                            message.username === userInfo.username
-                                ? true
-                                : false,
+                        fromSelf: message.username === userInfo.username,
                         username: userInfo.username,
                         id_room: message.id_room,
                     },
@@ -147,10 +135,10 @@ function Chat() {
 
                 viewport.current?.scrollTo({
                     top: viewport.current.scrollHeight,
-                    behavior: "auto",
+                    behavior: "smooth",
                 });
 
-                dummy.current?.scrollIntoView({ behavior: "smooth" });
+                //dummy.current?.scrollIntoView({ behavior: "smooth" });
             });
 
             socket.on("new-usr", (newFriend: IUserInfo) => {
@@ -380,10 +368,15 @@ function Chat() {
                                                         messages[index + 1]
                                                             ? messages[
                                                                   index + 1
-                                                              ].username ===
-                                                              message.username
-                                                                ? false
-                                                                : true
+                                                              ].id_room ===
+                                                              message.id_room
+                                                                ? messages[
+                                                                      index + 1
+                                                                  ].username ===
+                                                                  message.username
+                                                                    ? false
+                                                                    : true
+                                                                : false
                                                             : true
                                                     }
                                                 />
