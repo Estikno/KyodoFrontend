@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import ReCaptcha, { ReCAPTCHA as IRecaptcha } from "react-google-recaptcha";
+import { useMutation } from "@apollo/client";
 
 //options, helpers or utils components already made by me
 import { toastOptions, specialCharacters } from "../utils/configs";
@@ -12,6 +13,7 @@ import {
     useSignOut,
     useAuthUser,
 } from "react-auth-kit";
+import { login as LOGIN, ILogin } from "../graphql/login";
 
 //styles
 import TextInputStyle from "../utils/MantineStyles/TextInputStyle";
@@ -31,8 +33,6 @@ import {
     TextInput,
     Button,
     Group,
-    Space,
-    PasswordInput,
     Text,
     Box,
     LoadingOverlay,
@@ -46,6 +46,9 @@ import { useMediaQuery } from "@mantine/hooks";
 function Login() {
     //creates a navigate function to navigate to another route
     const navigate = useNavigate();
+
+    //graphql
+    const [login, { error, loading }] = useMutation(LOGIN);
 
     //captcha
     const captcha = useRef<IRecaptcha>(null);
@@ -149,23 +152,27 @@ function Login() {
         setVisible(true);
 
         //cals the api to register the user
-        const result: IAuthResponse = await callLogin(username, password);
+        //const result: IAuthResponse = await callLogin(username, password);
 
-        setVisible(false);
+        const { data: dav } = await login({
+            variables: {
+                username: username,
+                password: password,
+            },
+        });
+
+        const data: ILogin = dav.login;
+
+        if (error) console.log(error.message);
 
         //if the result is not successful, it will show an error message
         //if it is successful, it will navigate to the home page and save the user in local storage
-        if (!result.status) {
-            toast.error(result.message, toastOptions);
+        if (!data?.status) {
+            toast.error(data?.message, toastOptions);
         } else {
-            if (result.token) {
-                /*localStorage.setItem(
-                    namesLocalStorageData.kyodo_token,
-                    result.token
-                );*/
-
+            if (data?.token) {
                 signIn({
-                    token: result.token,
+                    token: data?.token,
                     expiresIn: 2880,
                     tokenType: "Bearer",
                     authState: {
@@ -173,11 +180,7 @@ function Login() {
                     },
                 });
 
-                setVisible(true);
-
                 await sleep(1000);
-
-                setVisible(false);
 
                 navigate("/profile");
             } else {
@@ -187,6 +190,8 @@ function Login() {
                 );
             }
         }
+
+        setVisible(false);
     };
 
     const onchangeRecaptcha = () => {};

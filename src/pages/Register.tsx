@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import ReCaptcha, { ReCAPTCHA as IRecaptcha } from "react-google-recaptcha";
+import { useMutation } from "@apollo/client";
 
 //options, helpers or utils already made by me
 import { toastOptions, specialCharacters } from "../utils/configs";
 import { callRegister } from "../utils/callApi";
 import { useSignIn, useIsAuthenticated, useSignOut } from "react-auth-kit";
+import { register as REGISTER, IRegister } from "../graphql/register";
 
 //styles
 import TextInputStyle from "../utils/MantineStyles/TextInputStyle";
@@ -41,6 +43,9 @@ import { useMediaQuery } from "@mantine/hooks";
 function Register() {
     //creates a navigate function to navigate to another route
     const navigate = useNavigate();
+
+    //graphql
+    const [register, { error, loading }] = useMutation(REGISTER);
 
     //captcha
     const captcha = useRef<IRecaptcha>(null);
@@ -171,22 +176,31 @@ function Register() {
         setVisible(true);
 
         //cals the api to register the user
-        const result: IAuthResponse = await callRegister(
+        /*const result: IAuthResponse = await callRegister(
             username,
             email,
             password
-        );
+        );*/
+        const { data: dav } = await register({
+            variables: {
+                username: username,
+                password: password,
+                email: email,
+            },
+        });
 
-        setVisible(false);
+        const data: IRegister = dav.register;
+
+        if (error) console.log(error.message);
 
         //if the result is not successful, it will show an error message
         //if it is successful, it will navigate to the home page and save the user in local storage
-        if (!result.status) {
-            toast.error(result.message, toastOptions);
+        if (!data?.status) {
+            toast.error(data?.message, toastOptions);
         } else {
-            if (result.token) {
+            if (data?.token) {
                 signIn({
-                    token: result.token,
+                    token: data.token,
                     expiresIn: 2880,
                     tokenType: "Bearer",
                     authState: {
@@ -194,11 +208,7 @@ function Register() {
                     },
                 });
 
-                setVisible(true);
-
                 await sleep(1000);
-
-                setVisible(false);
 
                 navigate("/profile");
             } else {
@@ -208,6 +218,8 @@ function Register() {
                 );
             }
         }
+
+        setVisible(false);
     };
 
     const onchangeRecaptcha = () => {};
@@ -358,6 +370,7 @@ function Register() {
                                                 : "sm"
                                         }
                                         type="submit"
+                                        disabled={loading}
                                     >
                                         Sign Up
                                     </Button>
