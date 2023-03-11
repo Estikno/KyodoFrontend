@@ -18,9 +18,11 @@ import {
     Select,
     Switch,
     ScrollArea,
+    Button,
 } from "@mantine/core";
 
 import { BsArrowDownShort, BsDot } from "react-icons/bs";
+import { AiFillEdit } from "react-icons/ai";
 import { CgUnavailable } from "react-icons/cg";
 import { RxDotFilled } from "react-icons/rx";
 
@@ -30,6 +32,23 @@ import accordionStyle from "../../../utils/MantineStyles/AccordionStyle";
 import selectStyle from "../../../utils/MantineStyles/SelectStyle";
 import switchStyle from "../../../utils/MantineStyles/SwitchStyle";
 
+const buttonStyle = createStyles((theme) => ({
+    root: {
+        backgroundColor:
+            theme.colorScheme === "dark" ? theme.colors.dark[0] : "#E6EBF5",
+        color:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[7]
+                : theme.colors.gray[7],
+        "&:hover": {
+            backgroundColor:
+                theme.colorScheme === "dark"
+                    ? theme.colors.dark[1]
+                    : theme.colors.gray[1],
+        },
+    },
+}));
+
 function ChatGroups() {
     const theme = useMantineTheme();
     const { colorScheme } = useMantineColorScheme();
@@ -38,6 +57,7 @@ function ChatGroups() {
     const _accordionStyle = accordionStyle();
     const _pickStyle = selectStyle();
     const _switchStyle = switchStyle();
+    const _buttonStyle = buttonStyle();
 
     return (
         <Stack
@@ -134,20 +154,31 @@ function ChatGroups() {
                                 sx={{ width: "100%", paddingTop: "10px" }}
                                 align="flex-start"
                             >
-                                <Stack spacing={0}>
-                                    <Text color={dark ? "#9AA1B9" : "#858DA6"}>
-                                        Name
-                                    </Text>
-                                    <Text
-                                        color={
-                                            dark
-                                                ? theme.colors.dark[7]
-                                                : theme.colors.gray[7]
-                                        }
+                                <Group position="apart" sx={{ width: "100%" }}>
+                                    <Stack spacing={0}>
+                                        <Text
+                                            color={dark ? "#9AA1B9" : "#858DA6"}
+                                        >
+                                            Name
+                                        </Text>
+                                        <Text
+                                            color={
+                                                dark
+                                                    ? theme.colors.dark[7]
+                                                    : theme.colors.gray[7]
+                                            }
+                                        >
+                                            Patricio
+                                        </Text>
+                                    </Stack>
+                                    <Button
+                                        compact
+                                        leftIcon={<AiFillEdit />}
+                                        classNames={_buttonStyle.classes}
                                     >
-                                        Patricio
-                                    </Text>
-                                </Stack>
+                                        Edit
+                                    </Button>
+                                </Group>
                                 <Stack spacing={0}>
                                     <Text color={dark ? "#9AA1B9" : "#858DA6"}>
                                         Email

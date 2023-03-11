@@ -4,7 +4,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { io, Socket } from "socket.io-client";
 import cookie from "js-cookie";
 import Filter from "bad-words";
+import { useLazyQuery } from "@apollo/client";
 
+//components
 import Friend from "../components/chat/Friend";
 import Message from "../components/chat/Message";
 import RightSide from "../components/chat/RightSide";
@@ -26,8 +28,12 @@ import ScreenMessage from "../components/ScreenMessage";
 
 //options, helpers or utils already made by me
 import { toastOptions, apiRoute } from "../utils/configs";
-import { getAllUsers, getUserInfo } from "../utils/callApi";
 import { useIsAuthenticated, useSignOut } from "react-auth-kit";
+import {
+    verifiedUser as VERIFIEDUSER,
+    getAllUsers as GETALLUSERS,
+    IGetVUsers,
+} from "../graphql/chat";
 
 //mantine
 import {
@@ -66,6 +72,12 @@ const timeBtwMessages: number = 2500; //in milliseconds
 function Chat() {
     //creates a navigate function to navigate to another route
     const navigate = useNavigate();
+
+    //graphql
+    const [verifiedUser, { error: verror, loading: vloading }] =
+        useLazyQuery(VERIFIEDUSER);
+    const [getAllUsers, { error: gerror, loading: gloading }] =
+        useLazyQuery(GETALLUSERS);
 
     //filter
     const filter = new Filter();
@@ -157,33 +169,46 @@ function Chat() {
         const _token: string = cookie.get("_auth") as string;
 
         const getInfo = async (token: string) => {
-            const usersData = await getAllUsers(token);
+            //const userData = await getUserInfo(token);
+            try{
 
-            if (!usersData.status)
-                return toast.error(
-                    "There was an error getting the users information",
-                    toastOptions
-                );
-            if (!Array.isArray(usersData.user))
-                return toast.error("User has to be an array", toastOptions);
-
-            setFriends(usersData.user);
-            console.log(usersData.user);
-
-            const userData = await getUserInfo(token);
-
-            if (!userData.status)
-                return toast.error("User info is not available", toastOptions);
-            if (!userData.user)
-                return toast.error("No avatar provided", toastOptions);
-            if (Array.isArray(userData.user))
-                return toast.error("User mustn't be an array", toastOptions);
-
-            setUserInfo(userData.user);
-
-            socket.emit("add-user", userData.user.username);
-
-            setVisible(false);
+                const { data: dav } = await verifiedUser({
+                    variables: { token: token },
+                });
+    
+                let userData: IGetVUsers = dav.verifiedUser;
+                console.log(userData);
+    
+                if (!userData.status)
+                    return toast.error("User info is not available", toastOptions);
+                if (!userData.user)
+                    return toast.error("No user provided", toastOptions);
+    
+                setUserInfo(userData.user[0]);
+                if (!userData.user[0].verified) return setVisible(false);
+    
+                socket.emit("add-user", userData.user[0].username);
+    
+                //const usersData = await getAllUsers(token);
+                const { data: davs } = await getAllUsers({
+                    variables: { token: token },
+                });
+    
+                const usersData: IGetVUsers = davs.getUsers;
+    
+                if (!usersData.status)
+                    return toast.error(
+                        "There was an error getting the users information",
+                        toastOptions
+                    );
+    
+                setFriends(usersData.user);
+                console.log(usersData);
+    
+                setVisible(false);
+            }
+            catch(e){
+            }
         };
 
         if (_token) {
