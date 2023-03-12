@@ -1,5 +1,9 @@
 import React from "react";
 
+//components
+import AccordionField from "./AccordionField";
+
+//mantine
 import {
     Stack,
     Image,
@@ -49,15 +53,127 @@ const buttonStyle = createStyles((theme) => ({
     },
 }));
 
+function SelectBasicOptions() {
+    const _pickStyle = selectStyle();
+
+    return (
+        <Select
+            data={[
+                {
+                    value: "everyone",
+                    label: "Everyone",
+                },
+                {
+                    value: "selected",
+                    label: "Selected",
+                },
+                {
+                    value: "sobody",
+                    label: "Nobody",
+                },
+            ]}
+            variant="filled"
+            classNames={_pickStyle.classes}
+            defaultValue="everyone"
+            transition="slide-up"
+            transitionDuration={150}
+            transitionTimingFunction="ease"
+            sx={{ width: "40%" }}
+        />
+    );
+}
+
+function PrivacyOptions({
+    field,
+    selection,
+}: {
+    field: string;
+    selection: boolean;
+}) {
+    const theme = useMantineTheme();
+    const { colorScheme } = useMantineColorScheme();
+    const dark = colorScheme === "dark";
+    const _switchStyle = switchStyle();
+
+    return (
+        <Group position="apart" sx={{ width: "100%" }}>
+            <Text color={dark ? theme.colors.dark[7] : theme.colors.gray[7]}>
+                {field}
+            </Text>
+            {selection ? (
+                <SelectBasicOptions />
+            ) : (
+                <Switch classNames={_switchStyle.classes} />
+            )}
+        </Group>
+    );
+}
+
+const fieldData = [
+    {
+        field: "Name",
+        content: "Patricio",
+    },
+    {
+        field: "Email",
+        content: "patrick@gmail.com",
+    },
+    {
+        field: "Location",
+        content: "Florida",
+    },
+];
+
+const privacyData = [
+    {
+        field: "Profile Photo",
+        selection: true,
+    },
+    {
+        field: "Last seen",
+        selection: false,
+    },
+    {
+        field: "Satus",
+        selection: true,
+    },
+    {
+        field: "Read receipts",
+        selection: false,
+    },
+    {
+        field: "Status",
+        selection: true,
+    },
+];
+
 function ChatGroups() {
     const theme = useMantineTheme();
     const { colorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
     const MenuStyles = menuStyle();
     const _accordionStyle = accordionStyle();
-    const _pickStyle = selectStyle();
     const _switchStyle = switchStyle();
     const _buttonStyle = buttonStyle();
+
+    const items = fieldData.map((item) => (
+        <AccordionField {...item} key={item.field} />
+    ));
+
+    const privacyItems = privacyData.map((item, index) =>
+        index === 0 ? (
+            <PrivacyOptions {...item} key={item.field} />
+        ) : (
+            <>
+                <Divider
+                    size={"xs"}
+                    sx={{ width: "100%" }}
+                    color={dark ? theme.colors.dark[0] : theme.colors.gray[0]}
+                />
+                <PrivacyOptions {...item} key={item.field} />
+            </>
+        )
+    );
 
     return (
         <Stack
@@ -155,22 +271,7 @@ function ChatGroups() {
                                 align="flex-start"
                             >
                                 <Group position="apart" sx={{ width: "100%" }}>
-                                    <Stack spacing={0}>
-                                        <Text
-                                            color={dark ? "#9AA1B9" : "#858DA6"}
-                                        >
-                                            Name
-                                        </Text>
-                                        <Text
-                                            color={
-                                                dark
-                                                    ? theme.colors.dark[7]
-                                                    : theme.colors.gray[7]
-                                            }
-                                        >
-                                            Patricio
-                                        </Text>
-                                    </Stack>
+                                    {items[0]}
                                     <Button
                                         compact
                                         leftIcon={<AiFillEdit />}
@@ -179,34 +280,8 @@ function ChatGroups() {
                                         Edit
                                     </Button>
                                 </Group>
-                                <Stack spacing={0}>
-                                    <Text color={dark ? "#9AA1B9" : "#858DA6"}>
-                                        Email
-                                    </Text>
-                                    <Text
-                                        color={
-                                            dark
-                                                ? theme.colors.dark[7]
-                                                : theme.colors.gray[7]
-                                        }
-                                    >
-                                        patrick@gmail.com
-                                    </Text>
-                                </Stack>
-                                <Stack spacing={0}>
-                                    <Text color={dark ? "#9AA1B9" : "#858DA6"}>
-                                        Localtion
-                                    </Text>
-                                    <Text
-                                        color={
-                                            dark
-                                                ? theme.colors.dark[7]
-                                                : theme.colors.gray[7]
-                                        }
-                                    >
-                                        florida
-                                    </Text>
-                                </Stack>
+                                {items[1]}
+                                {items[2]}
                             </Stack>
                         </Accordion.Panel>
                     </Accordion.Item>
@@ -217,168 +292,7 @@ function ChatGroups() {
                                 sx={{ width: "100%", paddingTop: "10px" }}
                                 align="flex-start"
                             >
-                                <Group position="apart" sx={{ width: "100%" }}>
-                                    <Text
-                                        color={
-                                            dark
-                                                ? theme.colors.dark[7]
-                                                : theme.colors.gray[7]
-                                        }
-                                    >
-                                        Profile Photo
-                                    </Text>
-                                    <Select
-                                        data={[
-                                            {
-                                                value: "everyone",
-                                                label: "Everyone",
-                                            },
-                                            {
-                                                value: "selected",
-                                                label: "Selected",
-                                            },
-                                            {
-                                                value: "sobody",
-                                                label: "Nobody",
-                                            },
-                                        ]}
-                                        variant="filled"
-                                        classNames={_pickStyle.classes}
-                                        defaultValue="everyone"
-                                        transition="slide-up"
-                                        transitionDuration={40}
-                                        transitionTimingFunction="ease"
-                                        sx={{ width: "40%" }}
-                                    />
-                                </Group>
-                                <Divider
-                                    size={"xs"}
-                                    sx={{ width: "100%" }}
-                                    color={
-                                        dark
-                                            ? theme.colors.dark[0]
-                                            : theme.colors.gray[0]
-                                    }
-                                />
-                                <Group position="apart" sx={{ width: "100%" }}>
-                                    <Text
-                                        color={
-                                            dark
-                                                ? theme.colors.dark[7]
-                                                : theme.colors.gray[7]
-                                        }
-                                    >
-                                        Last seen
-                                    </Text>
-                                    <Switch classNames={_switchStyle.classes} />
-                                </Group>
-                                <Divider
-                                    size={"xs"}
-                                    sx={{ width: "100%" }}
-                                    color={
-                                        dark
-                                            ? theme.colors.dark[0]
-                                            : theme.colors.gray[0]
-                                    }
-                                />
-                                <Group position="apart" sx={{ width: "100%" }}>
-                                    <Text
-                                        color={
-                                            dark
-                                                ? theme.colors.dark[7]
-                                                : theme.colors.gray[7]
-                                        }
-                                    >
-                                        Status
-                                    </Text>
-                                    <Select
-                                        data={[
-                                            {
-                                                value: "everyone",
-                                                label: "Everyone",
-                                            },
-                                            {
-                                                value: "selected",
-                                                label: "Selected",
-                                            },
-                                            {
-                                                value: "sobody",
-                                                label: "Nobody",
-                                            },
-                                        ]}
-                                        variant="filled"
-                                        classNames={_pickStyle.classes}
-                                        defaultValue="everyone"
-                                        transition="slide-up"
-                                        transitionDuration={40}
-                                        transitionTimingFunction="ease"
-                                        sx={{ width: "40%" }}
-                                    />
-                                </Group>
-                                <Divider
-                                    size={"xs"}
-                                    sx={{ width: "100%" }}
-                                    color={
-                                        dark
-                                            ? theme.colors.dark[0]
-                                            : theme.colors.gray[0]
-                                    }
-                                />
-                                <Group position="apart" sx={{ width: "100%" }}>
-                                    <Text
-                                        color={
-                                            dark
-                                                ? theme.colors.dark[7]
-                                                : theme.colors.gray[7]
-                                        }
-                                    >
-                                        Read receipts
-                                    </Text>
-                                    <Switch classNames={_switchStyle.classes} />
-                                </Group>
-                                <Divider
-                                    size={"xs"}
-                                    sx={{ width: "100%" }}
-                                    color={
-                                        dark
-                                            ? theme.colors.dark[0]
-                                            : theme.colors.gray[0]
-                                    }
-                                />
-                                <Group position="apart" sx={{ width: "100%" }}>
-                                    <Text
-                                        color={
-                                            dark
-                                                ? theme.colors.dark[7]
-                                                : theme.colors.gray[7]
-                                        }
-                                    >
-                                        Status
-                                    </Text>
-                                    <Select
-                                        data={[
-                                            {
-                                                value: "everyone",
-                                                label: "Everyone",
-                                            },
-                                            {
-                                                value: "selected",
-                                                label: "Selected",
-                                            },
-                                            {
-                                                value: "sobody",
-                                                label: "Nobody",
-                                            },
-                                        ]}
-                                        variant="filled"
-                                        classNames={_pickStyle.classes}
-                                        defaultValue="everyone"
-                                        transition="slide-up"
-                                        transitionDuration={40}
-                                        transitionTimingFunction="ease"
-                                        sx={{ width: "40%" }}
-                                    />
-                                </Group>
+                                {privacyItems}
                             </Stack>
                         </Accordion.Panel>
                     </Accordion.Item>

@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+//components
+import AccordionField from './AccordionField';
+
 //mantine
 import {
     useMantineTheme,
@@ -25,12 +28,31 @@ import { RiAttachmentLine } from "react-icons/ri";
 import menuStyle from "../../../utils/MantineStyles/MenuStyles";
 import accordionStyles from "../../../utils/MantineStyles/AccordionStyle";
 
+const fieldData = [
+    {
+        field: "Name",
+        content: "Patricio",
+    },
+    {
+        field: "Email",
+        content: "patrick@gmail.com",
+    },
+    {
+        field: "Location",
+        content: "Florida",
+    },
+];
+
 function ChatProfile() {
     const theme = useMantineTheme();
     const { colorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
     const AccordionStyles = accordionStyles();
     const MenuStyles = menuStyle();
+
+    const items = fieldData.map((item) => (
+        <AccordionField {...item} key={item.field} />
+    ));
 
     return (
         <Stack
@@ -127,48 +149,7 @@ function ChatProfile() {
                         </Accordion.Control>
                         <Accordion.Panel>
                             <Stack sx={{ width: "100%" }} align="flex-start">
-                                <Stack spacing={0}>
-                                    <Text color={dark ? "#9AA1B9" : "#858DA6"}>
-                                        Name
-                                    </Text>
-                                    <Text
-                                        color={
-                                            dark
-                                                ? theme.colors.dark[7]
-                                                : theme.colors.gray[7]
-                                        }
-                                    >
-                                        Patricio
-                                    </Text>
-                                </Stack>
-                                <Stack spacing={0}>
-                                    <Text color={dark ? "#9AA1B9" : "#858DA6"}>
-                                        Email
-                                    </Text>
-                                    <Text
-                                        color={
-                                            dark
-                                                ? theme.colors.dark[7]
-                                                : theme.colors.gray[7]
-                                        }
-                                    >
-                                        patrick@gmail.com
-                                    </Text>
-                                </Stack>
-                                <Stack spacing={0}>
-                                    <Text color={dark ? "#9AA1B9" : "#858DA6"}>
-                                        Localtion
-                                    </Text>
-                                    <Text
-                                        color={
-                                            dark
-                                                ? theme.colors.dark[7]
-                                                : theme.colors.gray[7]
-                                        }
-                                    >
-                                        florida
-                                    </Text>
-                                </Stack>
+                                {items}
                             </Stack>
                         </Accordion.Panel>
                     </Accordion.Item>
