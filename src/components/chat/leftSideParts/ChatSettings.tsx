@@ -8,10 +8,9 @@ import {
     Stack,
     Image,
     Title,
-    Avatar,
     UnstyledButton,
-    Tooltip,
     Menu,
+    Modal,
     createStyles,
     useMantineTheme,
     useMantineColorScheme,
@@ -23,7 +22,9 @@ import {
     Switch,
     ScrollArea,
     Button,
+    TextInput,
 } from "@mantine/core";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
 import { BsArrowDownShort, BsDot } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
@@ -35,6 +36,7 @@ import menuStyle from "../../../utils/MantineStyles/MenuStyles";
 import accordionStyle from "../../../utils/MantineStyles/AccordionStyle";
 import selectStyle from "../../../utils/MantineStyles/SelectStyle";
 import switchStyle from "../../../utils/MantineStyles/SwitchStyle";
+import TextInputStyle from "../../../utils/MantineStyles/TextInputStyle";
 
 const buttonStyle = createStyles((theme) => ({
     root: {
@@ -51,6 +53,29 @@ const buttonStyle = createStyles((theme) => ({
                     : theme.colors.gray[1],
         },
     },
+}));
+
+const modalStyle = createStyles((theme) => ({
+    title: {
+        color:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[7]
+                : theme.colors.gray[7],
+        fontWeight: "bold",
+    },
+    header: {
+        backgroundColor:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[2]
+                : theme.colors.gray[1],
+    },
+    content: {
+        borderRadius: theme.radius.md,
+        backgroundColor:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[2]
+                : theme.colors.gray[1],
+    }
 }));
 
 function SelectBasicOptions() {
@@ -75,9 +100,7 @@ function SelectBasicOptions() {
             variant="filled"
             classNames={_pickStyle.classes}
             defaultValue="everyone"
-            transition="slide-up"
-            transitionDuration={150}
-            transitionTimingFunction="ease"
+            transitionProps={{ transition: "slide-up", duration: 150 }}
             sx={{ width: "40%" }}
         />
     );
@@ -148,6 +171,7 @@ const privacyData = [
 ];
 
 function ChatGroups() {
+    //mantine
     const theme = useMantineTheme();
     const { colorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
@@ -155,6 +179,15 @@ function ChatGroups() {
     const _accordionStyle = accordionStyle();
     const _switchStyle = switchStyle();
     const _buttonStyle = buttonStyle();
+    const _modalStyle = modalStyle();
+    const _textInputStyle = TextInputStyle();
+
+    const moreThan1800px = useMediaQuery(`(min-width: 1800px)`);
+    const lessThan800px = useMediaQuery(`(max-width: 800px)`);
+    const lessThan550px = useMediaQuery(`(max-width: 550px)`);
+    const lessThan350px = useMediaQuery(`(max-width: 350px)`);
+
+    const [opened, { open, close }] = useDisclosure(false);
 
     const items = fieldData.map((item) => (
         <AccordionField {...item} key={item.field} />
@@ -216,7 +249,10 @@ function ChatGroups() {
                         shadow={"md"}
                         position="bottom-start"
                         width={150}
-                        transition="slide-up"
+                        transitionProps={{
+                            transition: "slide-up",
+                            duration: 150,
+                        }}
                         classNames={MenuStyles.classes}
                     >
                         <Menu.Target>
@@ -270,12 +306,89 @@ function ChatGroups() {
                                 sx={{ width: "100%", paddingTop: "10px" }}
                                 align="flex-start"
                             >
+                                <Modal
+                                    opened={opened}
+                                    onClose={close}
+                                    title="Information"
+                                    classNames={_modalStyle.classes}
+                                    overlayProps={{
+                                        blur: 3
+                                    }}
+                                >
+                                    <form>
+                                        <Stack>
+                                            <TextInput
+                                                variant="unstyled"
+                                                placeholder="estikno"
+                                                label="Username"
+                                                radius="md"
+                                                size={
+                                                    moreThan1800px
+                                                        ? "md"
+                                                        : lessThan800px
+                                                        ? "xs"
+                                                        : "sm"
+                                                }
+                                                classNames={
+                                                    _textInputStyle.classes
+                                                }
+                                            />
+                                            <TextInput
+                                                variant="unstyled"
+                                                placeholder="you@email.com"
+                                                label="Email"
+                                                radius="md"
+                                                size={
+                                                    moreThan1800px
+                                                        ? "md"
+                                                        : lessThan800px
+                                                        ? "xs"
+                                                        : "sm"
+                                                }
+                                                classNames={
+                                                    _textInputStyle.classes
+                                                }
+                                            />
+                                            <TextInput
+                                                variant="unstyled"
+                                                placeholder="Florida"
+                                                label="Location"
+                                                radius="md"
+                                                size={
+                                                    moreThan1800px
+                                                        ? "md"
+                                                        : lessThan800px
+                                                        ? "xs"
+                                                        : "sm"
+                                                }
+                                                classNames={
+                                                    _textInputStyle.classes
+                                                }
+                                            />
+                                            <Group position="center" grow>
+                                                <Button
+                                                    size={
+                                                        moreThan1800px
+                                                            ? "md"
+                                                            : lessThan800px
+                                                            ? "xs"
+                                                            : "sm"
+                                                    }
+                                                    type="submit"
+                                                >
+                                                    Update info
+                                                </Button>
+                                            </Group>
+                                        </Stack>
+                                    </form>
+                                </Modal>
                                 <Group position="apart" sx={{ width: "100%" }}>
                                     {items[0]}
                                     <Button
                                         compact
                                         leftIcon={<AiFillEdit />}
                                         classNames={_buttonStyle.classes}
+                                        onClick={open}
                                     >
                                         Edit
                                     </Button>

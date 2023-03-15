@@ -76,7 +76,7 @@ function ChatProfile() {
                     position="bottom-end"
                     classNames={MenuStyles.classes}
                     width={150}
-                    transition="slide-up"
+                    transitionProps={{ transition: 'slide-up', duration: 150 }}
                 >
                     <Menu.Target>
                         <UnstyledButton>
