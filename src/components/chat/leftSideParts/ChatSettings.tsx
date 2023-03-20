@@ -141,10 +141,6 @@ const fieldData = [
         field: "Email",
         content: "patrick@gmail.com",
     },
-    {
-        field: "Location",
-        content: "Florida",
-    },
 ];
 
 const privacyData = [
@@ -314,6 +310,7 @@ function ChatGroups() {
                                     overlayProps={{
                                         blur: 3
                                     }}
+                                    fullScreen={lessThan800px}
                                 >
                                     <form>
                                         <Stack>
@@ -337,22 +334,6 @@ function ChatGroups() {
                                                 variant="unstyled"
                                                 placeholder="you@email.com"
                                                 label="Email"
-                                                radius="md"
-                                                size={
-                                                    moreThan1800px
-                                                        ? "md"
-                                                        : lessThan800px
-                                                        ? "xs"
-                                                        : "sm"
-                                                }
-                                                classNames={
-                                                    _textInputStyle.classes
-                                                }
-                                            />
-                                            <TextInput
-                                                variant="unstyled"
-                                                placeholder="Florida"
-                                                label="Location"
                                                 radius="md"
                                                 size={
                                                     moreThan1800px
@@ -394,7 +375,6 @@ function ChatGroups() {
                                     </Button>
                                 </Group>
                                 {items[1]}
-                                {items[2]}
                             </Stack>
                         </Accordion.Panel>
                     </Accordion.Item>

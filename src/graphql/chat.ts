@@ -25,6 +25,7 @@ export const getAllUsers = gql`
                 avatarUrl
                 username
                 email
+                idRoom
             }
         }
     }
@@ -41,4 +42,5 @@ export interface IUser {
     avatarUrl: string;
     username: string;
     email: string;
+    idRoom: string;
 }

@@ -117,16 +117,16 @@ function Chat() {
     useEffect(() => {
         if (userInfo) {
             socket.on("all-msg", (message: IRecieveMessage[]) => {
-                const finalArray: IMessage[] = message.map((msg) => {
-                    return {
-                        message: msg.message,
-                        fromSelf: msg.username === userInfo.username,
-                        username: msg.username,
-                        id_room: msg.id_room,
-                    };
-                });
-
-                setMessages(finalArray);
+                setMessages(
+                    message.map((msg) => {
+                        return {
+                            message: msg.message,
+                            fromSelf: msg.username === userInfo.username,
+                            username: msg.username,
+                            id_room: msg.id_room,
+                        };
+                    })
+                );
 
                 viewport.current?.scrollTo({
                     top: viewport.current.scrollHeight,
@@ -157,7 +157,7 @@ function Chat() {
                 setFriends([...friends, newFriend]);
             });
         }
-    }, [userInfo, messages]);
+    }, [userInfo]);
 
     useEffect(() => {
         if (!isAuthenticated()) {
@@ -170,45 +170,43 @@ function Chat() {
 
         const getInfo = async (token: string) => {
             //const userData = await getUserInfo(token);
-            try{
-
+            try {
                 const { data: dav } = await verifiedUser({
                     variables: { token: token },
                 });
-    
+
                 let userData: IGetVUsers = dav.verifiedUser;
-                console.log(userData);
-    
+
                 if (!userData.status)
-                    return toast.error("User info is not available", toastOptions);
+                    return toast.error(
+                        "User info is not available",
+                        toastOptions
+                    );
                 if (!userData.user)
                     return toast.error("No user provided", toastOptions);
-    
+
                 setUserInfo(userData.user[0]);
                 if (!userData.user[0].verified) return setVisible(false);
-    
+
                 socket.emit("add-user", userData.user[0].username);
-    
+
                 //const usersData = await getAllUsers(token);
                 const { data: davs } = await getAllUsers({
                     variables: { token: token },
                 });
-    
+
                 const usersData: IGetVUsers = davs.getUsers;
-    
+
                 if (!usersData.status)
                     return toast.error(
                         "There was an error getting the users information",
                         toastOptions
                     );
-    
+
                 setFriends(usersData.user);
-                console.log(usersData);
-    
+
                 setVisible(false);
-            }
-            catch(e){
-            }
+            } catch (e) {}
         };
 
         if (_token) {
@@ -376,7 +374,7 @@ function Chat() {
                                     dummy={dummy}
                                 >
                                     {selectedFriend >= 0 ? (
-                                        messages.map((message, index) =>
+                                        messages.map((message, index) => 
                                             message.id_room ===
                                             friends[selectedFriend].idRoom ? (
                                                 <Message
@@ -410,7 +408,7 @@ function Chat() {
                                                     key={`${message.message}/${
                                                         message.username
                                                     }/${index.toString()}`}
-                                                    style={{ display: "none" }}
+                                                    style={{display: "none"}}
                                                 ></div>
                                             )
                                         )
