@@ -1,5 +1,8 @@
 import React from "react";
 
+//options, helpers or utils already made by me
+import { toastOptions, specialCharacters } from "../../../utils/configs";
+
 //components
 import AccordionField from "./AccordionField";
 
@@ -24,6 +27,7 @@ import {
     Button,
     TextInput,
 } from "@mantine/core";
+import { useForm, UseFormReturnType } from "@mantine/form";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
 import { BsArrowDownShort, BsDot } from "react-icons/bs";
@@ -37,6 +41,7 @@ import accordionStyle from "../../../utils/MantineStyles/AccordionStyle";
 import selectStyle from "../../../utils/MantineStyles/SelectStyle";
 import switchStyle from "../../../utils/MantineStyles/SwitchStyle";
 import TextInputStyle from "../../../utils/MantineStyles/TextInputStyle";
+import ModalStyle from "../../../utils/MantineStyles/ModalStyle";
 
 const buttonStyle = createStyles((theme) => ({
     root: {
@@ -53,29 +58,6 @@ const buttonStyle = createStyles((theme) => ({
                     : theme.colors.gray[1],
         },
     },
-}));
-
-const modalStyle = createStyles((theme) => ({
-    title: {
-        color:
-            theme.colorScheme === "dark"
-                ? theme.colors.dark[7]
-                : theme.colors.gray[7],
-        fontWeight: "bold",
-    },
-    header: {
-        backgroundColor:
-            theme.colorScheme === "dark"
-                ? theme.colors.dark[2]
-                : theme.colors.gray[1],
-    },
-    content: {
-        borderRadius: theme.radius.md,
-        backgroundColor:
-            theme.colorScheme === "dark"
-                ? theme.colors.dark[2]
-                : theme.colors.gray[1],
-    }
 }));
 
 function SelectBasicOptions() {
@@ -166,7 +148,22 @@ const privacyData = [
     },
 ];
 
-function ChatGroups() {
+function ChatGroups({
+    handleEditProfile,
+}: {
+    handleEditProfile: (
+        form: UseFormReturnType<
+            {
+                username: string;
+                email: string;
+            },
+            (values: { username: string; email: string }) => {
+                username: string;
+                email: string;
+            }
+        >
+    ) => void;
+}) {
     //mantine
     const theme = useMantineTheme();
     const { colorScheme } = useMantineColorScheme();
@@ -175,7 +172,7 @@ function ChatGroups() {
     const _accordionStyle = accordionStyle();
     const _switchStyle = switchStyle();
     const _buttonStyle = buttonStyle();
-    const _modalStyle = modalStyle();
+    const _modalStyle = ModalStyle();
     const _textInputStyle = TextInputStyle();
 
     const moreThan1800px = useMediaQuery(`(min-width: 1800px)`);
@@ -184,6 +181,54 @@ function ChatGroups() {
     const lessThan350px = useMediaQuery(`(max-width: 350px)`);
 
     const [opened, { open, close }] = useDisclosure(false);
+
+    const form = useForm({
+        initialValues: {
+            username: "",
+            email: "",
+        },
+
+        validate: {
+            username: (value: string) => {
+                if (!value || value.trim.length > 0) {
+                    return "Username is required";
+                }
+
+                if (value.length < 3) {
+                    return "Username must be at least 3 characters";
+                }
+
+                if (value.length > 20) {
+                    return "Username must be less than 20 characters";
+                }
+
+                if (specialCharacters.test(value)) {
+                    return "Username cannot contain special characters";
+                }
+
+                return null;
+            },
+            email: (value: string) => {
+                if (!value || value.trim.length > 0) {
+                    return "Email is required";
+                }
+
+                if (!value.includes("@")) {
+                    return "Email must contain an @";
+                }
+
+                if (!value.includes(".")) {
+                    return "Email must contain a .";
+                }
+
+                if (value.length > 254) {
+                    return "Email must be less than 254 characters";
+                }
+
+                return null;
+            },
+        },
+    });
 
     const items = fieldData.map((item) => (
         <AccordionField {...item} key={item.field} />
@@ -308,11 +353,16 @@ function ChatGroups() {
                                     title="Information"
                                     classNames={_modalStyle.classes}
                                     overlayProps={{
-                                        blur: 3
+                                        blur: 3,
                                     }}
                                     fullScreen={lessThan800px}
                                 >
-                                    <form>
+                                    <form
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            handleEditProfile(form);
+                                        }}
+                                    >
                                         <Stack>
                                             <TextInput
                                                 variant="unstyled"
@@ -329,6 +379,7 @@ function ChatGroups() {
                                                 classNames={
                                                     _textInputStyle.classes
                                                 }
+                                                {...form.getInputProps("username")}
                                             />
                                             <TextInput
                                                 variant="unstyled"
@@ -345,6 +396,7 @@ function ChatGroups() {
                                                 classNames={
                                                     _textInputStyle.classes
                                                 }
+                                                {...form.getInputProps("email")}
                                             />
                                             <Group position="center" grow>
                                                 <Button

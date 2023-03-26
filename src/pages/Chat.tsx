@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { io, Socket } from "socket.io-client";
 import cookie from "js-cookie";
 import Filter from "bad-words";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 
 //components
 import Friend from "../components/chat/Friend";
@@ -33,6 +33,8 @@ import {
     verifiedUser as VERIFIEDUSER,
     getAllUsers as GETALLUSERS,
     IGetVUsers,
+    updateUser as UPDATEUSER,
+    IUpdateUser
 } from "../graphql/chat";
 
 //mantine
@@ -46,6 +48,9 @@ import {
     Title,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import { UseFormReturnType } from "@mantine/form";
+
+//graphql
 import { IUserInfo } from "../interfaces/IApiResponses";
 import IMessage, {
     IRecieveMessage,
@@ -78,6 +83,7 @@ function Chat() {
         useLazyQuery(VERIFIEDUSER);
     const [getAllUsers, { error: gerror, loading: gloading }] =
         useLazyQuery(GETALLUSERS);
+    const [updateUser, {error}] = useMutation(UPDATEUSER);
 
     //filter
     const filter = new Filter();
@@ -279,6 +285,59 @@ function Chat() {
         setActualMessage("");
     };
 
+    const handleEditProfile = async (
+        form: UseFormReturnType<
+            {
+                username: string;
+                email: string;
+            },
+            (values: { username: string; email: string }) => {
+                username: string;
+                email: string;
+            }
+        >
+    ) => {
+        const errors = form.validate();
+
+        if (errors.hasErrors) {
+            return toast.error(
+                "There are some errors in the form, please read carefully and fix them",
+                toastOptions
+            );
+        }
+
+        //all the form values are already validated
+
+        const { username, email } = form.values;
+        const _token: string = cookie.get("_auth") as string;
+
+        setVisible(true);
+
+        const { data: dav } = await updateUser({
+            variables: {
+                token: _token,
+                updateUser: {
+                    email: email,
+                    username: username
+                }
+            },
+        });
+
+        const data: IUpdateUser = dav.updateUser;
+
+        if (error) console.log(error.message);
+
+        //if the result is not successful, it will show an error message
+        //if it is successful, it will navigate to the home page and save the user in local storage
+        if (!data?.status) {
+            toast.error(data?.message, toastOptions);
+        } else {
+            toast.success("The user has been successfully updated, refresh to see the changes", toastOptions);
+        }
+
+        setVisible(false);
+    };
+
     return (
         <>
             <LoadingOverlay visible={visible} overlayBlur={8} />
@@ -350,7 +409,7 @@ function Chat() {
                                         ))}
                                     </Chats>
                                 ) : selectedWindow === 2 ? (
-                                    <ChatSettings />
+                                    <ChatSettings handleEditProfile={handleEditProfile} />
                                 ) : (
                                     <></>
                                 )}
@@ -374,7 +433,7 @@ function Chat() {
                                     dummy={dummy}
                                 >
                                     {selectedFriend >= 0 ? (
-                                        messages.map((message, index) => 
+                                        messages.map((message, index) =>
                                             message.id_room ===
                                             friends[selectedFriend].idRoom ? (
                                                 <Message
@@ -408,7 +467,7 @@ function Chat() {
                                                     key={`${message.message}/${
                                                         message.username
                                                     }/${index.toString()}`}
-                                                    style={{display: "none"}}
+                                                    style={{ display: "none" }}
                                                 ></div>
                                             )
                                         )

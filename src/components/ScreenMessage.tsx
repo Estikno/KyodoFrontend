@@ -43,7 +43,6 @@ function ScreenMessage({
                 shadow="sm"
                 p={"lg"}
                 radius="md"
-                withBorder
                 sx={{
                     width: "30%",
                     backgroundColor: dark

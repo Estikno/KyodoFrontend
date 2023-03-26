@@ -31,6 +31,15 @@ export const getAllUsers = gql`
     }
 `;
 
+export const updateUser = gql`
+    mutation ($token: String!, $updateUser: UpdateUser!) {
+        updateUser(token: $token, updateUser: $updateUser) {
+            message
+            status
+        }
+    }
+`;
+
 export interface IGetVUsers {
     message: string;
     status: boolean;
@@ -43,4 +52,9 @@ export interface IUser {
     username: string;
     email: string;
     idRoom: string;
+}
+
+export interface IUpdateUser {
+    message: string;
+    status: boolean;
 }
