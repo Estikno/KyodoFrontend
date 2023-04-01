@@ -1,7 +1,14 @@
 import React from "react";
+import { useMutation } from "@apollo/client";
+import { toast } from "react-toastify";
+import cookie from "js-cookie";
 
 //options, helpers or utils already made by me
 import { toastOptions, specialCharacters } from "../../../utils/configs";
+import {
+    removeAvatar as REMOVEAVATAR,
+    IMinimumInfo,
+} from "../../../graphql/chat";
 
 //components
 import AccordionField from "./AccordionField";
@@ -26,10 +33,12 @@ import {
     ScrollArea,
     Button,
     TextInput,
+    Indicator,
 } from "@mantine/core";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
+import { BiPencil } from "react-icons/bi";
 import { BsArrowDownShort, BsDot } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
 import { CgUnavailable } from "react-icons/cg";
@@ -42,6 +51,7 @@ import selectStyle from "../../../utils/MantineStyles/SelectStyle";
 import switchStyle from "../../../utils/MantineStyles/SwitchStyle";
 import TextInputStyle from "../../../utils/MantineStyles/TextInputStyle";
 import ModalStyle from "../../../utils/MantineStyles/ModalStyle";
+import IndicatorStyle from "../../../utils/MantineStyles/IndicatorStyle";
 
 const buttonStyle = createStyles((theme) => ({
     root: {
@@ -150,6 +160,8 @@ const privacyData = [
 
 function ChatGroups({
     handleEditProfile,
+    avatarUrl,
+    username,
 }: {
     handleEditProfile: (
         form: UseFormReturnType<
@@ -163,6 +175,8 @@ function ChatGroups({
             }
         >
     ) => void;
+    avatarUrl: string;
+    username: string;
 }) {
     //mantine
     const theme = useMantineTheme();
@@ -174,6 +188,7 @@ function ChatGroups({
     const _buttonStyle = buttonStyle();
     const _modalStyle = ModalStyle();
     const _textInputStyle = TextInputStyle();
+    const _indicatorStyle = IndicatorStyle();
 
     const moreThan1800px = useMediaQuery(`(min-width: 1800px)`);
     const lessThan800px = useMediaQuery(`(max-width: 800px)`);
@@ -181,6 +196,9 @@ function ChatGroups({
     const lessThan350px = useMediaQuery(`(max-width: 350px)`);
 
     const [opened, { open, close }] = useDisclosure(false);
+
+    //graphql
+    const [removeAvatar, { error }] = useMutation(REMOVEAVATAR);
 
     const form = useForm({
         initialValues: {
@@ -243,11 +261,32 @@ function ChatGroups({
                     size={"xs"}
                     sx={{ width: "100%" }}
                     color={dark ? theme.colors.dark[0] : theme.colors.gray[0]}
+                    key={item.field}
                 />
                 <PrivacyOptions {...item} key={item.field} />
             </>
         )
     );
+
+    const removeAvatarEvent = async () => {
+        const token: string = cookie.get("_auth") as string;
+
+        const { data: dav } = await removeAvatar({
+            variables: {
+                token: token,
+            },
+        });
+
+        const data: IMinimumInfo = dav.removeAvatar;
+
+        if (error) console.log(error.message);
+
+        if (!data.status) {
+            return toast.error(data.message, toastOptions);
+        }
+
+        return toast.success(data.message, toastOptions);
+    };
 
     return (
         <Stack
@@ -269,13 +308,47 @@ function ChatGroups({
                 Settings
             </Title>
             <Stack spacing={"xs"} align="center" sx={{ width: "100%" }}>
-                <Image
-                    src={
-                        "https://res.cloudinary.com/kyodo/image/upload/v1661105003/kyodo/avatars/DefaultAvatar.png"
-                    }
-                    width="120px"
-                    alt="Profile image"
-                />
+                <Menu
+                    shadow="md"
+                    position="bottom-start"
+                    width={150}
+                    transitionProps={{
+                        transition: "slide-up",
+                        duration: 150,
+                    }}
+                    classNames={MenuStyles.classes}
+                    withArrow
+                >
+                    <Menu.Target>
+                        <Indicator
+                            position="bottom-start"
+                            offset={7}
+                            size={25}
+                            label={
+                                <Text>
+                                    <BiPencil />
+                                    Edit
+                                </Text>
+                            }
+                            inline
+                            radius={"md"}
+                            sx={{ cursor: "pointer" }}
+                            classNames={_indicatorStyle.classes}
+                        >
+                            <Image
+                                src={avatarUrl}
+                                width="120px"
+                                alt="Profile image"
+                            />
+                        </Indicator>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                        <Menu.Item>Upload an avatar</Menu.Item>
+                        <Menu.Item onClick={removeAvatarEvent}>
+                            Remove avatar
+                        </Menu.Item>
+                    </Menu.Dropdown>
+                </Menu>
                 <Stack align={"center"} spacing={0}>
                     <Text
                         fw={700}
@@ -284,9 +357,9 @@ function ChatGroups({
                             dark ? theme.colors.dark[7] : theme.colors.gray[7]
                         }
                     >
-                        Patricio estrella
+                        {username}
                     </Text>
-                    <Menu
+                    {/*<Menu
                         shadow={"md"}
                         position="bottom-start"
                         width={150}
@@ -324,7 +397,7 @@ function ChatGroups({
                                 Disconnected
                             </Menu.Item>
                         </Menu.Dropdown>
-                    </Menu>
+                    </Menu>*/}
                 </Stack>
             </Stack>
             <Divider
@@ -379,7 +452,9 @@ function ChatGroups({
                                                 classNames={
                                                     _textInputStyle.classes
                                                 }
-                                                {...form.getInputProps("username")}
+                                                {...form.getInputProps(
+                                                    "username"
+                                                )}
                                             />
                                             <TextInput
                                                 variant="unstyled"
@@ -430,7 +505,7 @@ function ChatGroups({
                             </Stack>
                         </Accordion.Panel>
                     </Accordion.Item>
-                    <Accordion.Item value="Privacy">
+                    {/*<Accordion.Item value="Privacy">
                         <Accordion.Control>Privacy</Accordion.Control>
                         <Accordion.Panel>
                             <Stack
@@ -440,8 +515,8 @@ function ChatGroups({
                                 {privacyItems}
                             </Stack>
                         </Accordion.Panel>
-                    </Accordion.Item>
-                    <Accordion.Item value="Security">
+                                                </Accordion.Item>*/}
+                    {/*<Accordion.Item value="Security">
                         <Accordion.Control>Security</Accordion.Control>
                         <Accordion.Panel>
                             <Stack
@@ -462,7 +537,7 @@ function ChatGroups({
                                 </Group>
                             </Stack>
                         </Accordion.Panel>
-                    </Accordion.Item>
+                                    </Accordion.Item>*/}
                     <Accordion.Item value="Help">
                         <Accordion.Control>Help</Accordion.Control>
                         <Accordion.Panel>

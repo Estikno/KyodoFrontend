@@ -40,6 +40,15 @@ export const updateUser = gql`
     }
 `;
 
+export const removeAvatar = gql`
+    mutation ($token: String!) {
+        removeAvatar(token: $token) {
+            message
+            status
+        }
+    }
+`;
+
 export interface IGetVUsers {
     message: string;
     status: boolean;
@@ -54,7 +63,7 @@ export interface IUser {
     idRoom: string;
 }
 
-export interface IUpdateUser {
+export interface IMinimumInfo {
     message: string;
     status: boolean;
 }

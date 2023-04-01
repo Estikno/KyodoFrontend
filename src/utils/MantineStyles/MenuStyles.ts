@@ -28,4 +28,10 @@ export default createStyles((theme) => ({
                 ? theme.colors.dark[0]
                 : theme.colors.gray[1],
     },
+    arrow: {
+        borderColor:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[0]
+                : theme.colors.gray[0],
+    },
 }));

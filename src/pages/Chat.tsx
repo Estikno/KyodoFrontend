@@ -34,7 +34,7 @@ import {
     getAllUsers as GETALLUSERS,
     IGetVUsers,
     updateUser as UPDATEUSER,
-    IUpdateUser
+    IMinimumInfo,
 } from "../graphql/chat";
 
 //mantine
@@ -83,7 +83,7 @@ function Chat() {
         useLazyQuery(VERIFIEDUSER);
     const [getAllUsers, { error: gerror, loading: gloading }] =
         useLazyQuery(GETALLUSERS);
-    const [updateUser, {error}] = useMutation(UPDATEUSER);
+    const [updateUser, { error }] = useMutation(UPDATEUSER);
 
     //filter
     const filter = new Filter();
@@ -318,12 +318,12 @@ function Chat() {
                 token: _token,
                 updateUser: {
                     email: email,
-                    username: username
-                }
+                    username: username,
+                },
             },
         });
 
-        const data: IUpdateUser = dav.updateUser;
+        const data: IMinimumInfo = dav.updateUser;
 
         if (error) console.log(error.message);
 
@@ -332,7 +332,10 @@ function Chat() {
         if (!data?.status) {
             toast.error(data?.message, toastOptions);
         } else {
-            toast.success("The user has been successfully updated, refresh to see the changes", toastOptions);
+            toast.success(
+                "The user has been successfully updated, refresh to see the changes",
+                toastOptions
+            );
         }
 
         setVisible(false);
@@ -409,7 +412,11 @@ function Chat() {
                                         ))}
                                     </Chats>
                                 ) : selectedWindow === 2 ? (
-                                    <ChatSettings handleEditProfile={handleEditProfile} />
+                                    <ChatSettings
+                                        handleEditProfile={handleEditProfile}
+                                        avatarUrl={userInfo.avatarUrl}
+                                        username={userInfo.username}
+                                    />
                                 ) : (
                                     <></>
                                 )}
