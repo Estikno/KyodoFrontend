@@ -26,7 +26,7 @@
     <img src="https://img.shields.io/github/issues/Estiknok/KyodoFrontend" alt="open issues" />
   </a>
   <a href="https://github.com/Estiknok/KyodoFrontend/blob/master/LICENSE.md">
-    <img src="https://img.shields.io/github/license/Estiknok/KyodoFrontend.svg" alt="license" />
+    <img src="https://img.shields.io/github/license/Estiknok/KyodoFrontend" alt="license" />
   </a>
 </p>
    
