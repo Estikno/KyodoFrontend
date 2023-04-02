@@ -169,7 +169,8 @@ function PorfileTab({ avatarUrl }: { avatarUrl: string }) {
 
         //confirm if the avatar is something and not null
         if (newAvatar) {
-            changeAv(newAvatar);
+            //changeAv(newAvatar);
+            console.log(newAvatar);
         }
     }, [newAvatar]);
 

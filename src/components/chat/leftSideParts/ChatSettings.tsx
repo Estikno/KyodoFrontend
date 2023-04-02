@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import cookie from "js-cookie";
@@ -9,6 +9,8 @@ import {
     removeAvatar as REMOVEAVATAR,
     IMinimumInfo,
 } from "../../../graphql/chat";
+import { IAuthResponse } from "../../../interfaces/IApiResponses";
+import { changeAvatar } from "../../../utils/callApi";
 
 //components
 import AccordionField from "./AccordionField";
@@ -18,7 +20,6 @@ import {
     Stack,
     Image,
     Title,
-    UnstyledButton,
     Menu,
     Modal,
     createStyles,
@@ -34,15 +35,19 @@ import {
     Button,
     TextInput,
     Indicator,
+    rem,
 } from "@mantine/core";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
 
-import { BiPencil } from "react-icons/bi";
+import { BiPencil, BiErrorCircle } from "react-icons/bi";
 import { BsArrowDownShort, BsDot } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
 import { CgUnavailable } from "react-icons/cg";
 import { RxDotFilled } from "react-icons/rx";
+import { IoCloudUploadOutline } from "react-icons/io5";
+import { HiOutlinePhoto } from "react-icons/hi2";
 
 //styles
 import menuStyle from "../../../utils/MantineStyles/MenuStyles";
@@ -52,6 +57,7 @@ import switchStyle from "../../../utils/MantineStyles/SwitchStyle";
 import TextInputStyle from "../../../utils/MantineStyles/TextInputStyle";
 import ModalStyle from "../../../utils/MantineStyles/ModalStyle";
 import IndicatorStyle from "../../../utils/MantineStyles/IndicatorStyle";
+import DropZoneStyle from "../../../utils/MantineStyles/DropzoneStyle";
 
 const buttonStyle = createStyles((theme) => ({
     root: {
@@ -162,6 +168,7 @@ function ChatGroups({
     handleEditProfile,
     avatarUrl,
     username,
+    setVisible,
 }: {
     handleEditProfile: (
         form: UseFormReturnType<
@@ -177,11 +184,13 @@ function ChatGroups({
     ) => void;
     avatarUrl: string;
     username: string;
+    setVisible: (value: boolean) => void;
 }) {
     //mantine
     const theme = useMantineTheme();
     const { colorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
+
     const MenuStyles = menuStyle();
     const _accordionStyle = accordionStyle();
     const _switchStyle = switchStyle();
@@ -189,6 +198,7 @@ function ChatGroups({
     const _modalStyle = ModalStyle();
     const _textInputStyle = TextInputStyle();
     const _indicatorStyle = IndicatorStyle();
+    const _dropzonenStyle = DropZoneStyle();
 
     const moreThan1800px = useMediaQuery(`(min-width: 1800px)`);
     const lessThan800px = useMediaQuery(`(max-width: 800px)`);
@@ -196,6 +206,8 @@ function ChatGroups({
     const lessThan350px = useMediaQuery(`(max-width: 350px)`);
 
     const [opened, { open, close }] = useDisclosure(false);
+    const [openedModal2, { open: openModal2, close: closeModal2 }] =
+        useDisclosure(false);
 
     //graphql
     const [removeAvatar, { error }] = useMutation(REMOVEAVATAR);
@@ -288,6 +300,24 @@ function ChatGroups({
         return toast.success(data.message, toastOptions);
     };
 
+    const changeAv = async (image: File) => {
+        setVisible(true);
+
+        const token: string = cookie.get("_auth") as string;
+        const data: IAuthResponse = await changeAvatar(image, token);
+
+        setVisible(false);
+
+        if (!data.status) {
+            return toast.error(
+                "There was an error updating the avatar. Please try again later",
+                toastOptions
+            );
+        }
+
+        return toast.success(data.message, toastOptions);
+    };
+
     return (
         <Stack
             align="center"
@@ -308,6 +338,78 @@ function ChatGroups({
                 Settings
             </Title>
             <Stack spacing={"xs"} align="center" sx={{ width: "100%" }}>
+                <Modal
+                    opened={openedModal2}
+                    onClose={closeModal2}
+                    title="Change avatar"
+                    classNames={_modalStyle.classes}
+                    overlayProps={{
+                        blur: 3,
+                    }}
+                    fullScreen={lessThan800px}
+                >
+                    <Dropzone
+                        onDrop={(images: FileWithPath[]) => {
+                            changeAv(images[0]);
+                        }}
+                        onReject={() => toast.error("Images have to be less than 5mb and only one image at a time", toastOptions)}
+                        maxSize={3 * 1024 ** 2}
+                        classNames={_dropzonenStyle.classes}
+                        maxFiles={1}
+                        accept={IMAGE_MIME_TYPE}
+                    >
+                        <Group position="center">
+                            <Dropzone.Accept>
+                                <IoCloudUploadOutline
+                                    size={rem(50)}
+                                    color={
+                                        dark
+                                            ? theme.colors.dark[7]
+                                            : theme.colors.gray[7]
+                                    }
+                                />
+                            </Dropzone.Accept>
+                            <Dropzone.Reject>
+                                <BiErrorCircle
+                                    size={rem(50)}
+                                    color={
+                                        dark
+                                            ? theme.colors.dark[7]
+                                            : theme.colors.gray[7]
+                                    }
+                                />
+                            </Dropzone.Reject>
+                            <Dropzone.Idle>
+                                <HiOutlinePhoto
+                                    size={rem(50)}
+                                    color={
+                                        dark
+                                            ? theme.colors.dark[7]
+                                            : theme.colors.gray[7]
+                                    }
+                                />
+                            </Dropzone.Idle>
+                        </Group>
+
+                        <Text ta="center" fw={700} fz="lg" mt="xl">
+                            <Dropzone.Accept>Drop image here</Dropzone.Accept>
+                            <Dropzone.Reject>
+                                Images less than 5mb
+                            </Dropzone.Reject>
+                            <Dropzone.Idle>Upload image</Dropzone.Idle>
+                        </Text>
+                        <Text
+                            ta="center"
+                            fz="sm"
+                            mt="xs"
+                            color={dark ? "#9AA1B9" : "#858DA6"}
+                        >
+                            Drag&apos;n&apos;drop an image here to upload. We
+                            can accept only images files that are less than 5mb
+                            in size.
+                        </Text>
+                    </Dropzone>
+                </Modal>
                 <Menu
                     shadow="md"
                     position="bottom-start"
@@ -343,7 +445,9 @@ function ChatGroups({
                         </Indicator>
                     </Menu.Target>
                     <Menu.Dropdown>
-                        <Menu.Item>Upload an avatar</Menu.Item>
+                        <Menu.Item onClick={openModal2}>
+                            Upload an avatar
+                        </Menu.Item>
                         <Menu.Item onClick={removeAvatarEvent}>
                             Remove avatar
                         </Menu.Item>

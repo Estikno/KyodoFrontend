@@ -416,6 +416,7 @@ function Chat() {
                                         handleEditProfile={handleEditProfile}
                                         avatarUrl={userInfo.avatarUrl}
                                         username={userInfo.username}
+                                        setVisible={setVisible}
                                     />
                                 ) : (
                                     <></>
