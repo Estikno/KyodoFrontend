@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="https://res.cloudinary.com/kyodo/image/upload/v1674571454/kyodo/icons/logo_dj9gkd.png" alt="logo" width="200" height="auto" />
+  <img src="assets/logo.png" alt="logo" width="200" height="auto" />
   <h1>Kyodo's Frontend</h1>
   
   <p>
@@ -67,7 +67,7 @@ It's important to mention that this frontend is designed to work with the offici
 ### :camera: Screenshots
 
 <div align="center"> 
-  <img src="https://res.cloudinary.com/kyodo/image/upload/v1680428576/kyodo/icons/kyodoFrontendImage_a9azab.png" alt="screenshot" />
+  <img src="assets/portrait.png" alt="screenshot" />
 </div>
 
 
