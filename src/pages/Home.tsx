@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { AnimationOnScroll } from "react-animation-on-scroll";
 
@@ -9,15 +9,17 @@ import Footer from "../components/Footer";
 //options, helpers or utils components already made by me
 import { toastOptions, specialCharacters } from "../utils/configs";
 
+//images
+import home1 from '../assets/home1.png';
+import home2 from '../assets/home2.png';
+import home3 from '../assets/home3.png';
+
 //mantine
 import {
     Center,
     SimpleGrid,
-    TextInput,
     Button,
     Group,
-    Space,
-    PasswordInput,
     Text,
     Box,
     MediaQuery,
@@ -36,21 +38,21 @@ const mockData = [
         text: `The application uses end-to-end encryption to ensure
     the confidentiality of messages and files shared
     within the chat.`,
-        image: "https://placeholder.pics/svg/400x300/FF0000-85C8FF/DCFF52-4DFFF1/Placeholder",
+        image: home2,
     },
     {
         title: "Multimedia support",
         text: `Users can easily share photos, videos, and other
     types of multimedia, making it a versatile
     communication tool.`,
-        image: "https://placeholder.pics/svg/400x300/FF0000-85C8FF/DCFF52-4DFFF1/Placeholder",
+        image: home3,
     },
     {
         title: "Group chats",
         text: `The application allows users to create and
     participate in group chats, making it easier to
     collaborate and communicate with teams.`,
-        image: "https://placeholder.pics/svg/400x300/FF0000-85C8FF/DCFF52-4DFFF1/Placeholder",
+        image: home1,
     },
     {
         title: "User-friendly interface",

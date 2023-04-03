@@ -3,6 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 import { useSignOut } from "react-auth-kit";
 
+//images
+import logo from "../../assets/logo.png";
+import USAFlag from "../../assets/USAFlag.png";
+import spainFlag from "../../assets/spainFlag.png";
+
 //mantine
 import {
     Stack,
@@ -136,16 +141,10 @@ function ChatNavbar({
                 paddingTop: ".7rem",
                 paddingBottom: ".7rem",
                 paddingLeft: ".7rem",
-                paddingRight: ".7rem"
+                paddingRight: ".7rem",
             }}
         >
-            <Image
-                src={
-                    "https://res.cloudinary.com/kyodo/image/upload/v1674571454/kyodo/icons/logo_dj9gkd.png"
-                }
-                width={30}
-                height={"auto"}
-            />
+            <Image src={logo} width={30} height={"auto"} />
             <Stack align="center" justify="space-between" spacing={"md"}>
                 {links}
             </Stack>
@@ -156,7 +155,7 @@ function ChatNavbar({
                     offset={10}
                     width={150}
                     classNames={menuClass.classes}
-                    transition="slide-up"
+                    transitionProps={{ transition: "slide-up", duration: 150 }}
                 >
                     <Menu.Target>
                         <UnstyledButton
@@ -185,27 +184,11 @@ function ChatNavbar({
 
                     <Menu.Dropdown>
                         <Menu.Item
-                            icon={
-                                <Image
-                                    src={
-                                        "https://res.cloudinary.com/kyodo/image/upload/v1673983487/kyodo/icons/spainFlag_yuocch.png"
-                                    }
-                                    width="18px"
-                                />
-                            }
+                            icon={<Image src={spainFlag} width="18px" />}
                         >
                             Spanish
                         </Menu.Item>
-                        <Menu.Item
-                            icon={
-                                <Image
-                                    src={
-                                        "https://res.cloudinary.com/kyodo/image/upload/v1673983488/kyodo/icons/USAFlag_xttb5j.png"
-                                    }
-                                    width="18px"
-                                />
-                            }
-                        >
+                        <Menu.Item icon={<Image src={USAFlag} width="18px" />}>
                             English
                         </Menu.Item>
                     </Menu.Dropdown>
@@ -236,7 +219,7 @@ function ChatNavbar({
                     offset={10}
                     width={150}
                     classNames={menuClass.classes}
-                    transition="slide-up"
+                    transitionProps={{ transition: "slide-up", duration: 150 }}
                 >
                     <Menu.Target>
                         <UnstyledButton

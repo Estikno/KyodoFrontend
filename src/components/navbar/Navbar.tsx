@@ -5,6 +5,9 @@ import { Link } from "react-router-dom";
 import NavLink from "./NavLink";
 import NavLogo from "./NavLogo";
 
+//images
+import logo from "../../assets/logo.png";
+
 //mantine
 import {
     Burger,
@@ -123,11 +126,7 @@ function Navbar() {
                             padding: "0 calc((100vw - 1000px) / 3)",
                         }}
                     >
-                        <NavLogo
-                            Logo={
-                                "https://res.cloudinary.com/kyodo/image/upload/v1674571454/kyodo/icons/logo_dj9gkd.png"
-                            }
-                        />
+                        <NavLogo Logo={logo} />
 
                         <Group
                             sx={{ height: "100%" }}
@@ -149,7 +148,7 @@ function Navbar() {
                         </Group>
 
                         <Group className={classes.hiddenMobile}>
-                            <UnstyledButton onClick={() => toggleColorScheme()} >
+                            <UnstyledButton onClick={() => toggleColorScheme()}>
                                 <Title
                                     order={2}
                                     color={

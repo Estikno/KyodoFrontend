@@ -10,7 +10,6 @@ import { RequireAuth } from "react-auth-kit";
 //pages
 import Chat from "./pages/Chat";
 import Login from "./pages/Login";
-import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import EmailConfirm from "./pages/EmailConfirm";
 import Error404 from "./pages/Error404";
@@ -70,14 +69,6 @@ export default function App() {
                     <Routes>
                         <Route path="/register" element={<Register />} />
                         <Route path="/login" element={<Login />} />
-                        <Route
-                            path="/profile"
-                            element={
-                                <RequireAuth loginPath="/login">
-                                    <Profile />
-                                </RequireAuth>
-                            }
-                        />
                         <Route
                             path="/chat"
                             element={

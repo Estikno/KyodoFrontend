@@ -1,5 +1,9 @@
 import React from "react";
 
+//images
+import _tick from '../assets/tick.png';
+import cross from '../assets/cross.png';
+
 //mantine
 import {
     Grid,
@@ -66,8 +70,8 @@ function ScreenMessage({
                     <Image
                         src={
                             tick
-                                ? "https://res.cloudinary.com/kyodo/image/upload/v1672936699/kyodo/icons/ttick_fzspjf.png"
-                                : "https://res.cloudinary.com/kyodo/image/upload/v1672939191/kyodo/icons/cross_wf1uzx.png"
+                                ? _tick
+                                : cross
                         }
                         alt="cross"
                         height={200}
