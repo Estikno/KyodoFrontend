@@ -115,13 +115,15 @@ function Chat() {
     const [lastMessageDate, setLastMessageDate] = useState<Date>();
     const [selectedWindow, setSelectedWindow] = useState<number>(1);
     const [selectedFriend, setSelectedFriend] = useState<number>(-1);
+    const [number, setNumber] = useState<number>(0);
 
     const [visible, setVisible] = useState<boolean>(true);
 
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-    useEffect(() => {
-        if (userInfo) {
+    const setUpIO = () => {
+        if (userInfo.username != "") {
+            console.log("yes")
             socket.on("all-msg", (message: IRecieveMessage[]) => {
                 setMessages(
                     message.map((msg) => {
@@ -141,19 +143,19 @@ function Chat() {
             });
 
             socket.on("msg", (message: IRecieveMessage) => {
-                setMessages([
-                    ...messages,
+                setMessages(prevState => [
+                    ...prevState,
                     {
-                        message: filter.clean(message.message),
+                        message: message.message, //filter.clean(message.message),
                         fromSelf: message.username === userInfo.username,
-                        username: userInfo.username,
+                        username: message.username,
                         id_room: message.id_room,
-                    },
+                    } as IMessage,
                 ]);
 
                 viewport.current?.scrollTo({
                     top: viewport.current.scrollHeight,
-                    behavior: "smooth",
+                    behavior: "auto",
                 });
 
                 //dummy.current?.scrollIntoView({ behavior: "smooth" });
@@ -162,6 +164,13 @@ function Chat() {
             socket.on("new-usr", (newFriend: IUserInfo) => {
                 setFriends([...friends, newFriend]);
             });
+        }
+    };
+
+    useEffect(() => {
+        if(userInfo.username != "" && number === 0){
+            setUpIO();
+            setNumber(1);
         }
     }, [userInfo]);
 

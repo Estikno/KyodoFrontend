@@ -10,9 +10,10 @@ import Footer from "../components/Footer";
 import { toastOptions, specialCharacters } from "../utils/configs";
 
 //images
-import home1 from '../assets/home1.png';
-import home2 from '../assets/home2.png';
-import home3 from '../assets/home3.png';
+import home1 from "../assets/home1.png";
+import home2 from "../assets/home2.png";
+import home3 from "../assets/home3.png";
+import home4 from "../assets/home4.png";
 
 //mantine
 import {
@@ -59,7 +60,7 @@ const mockData = [
         text: `The application features a clean and intuitive
     interface, making it easy to use for people of all
     ages.`,
-        image: "https://placeholder.pics/svg/400x300/FF0000-85C8FF/DCFF52-4DFFF1/Placeholder",
+        image: home4,
     },
 ];
 
@@ -76,7 +77,7 @@ function Home() {
         <Group
             spacing={300}
             sx={{
-                height: "500px",
+                height: "700px",
                 backgroundColor:
                     index % 2 === 0
                         ? dark

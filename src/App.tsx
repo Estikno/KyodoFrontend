@@ -67,6 +67,7 @@ export default function App() {
             >
                 <BrowserRouter>
                     <Routes>
+                        <Route path="/" element={<Home />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/login" element={<Login />} />
                         <Route
@@ -81,7 +82,6 @@ export default function App() {
                             path="/email-confirm/:token"
                             element={<EmailConfirm />}
                         />
-                        <Route path="/" element={<Home />} />
                         <Route path="*" element={<Error404 />} />
                     </Routes>
                 </BrowserRouter>

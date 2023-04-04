@@ -10,6 +10,9 @@ import {
     useMantineColorScheme,
 } from "@mantine/core";
 
+//images
+import logo from "../assets/logo.png";
+
 //icons
 import { TfiTwitter } from "react-icons/tfi";
 import { FiYoutube } from "react-icons/fi";
@@ -159,12 +162,7 @@ export function Footer({ data }: FooterLinksProps) {
         <footer className={classes.footer}>
             <Container className={classes.inner}>
                 <div className={classes.logo}>
-                    <Image
-                        src={
-                            "https://res.cloudinary.com/kyodo/image/upload/v1674571454/kyodo/icons/logo_dj9gkd.png"
-                        }
-                        width={30}
-                    />
+                    <Image src={logo} width={30} />
                     <Text
                         size="xs"
                         color={dark ? "#9AA1B9" : "#858DA6"}

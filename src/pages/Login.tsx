@@ -123,7 +123,7 @@ function Login() {
      */
     useEffect(() => {
         if (isAuthenticated()) {
-            navigate("/profile");
+            navigate("/chat");
         } else {
             signOut();
         }
@@ -182,7 +182,7 @@ function Login() {
 
                 await sleep(1000);
 
-                navigate("/profile");
+                navigate("/chat");
             } else {
                 toast.error(
                     "An error occurred. Please try again laiter",

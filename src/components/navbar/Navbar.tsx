@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 //components
 import NavLink from "./NavLink";
@@ -94,6 +94,9 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function Navbar() {
+    const navigate = useNavigate();
+
+    //mantine
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
         useDisclosure(false);
     const { classes, theme } = useStyles();
@@ -136,7 +139,7 @@ function Navbar() {
                             <Link className={classes.link} to={"/register"}>
                                 Download
                             </Link>
-                            <Link className={classes.link} to={"/register"}>
+                            <Link className={classes.link} to={"/chat"}>
                                 Chat
                             </Link>
                             <Link className={classes.link} to={"/register"}>
@@ -163,10 +166,13 @@ function Navbar() {
                             <Button
                                 className={classes.button}
                                 variant="default"
+                                onClick={() => navigate("/login")}
                             >
                                 Log in
                             </Button>
-                            <Button>Sign up</Button>
+                            <Button onClick={() => navigate("/register")}>
+                                Sign up
+                            </Button>
                         </Group>
 
                         <Burger
