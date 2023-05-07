@@ -9,6 +9,7 @@ export interface IRecieveMessage {
     username: string;
     message: string;
     id_room: string;
+    update: boolean;
 }
 
 export interface ISendMessage {

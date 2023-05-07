@@ -11,5 +11,5 @@ export interface IUserInfo {
     email: string;
     avatarUrl: string;
     verified: boolean;
-    idRoom?: string;
+    idRoom: string;
 }

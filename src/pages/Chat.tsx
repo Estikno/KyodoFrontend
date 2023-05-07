@@ -109,6 +109,7 @@ function Chat() {
         avatarUrl: "",
         username: "",
         email: "",
+        idRoom: "",
     });
     const [actualMessage, setActualMessage] = useState<string>("");
     const [messages, setMessages] = useState<IMessage[]>([]);
@@ -121,9 +122,8 @@ function Chat() {
 
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-    const setUpIO = () => {
-        if (userInfo.username != "") {
-            console.log("yes")
+    useEffect(() => {
+        if (userInfo.username != "" && number === 0) {
             socket.on("all-msg", (message: IRecieveMessage[]) => {
                 setMessages(
                     message.map((msg) => {
@@ -143,7 +143,7 @@ function Chat() {
             });
 
             socket.on("msg", (message: IRecieveMessage) => {
-                setMessages(prevState => [
+                setMessages((prevState) => [
                     ...prevState,
                     {
                         message: message.message, //filter.clean(message.message),
@@ -152,6 +152,17 @@ function Chat() {
                         id_room: message.id_room,
                     } as IMessage,
                 ]);
+
+                /*if (message.update) {
+                    setFriends((prevstate) => {
+                        const newFriends = [...prevstate];
+                        newFriends[selectedFriend] = {
+                            ...newFriends[selectedFriend],
+                            idRoom: message.id_room,
+                        };
+                        return newFriends;
+                    });
+                }*/
 
                 viewport.current?.scrollTo({
                     top: viewport.current.scrollHeight,
@@ -164,15 +175,39 @@ function Chat() {
             socket.on("new-usr", (newFriend: IUserInfo) => {
                 setFriends([...friends, newFriend]);
             });
-        }
-    };
 
-    useEffect(() => {
-        if(userInfo.username != "" && number === 0){
-            setUpIO();
+            socket.on(
+                "update",
+                (update: {
+                    user1: string;
+                    user2: string;
+                    users1: any;
+                    users2: any;
+                }) => {
+                    if(userInfo.username === update.user1){
+                        setFriends(update.users1);
+                    }
+                    else if(userInfo.username === update.user2){
+                        setFriends(update.users2);
+                    }
+                }
+            );
+
             setNumber(1);
         }
     }, [userInfo]);
+
+    useEffect(() => {
+        console.log(friends);
+    }, [friends]);
+
+    useEffect(() => {
+        console.log(messages);
+    }, [messages]);
+
+    useEffect(() => {
+        console.log(selectedFriend);
+    }, [selectedFriend]);
 
     useEffect(() => {
         if (!isAuthenticated()) {
@@ -274,7 +309,7 @@ function Chat() {
             };*/
             //setMessages([...messages, newMessage]);
 
-            if (friends[selectedFriend].idRoom) {
+            if (friends[selectedFriend].idRoom !== "") {
                 socket.emit("send-msg", {
                     person: userInfo.username,
                     message: actualMessage,
@@ -353,7 +388,7 @@ function Chat() {
     return (
         <>
             <LoadingOverlay visible={visible} overlayBlur={8} />
-            {userInfo?.verified ? (
+            {userInfo?.verified && !visible ? (
                 <>
                     {/*<MobileFriendContainer open={open} setOpen={setOpen}>
                         {friends.map((friend) => (
@@ -465,10 +500,10 @@ function Chat() {
                                                     }
                                                     displayAvatar={
                                                         messages[index + 1]
-                                                            ? messages[
+                                                            ? (messages[
                                                                   index + 1
                                                               ].id_room ===
-                                                              message.id_room
+                                                              message.id_room)
                                                                 ? messages[
                                                                       index + 1
                                                                   ].username ===
@@ -484,13 +519,15 @@ function Chat() {
                                                     key={`${message.message}/${
                                                         message.username
                                                     }/${index.toString()}`}
-                                                    style={{ display: "none" }}
+                                                    style={{
+                                                        display: "none",
+                                                    }}
                                                 ></div>
                                             )
                                         )
                                     ) : (
                                         <>
-                                            <Title order={1}>
+                                            <Title order={1} key={Math.random()}>
                                                 NO HAY USUARIOS
                                             </Title>
                                         </>
