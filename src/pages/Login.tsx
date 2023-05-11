@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import ReCaptcha, { ReCAPTCHA as IRecaptcha } from "react-google-recaptcha";
 import { useMutation } from "@apollo/client";
 
 //options, helpers or utils components already made by me
@@ -49,9 +48,6 @@ function Login() {
 
     //graphql
     const [login, { error, loading }] = useMutation(LOGIN);
-
-    //captcha
-    const captcha = useRef<IRecaptcha>(null);
 
     //auth's funtions
     const signIn = useSignIn();
@@ -288,16 +284,6 @@ function Login() {
                                     {...form.getInputProps("password")}
                                     classNames={textInputClasses.classes}
                                 />
-
-                                <Group position="center">
-                                    <ReCaptcha
-                                        sitekey="6LedrN8jAAAAAOEE-VmfNn80nEYfipvTSNVGcg8S"
-                                        theme={dark ? "dark" : "light"}
-                                        onChange={onchangeRecaptcha}
-                                        ref={captcha}
-                                        size="normal"
-                                    />
-                                </Group>
 
                                 <Group position="center" grow>
                                     <Button

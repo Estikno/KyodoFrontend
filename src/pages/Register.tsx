@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import ReCaptcha, { ReCAPTCHA as IRecaptcha } from "react-google-recaptcha";
 import { useMutation } from "@apollo/client";
+import { Turnstile, TurnstileInstance } from "@marsidev/react-turnstile";
 
 //options, helpers or utils already made by me
-import { toastOptions, specialCharacters } from "../utils/configs";
+import { toastOptions, specialCharacters, siteKey } from "../utils/configs";
 import { callRegister } from "../utils/callApi";
 import { useSignIn, useIsAuthenticated, useSignOut } from "react-auth-kit";
 import { register as REGISTER, IRegister } from "../graphql/register";
@@ -48,7 +48,7 @@ function Register() {
     const [register, { error, loading }] = useMutation(REGISTER);
 
     //captcha
-    const captcha = useRef<IRecaptcha>(null);
+    const captcha = useRef<TurnstileInstance>();
 
     //auth's funtions
     const signIn = useSignIn();
@@ -166,9 +166,6 @@ function Register() {
             );
         }
 
-        if (!captcha.current?.getValue())
-            return toast.error("You must complete the captcha", toastOptions);
-
         //all the form values are already validated
 
         const { username, email, password } = form.values;
@@ -221,8 +218,6 @@ function Register() {
 
         setVisible(false);
     };
-
-    const onchangeRecaptcha = () => {};
 
     return (
         <>
@@ -335,13 +330,14 @@ function Register() {
                                     {...form.getInputProps("password")}
                                     classNames={textInputClasses.classes}
                                 />
+
                                 <Group position="center">
-                                    <ReCaptcha
-                                        sitekey="6LedrN8jAAAAAOEE-VmfNn80nEYfipvTSNVGcg8S"
-                                        theme={dark ? "dark" : "light"}
-                                        onChange={onchangeRecaptcha}
+                                    <Turnstile
+                                        siteKey="0x4AAAAAAAEnYg5nEN8VTZLF"
+                                        options={{
+                                            theme: dark ? "dark" : "light",
+                                        }}
                                         ref={captcha}
-                                        size="normal"
                                     />
                                 </Group>
 
