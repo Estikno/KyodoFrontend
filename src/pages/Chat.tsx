@@ -64,11 +64,11 @@ const useStyles = createStyles((theme) => ({
         },
     },
 
-    chat: {
+    /*chat: {
         [theme.fn.smallerThan("md")]: {
             display: "none",
         },
-    },
+    },*/
 }));
 
 const socket: Socket = io(apiRoute);
@@ -117,6 +117,7 @@ function Chat() {
     const [selectedWindow, setSelectedWindow] = useState<number>(1);
     const [selectedFriend, setSelectedFriend] = useState<number>(-1);
     const [number, setNumber] = useState<number>(0);
+    const [showChatSmall, setShowChatSmall] = useState<boolean>(false);
 
     const [visible, setVisible] = useState<boolean>(true);
 
@@ -184,10 +185,9 @@ function Chat() {
                     users1: any;
                     users2: any;
                 }) => {
-                    if(userInfo.username === update.user1){
+                    if (userInfo.username === update.user1) {
                         setFriends(update.users1);
-                    }
-                    else if(userInfo.username === update.user2){
+                    } else if (userInfo.username === update.user2) {
                         setFriends(update.users2);
                     }
                 }
@@ -207,6 +207,8 @@ function Chat() {
 
     useEffect(() => {
         console.log(selectedFriend);
+
+        if(selectedFriend >= 0 ) setShowChatSmall(true);
     }, [selectedFriend]);
 
     useEffect(() => {
@@ -434,6 +436,7 @@ function Chat() {
                                         : theme.colors.gray[1],
                                     padding: "0",
                                     minWidth: lessthan991px ? "" : "391px",
+                                    display: lessthan991px ? (showChatSmall ? "none" : "") : "",
                                     height: "100%",
                                 })}
                             >
@@ -473,9 +476,10 @@ function Chat() {
                                     backgroundColor: dark
                                         ? theme.colors.dark[2]
                                         : theme.colors.gray[2],
-                                    height: "100%",
+                                    height: lessthan991px ? "100vh" : "100%",
+                                    display: lessthan991px ? (showChatSmall ? "" : "none") : ""
                                 }}
-                                className={classes.chat}
+                                //className={classes.chat}
                             >
                                 <RightSide
                                     sendMessage={sendMessage}
@@ -483,6 +487,9 @@ function Chat() {
                                     setActualMessage={setActualMessage}
                                     viewport={viewport}
                                     dummy={dummy}
+                                    setShowChatSmall={setShowChatSmall}
+                                    setSelectedFriend={setSelectedFriend}
+                                    friend={(selectedFriend >= 0) ? friends[selectedFriend] : undefined}
                                 >
                                     {selectedFriend >= 0 ? (
                                         messages.map((message, index) =>
@@ -500,10 +507,10 @@ function Chat() {
                                                     }
                                                     displayAvatar={
                                                         messages[index + 1]
-                                                            ? (messages[
+                                                            ? messages[
                                                                   index + 1
                                                               ].id_room ===
-                                                              message.id_room)
+                                                              message.id_room
                                                                 ? messages[
                                                                       index + 1
                                                                   ].username ===
@@ -527,7 +534,10 @@ function Chat() {
                                         )
                                     ) : (
                                         <>
-                                            <Title order={1} key={Math.random()}>
+                                            <Title
+                                                order={1}
+                                                key={Math.random()}
+                                            >
                                                 NO HAY USUARIOS
                                             </Title>
                                         </>
@@ -539,6 +549,7 @@ function Chat() {
                     <MobileChatNavbar
                         setSelectedWindow={setSelectedWindow}
                         selectedWindow={selectedWindow}
+                        showChatSmall={showChatSmall}
                     />
                 </>
             ) : (

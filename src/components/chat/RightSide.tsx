@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
 
+//interfaces
+import { IUserInfo } from "../../interfaces/IApiResponses";
+
 //mantine
 import {
     Group,
@@ -18,7 +21,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { FaPaperPlane, FaPaperclip } from "react-icons/fa";
 import { GoPrimitiveDot } from "react-icons/go";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
-import { IoCallOutline } from "react-icons/io5";
+import { IoCallOutline, IoCaretBackOutline } from "react-icons/io5";
 import { AiOutlineVideoCamera } from "react-icons/ai";
 import { MdPersonOutline } from "react-icons/md";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
@@ -31,6 +34,9 @@ function RightSide({
     actualMessage,
     viewport,
     dummy,
+    setShowChatSmall,
+    setSelectedFriend,
+    friend,
 }: {
     children: JSX.Element | JSX.Element[];
     sendMessage: (event: React.FormEvent<Element>) => void;
@@ -38,6 +44,9 @@ function RightSide({
     actualMessage: string;
     viewport: React.RefObject<HTMLDivElement>;
     dummy: React.RefObject<HTMLSpanElement>;
+    setShowChatSmall: React.Dispatch<React.SetStateAction<boolean>>;
+    setSelectedFriend: React.Dispatch<React.SetStateAction<number>>;
+    friend: IUserInfo | undefined;
 }) {
     const theme = useMantineTheme();
     const { colorScheme } = useMantineColorScheme();
@@ -45,6 +54,8 @@ function RightSide({
 
     const lesstThan1200px = useMediaQuery("(max-width: 1200px)");
     const lessthan1600px = useMediaQuery(`(max-width: 1600px)`);
+    const lessthan991px = useMediaQuery(`(max-width: 991px)`);
+    const lessthan400px = useMediaQuery(`(max-width: 400px)`);
 
     return (
         <Stack
@@ -65,6 +76,20 @@ function RightSide({
                 position="apart"
             >
                 <Group spacing={"xs"} sx={{ marginLeft: "20px" }}>
+                    {lessthan991px ? (
+                        <Title
+                            order={3}
+                            color={dark ? "#9FB4D2" : "#858DA6"}
+                            onClick={() => {
+                                setShowChatSmall(false);
+                                setSelectedFriend(-1);
+                            }}
+                        >
+                            <IoCaretBackOutline />
+                        </Title>
+                    ) : (
+                        <></>
+                    )}
                     <Avatar radius="xl" size="md" color="blue" />
                     <Text
                         fz={"lg"}
@@ -73,7 +98,7 @@ function RightSide({
                             dark ? theme.colors.dark[7] : theme.colors.gray[7]
                         }
                     >
-                        Patricio Estrella
+                        {friend ? friend.username : ""}
                         <GoPrimitiveDot
                             style={{ paddingTop: "5px", color: "green" }}
                         />
@@ -86,7 +111,7 @@ function RightSide({
                     }}
                     spacing={"xl"}
                 >
-                    <Title order={3}>
+                    {/*<Title order={3}>
                         <HiOutlineMagnifyingGlass />
                     </Title>
                     <Title order={3}>
@@ -100,7 +125,7 @@ function RightSide({
                     </Title>
                     <Title order={3}>
                         <BiDotsHorizontalRounded />
-                    </Title>
+                    </Title>*/}
                 </Group>
             </Group>
             <ScrollArea
@@ -162,18 +187,22 @@ function RightSide({
                         <TextInput
                             placeholder="Enter Message..."
                             sx={(theme) => ({
-                                width: lesstThan1200px
-                                    ? "70%"
+                                width: lessthan400px
+                                    ? "85%"
+                                    : lessthan991px
+                                    ? "89%"
+                                    : lesstThan1200px
+                                    ? "90%"
                                     : lessthan1600px
-                                    ? "80%"
-                                    : "85%",
+                                    ? "94.5%"
+                                    : "95%",
                                 input: {
                                     color: dark ? "#9BB0C7" : "#7A7FA6",
                                     "::placeholder": {
                                         color: dark ? "#9BB0C7" : "#7A7FA6",
                                     },
                                     paddingLeft: "15px",
-                                    paddingRight: "15px",
+                                    paddingRight: "35px",
                                 },
                                 backgroundColor: dark
                                     ? theme.colors.dark[0]
@@ -186,18 +215,32 @@ function RightSide({
                             value={actualMessage}
                             size="md"
                             variant="unstyled"
-                        />
-                        <Title
-                            order={4}
-                            color={
-                                dark
-                                    ? theme.colors.dark[4]
-                                    : theme.colors.gray[4]
+                            rightSection={
+                                <Title
+                                    order={4}
+                                    color={
+                                        dark
+                                            ? theme.colors.dark[4]
+                                            : theme.colors.gray[4]
+                                    }
+                                >
+                                    <FaPaperclip />
+                                </Title>
                             }
-                        >
-                            <BsFillEmojiSmileFill />
-                        </Title>
-                        <Title
+                            icon={
+                                <Title
+                                    order={4}
+                                    color={
+                                        dark
+                                            ? theme.colors.dark[4]
+                                            : theme.colors.gray[4]
+                                    }
+                                >
+                                    <BsFillEmojiSmileFill />
+                                </Title>
+                            }
+                        />
+                        {/*<Title
                             order={4}
                             color={
                                 dark
@@ -216,7 +259,7 @@ function RightSide({
                             }
                         >
                             <BsImage />
-                        </Title>
+                        </Title>*/}
 
                         <UnstyledButton type="submit">
                             <Title
