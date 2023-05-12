@@ -158,69 +158,75 @@ function Register() {
 
     //creates a function to handle the form submission
     const handleSubmit = async () => {
-        const errors = form.validate();
+        try{
 
-        if (errors.hasErrors) {
-            return toast.error(
-                "There are some errors in the form, please read carefully and fix them",
-                toastOptions
-            );
-        }
-
-        //verify that the captcha is valid
-        
-
-        //all the form values are already validated
-
-        const { username, email, password } = form.values;
-
-        setVisible(true);
-
-        //cals the api to register the user
-        /*const result: IAuthResponse = await callRegister(
-            username,
-            email,
-            password
-        );*/
-        const { data: dav } = await register({
-            variables: {
-                username: username,
-                password: password,
-                email: email,
-            },
-        });
-
-        const data: IRegister = dav.register;
-
-        if (error) console.log(error.message);
-
-        //if the result is not successful, it will show an error message
-        //if it is successful, it will navigate to the home page and save the user in local storage
-        if (!data?.status) {
-            toast.error(data?.message, toastOptions);
-        } else {
-            if (data?.token) {
-                signIn({
-                    token: data.token,
-                    expiresIn: 2880,
-                    tokenType: "Bearer",
-                    authState: {
-                        username: username,
-                    },
-                });
-
-                await sleep(1000);
-
-                navigate("/chat");
-            } else {
-                toast.error(
-                    "An error occurred. Please try again laiter",
+            const errors = form.validate();
+    
+            if (errors.hasErrors) {
+                return toast.error(
+                    "There are some errors in the form, please read carefully and fix them",
                     toastOptions
                 );
             }
+    
+            //verify that the captcha is valid
+            
+    
+            //all the form values are already validated
+    
+            const { username, email, password } = form.values;
+    
+            setVisible(true);
+    
+            //cals the api to register the user
+            /*const result: IAuthResponse = await callRegister(
+                username,
+                email,
+                password
+            );*/
+            const { data: dav } = await register({
+                variables: {
+                    username: username,
+                    password: password,
+                    email: email,
+                },
+            });
+    
+            const data: IRegister = dav.register;
+    
+            if (error) console.log(error.message);
+    
+            //if the result is not successful, it will show an error message
+            //if it is successful, it will navigate to the home page and save the user in local storage
+            if (!data?.status) {
+                toast.error(data?.message, toastOptions);
+            } else {
+                if (data?.token) {
+                    signIn({
+                        token: data.token,
+                        expiresIn: 2880,
+                        tokenType: "Bearer",
+                        authState: {
+                            username: username,
+                        },
+                    });
+    
+                    await sleep(1000);
+    
+                    navigate("/chat");
+                } else {
+                    toast.error(
+                        "An error occurred. Please try again laiter",
+                        toastOptions
+                    );
+                }
+            }
+    
+            setVisible(false);
         }
-
-        setVisible(false);
+        catch(e) {
+            console.log("new error occurred")
+        }
     };
 
     return (
