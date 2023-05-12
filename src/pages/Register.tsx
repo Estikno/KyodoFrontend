@@ -7,8 +7,6 @@ import { useMutation } from "@apollo/client";
 import {
     toastOptions,
     specialCharacters,
-    siteKey,
-    secretKey,
 } from "../utils/configs";
 import { callRegister } from "../utils/callApi";
 import { useSignIn, useIsAuthenticated, useSignOut } from "react-auth-kit";
