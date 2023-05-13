@@ -4,13 +4,14 @@ import "./index.css";
 import App from "./App";
 import { AuthProvider } from "react-auth-kit";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import {apiRoute} from "./utils/configs";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
 );
 
 const client = new ApolloClient({
-    uri: "http://46.136.24.155/graphql", //"http://localhost:4758/graphql",
+    uri: `https://${apiRoute}/graphql`, //"http://localhost:4758/graphql",
     cache: new InMemoryCache(),
 });
 

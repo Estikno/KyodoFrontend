@@ -1,4 +1,7 @@
 import { ToastOptions } from "react-toastify";
+import { config } from "dotenv";
+
+config();
 
 /**
  * This script is used to set the configuration for the application.
@@ -13,4 +16,4 @@ export const toastOptions: ToastOptions = {
 
 export const specialCharacters = /[ `!@#$%^&*()+\-=[\]{};':"\\|,.<>/?~·¨çñ]/;
 
-export const apiRoute = "http://46.136.24.155"; //"http://127.0.0.1:4758"; //"https://kyodobackend-production.up.railway.app";
+export const apiRoute = process.env.API_ROUTE as string; //"http://127.0.0.1:4758"; //"https://kyodobackend-production.up.railway.app";
