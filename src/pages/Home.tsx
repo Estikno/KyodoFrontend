@@ -89,6 +89,7 @@ function Home() {
                 width: "100%",
             }}
             position="center"
+            key={data.text + data.title + index}
         >
             <AnimationOnScroll
                 offset={100}

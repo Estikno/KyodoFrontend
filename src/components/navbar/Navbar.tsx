@@ -8,6 +8,10 @@ import NavLogo from "./NavLogo";
 //images
 import logo from "../../assets/logo.png";
 
+//styles
+import DrawerStyle from "../../utils/MantineStyles/DrawerStyle";
+("../../utils/MantineStyles/DrawerStyle");
+
 //mantine
 import {
     Burger,
@@ -93,6 +97,25 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
+const pagesData = [
+    {
+        title: "Download",
+        to: "/register",
+    },
+    {
+        title: "Chat",
+        to: "/chat",
+    },
+    {
+        title: "Support",
+        to: "/register",
+    },
+    {
+        title: "Contact",
+        to: "/register",
+    },
+];
+
 function Navbar() {
     const navigate = useNavigate();
 
@@ -100,6 +123,7 @@ function Navbar() {
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
         useDisclosure(false);
     const { classes, theme } = useStyles();
+    const _drawerStyle = DrawerStyle();
 
     const _theme = useMantineTheme();
     const [opened, setOpened] = useState(false);
@@ -108,6 +132,12 @@ function Navbar() {
     const dark = colorScheme === "dark";
 
     const lessThan500px = useMediaQuery(`(max-width: 500px)`);
+
+    const pages = pagesData.map((page) => (
+        <Link className={classes.link} to={page.to} key={page.title}>
+            {page.title}
+        </Link>
+    ));
 
     return (
         <Box>
@@ -118,6 +148,10 @@ function Navbar() {
                     backgroundColor: dark
                         ? _theme.colors.dark[1]
                         : _theme.colors.gray[1],
+                    borderBottom: dark ? ".1rem solid" : ".12rem solid",
+                    borderColor: dark
+                        ? theme.colors.dark[0]
+                        : theme.colors.gray[1],
                 }}
             >
                 <Center sx={{ width: "100%", height: "100%" }}>
@@ -136,18 +170,7 @@ function Navbar() {
                             spacing={0}
                             className={classes.hiddenMobile}
                         >
-                            <Link className={classes.link} to={"/register"}>
-                                Download
-                            </Link>
-                            <Link className={classes.link} to={"/chat"}>
-                                Chat
-                            </Link>
-                            <Link className={classes.link} to={"/register"}>
-                                Support
-                            </Link>
-                            <Link className={classes.link} to={"/register"}>
-                                Contact
-                            </Link>
+                            {pages}
                         </Group>
 
                         <Group className={classes.hiddenMobile}>
@@ -190,39 +213,37 @@ function Navbar() {
                 size="100%"
                 padding="md"
                 title="Navigation"
-                className={classes.hiddenDesktop}
                 zIndex={1000000}
+                classNames={_drawerStyle.classes}
             >
                 <ScrollArea sx={{ height: "calc(100vh - 60px)" }} mx="-md">
                     <Divider
                         my="sm"
                         color={
-                            theme.colorScheme === "dark" ? "dark.5" : "gray.1"
+                            dark ? theme.colors.dark[0] : theme.colors.gray[1]
                         }
                     />
 
-                    <Link className={classes.link} to={"/register"}>
-                        Hola
-                    </Link>
-                    <Link className={classes.link} to={"/register"}>
-                        Learn
-                    </Link>
-                    <Link className={classes.link} to={"/register"}>
-                        Academy
-                    </Link>
+                    {pages}
 
                     <Divider
                         my="sm"
                         color={
-                            theme.colorScheme === "dark" ? "dark.5" : "gray.1"
+                            dark ? theme.colors.dark[0] : theme.colors.gray[1]
                         }
                     />
 
                     <Group position="center" grow pb="xl" px="md">
-                        <Button variant="default" className={classes.button}>
+                        <Button
+                            variant="default"
+                            className={classes.button}
+                            onClick={() => navigate("/login")}
+                        >
                             Log in
                         </Button>
-                        <Button>Sign up</Button>
+                        <Button onClick={() => navigate("/register")}>
+                            Sign up
+                        </Button>
                     </Group>
                 </ScrollArea>
             </Drawer>
