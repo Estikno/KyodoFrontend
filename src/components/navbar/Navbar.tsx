@@ -6,11 +6,10 @@ import NavLink from "./NavLink";
 import NavLogo from "./NavLogo";
 
 //images
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.webp";
 
 //styles
 import DrawerStyle from "../../utils/MantineStyles/DrawerStyle";
-("../../utils/MantineStyles/DrawerStyle");
 
 //mantine
 import {

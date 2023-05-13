@@ -10,10 +10,10 @@ import Footer from "../components/Footer";
 import { toastOptions, specialCharacters } from "../utils/configs";
 
 //images
-import home1 from "../assets/home1.png";
-import home2 from "../assets/home2.png";
-import home3 from "../assets/home3.png";
-import home4 from "../assets/home4.png";
+import home1 from "../assets/home1.webp";
+import home2 from "../assets/home2.webp";
+import home3 from "../assets/home3.webp";
+import home4 from "../assets/home4.webp";
 
 //mantine
 import {

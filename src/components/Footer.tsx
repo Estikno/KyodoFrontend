@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 
 //images
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.webp";
 
 //icons
 import { TfiTwitter } from "react-icons/tfi";

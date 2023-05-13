@@ -1,8 +1,8 @@
 import React from "react";
 
 //images
-import _tick from '../assets/tick.png';
-import cross from '../assets/cross.png';
+import _tick from '../assets/tick.webp';
+import cross from '../assets/cross.webp';
 
 //mantine
 import {

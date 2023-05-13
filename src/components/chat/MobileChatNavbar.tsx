@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useSignOut } from "react-auth-kit";
 
 //images
-import USAFlag from "../../assets/USAFlag.png";
-import spainFlag from "../../assets/spainFlag.png";
+import USAFlag from "../../assets/USAFlag.webp";
+import spainFlag from "../../assets/spainFlag.webp";
 
 //mantine
 import {
