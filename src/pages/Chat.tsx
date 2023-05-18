@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { io, Socket } from "socket.io-client";
 import cookie from "js-cookie";
-import Filter from "bad-words";
 import { useLazyQuery, useMutation } from "@apollo/client";
 
 //components
@@ -85,8 +84,6 @@ function Chat() {
         useLazyQuery(GETALLUSERS);
     const [updateUser, { error }] = useMutation(UPDATEUSER);
 
-    //filter
-    const filter = new Filter();
 
     //auth's funtions
     const isAuthenticated = useIsAuthenticated();
