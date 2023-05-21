@@ -70,7 +70,7 @@ const useStyles = createStyles((theme) => ({
     },*/
 }));
 
-const socket: Socket = io(`https://${apiRoute}`);
+const socket: Socket = io(apiRoute);
 const timeBtwMessages: number = 2500; //in milliseconds
 
 function Chat() {
