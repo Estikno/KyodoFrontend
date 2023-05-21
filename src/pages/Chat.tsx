@@ -5,6 +5,11 @@ import { io, Socket } from "socket.io-client";
 import cookie from "js-cookie";
 import { useLazyQuery, useMutation } from "@apollo/client";
 
+//redux
+import type { RootState } from "../app/store";
+import { useSelector, useDispatch } from "react-redux";
+import { set as setAuth } from "../features/auth/authSlice";
+
 //components
 import Friend from "../components/chat/Friend";
 import Message from "../components/chat/Message";
@@ -77,13 +82,16 @@ function Chat() {
     //creates a navigate function to navigate to another route
     const navigate = useNavigate();
 
+    //redux
+    const dispatch = useDispatch();
+    const reduxInfo = useSelector((state: RootState) => state.auth);
+
     //graphql
     const [verifiedUser, { error: verror, loading: vloading }] =
         useLazyQuery(VERIFIEDUSER);
     const [getAllUsers, { error: gerror, loading: gloading }] =
         useLazyQuery(GETALLUSERS);
     const [updateUser, { error }] = useMutation(UPDATEUSER);
-
 
     //auth's funtions
     const isAuthenticated = useIsAuthenticated();
@@ -205,8 +213,12 @@ function Chat() {
     useEffect(() => {
         console.log(selectedFriend);
 
-        if(selectedFriend >= 0 ) setShowChatSmall(true);
+        if (selectedFriend >= 0) setShowChatSmall(true);
     }, [selectedFriend]);
+
+    useEffect(() => {
+        if(reduxInfo.username !== "") console.log(reduxInfo);
+    }, [reduxInfo]);
 
     useEffect(() => {
         if (!isAuthenticated()) {
@@ -235,6 +247,10 @@ function Chat() {
                     return toast.error("No user provided", toastOptions);
 
                 setUserInfo(userData.user[0]);
+
+                //set redux user info
+                dispatch(setAuth(userData.user[0]));
+
                 if (!userData.user[0].verified) return setVisible(false);
 
                 socket.emit("add-user", userData.user[0].username);
@@ -433,7 +449,11 @@ function Chat() {
                                         : theme.colors.gray[1],
                                     padding: "0",
                                     minWidth: lessthan991px ? "" : "391px",
-                                    display: lessthan991px ? (showChatSmall ? "none" : "") : "",
+                                    display: lessthan991px
+                                        ? showChatSmall
+                                            ? "none"
+                                            : ""
+                                        : "",
                                     height: "100%",
                                 })}
                             >
@@ -474,7 +494,11 @@ function Chat() {
                                         ? theme.colors.dark[2]
                                         : theme.colors.gray[2],
                                     height: lessthan991px ? "100vh" : "100%",
-                                    display: lessthan991px ? (showChatSmall ? "" : "none") : ""
+                                    display: lessthan991px
+                                        ? showChatSmall
+                                            ? ""
+                                            : "none"
+                                        : "",
                                 }}
                                 //className={classes.chat}
                             >
@@ -486,7 +510,11 @@ function Chat() {
                                     dummy={dummy}
                                     setShowChatSmall={setShowChatSmall}
                                     setSelectedFriend={setSelectedFriend}
-                                    friend={(selectedFriend >= 0) ? friends[selectedFriend] : undefined}
+                                    friend={
+                                        selectedFriend >= 0
+                                            ? friends[selectedFriend]
+                                            : undefined
+                                    }
                                 >
                                     {selectedFriend >= 0 ? (
                                         messages.map((message, index) =>

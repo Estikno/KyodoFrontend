@@ -139,7 +139,7 @@ function Login() {
         }
 
         //if (!captcha.current?.getValue())
-            //return toast.error("You must complete the captcha", toastOptions);
+        //return toast.error("You must complete the captcha", toastOptions);
 
         //all the form values are already validated
 

@@ -21,8 +21,16 @@ export const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-
-    }
+        set: (state, action: PayloadAction<IAuthState>) => {
+            state.avatarUrl = action.payload.avatarUrl;
+            state.email = action.payload.email;
+            state.username = action.payload.username;
+            state.verified = action.payload.verified;
+            state.idRoom = action.payload.idRoom;
+        },
+    },
 });
+
+export const { set } = authSlice.actions;
 
 export default authSlice.reducer;
