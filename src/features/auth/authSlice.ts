@@ -1,15 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { IUserInfo } from "../../interfaces/IApiResponses";
 
-export interface IAuthState {
-    username: string;
-    email: string;
-    avatarUrl: string;
-    verified: boolean;
-    idRoom: string;
-}
-
-const initialState: IAuthState = {
+const initialState: IUserInfo = {
     username: "",
     email: "",
     avatarUrl: "",
@@ -21,16 +14,17 @@ export const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        set: (state, action: PayloadAction<IAuthState>) => {
-            state.avatarUrl = action.payload.avatarUrl;
+        setUser: (state, action: PayloadAction<IUserInfo>) => {
+            /*state.avatarUrl = action.payload.avatarUrl;
             state.email = action.payload.email;
             state.username = action.payload.username;
             state.verified = action.payload.verified;
-            state.idRoom = action.payload.idRoom;
+            state.idRoom = action.payload.idRoom;*/
+            return {...action.payload}
         },
     },
 });
 
-export const { set } = authSlice.actions;
+export const { setUser } = authSlice.actions;
 
 export default authSlice.reducer;

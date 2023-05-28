@@ -6,9 +6,12 @@ import cookie from "js-cookie";
 import { useLazyQuery, useMutation } from "@apollo/client";
 
 //redux
-import type { RootState } from "../app/store";
-import { useSelector, useDispatch } from "react-redux";
-import { set as setAuth } from "../features/auth/authSlice";
+//import type { RootState } from "../app/store";
+//import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { setUser } from "../features/auth/authSlice";
+import { setFriends, addFriend } from "../features/chat/friendSlice";
+import { addMessage, setMessages } from "../features/chat/messageSlice";
 
 //components
 import Friend from "../components/chat/Friend";
@@ -83,8 +86,10 @@ function Chat() {
     const navigate = useNavigate();
 
     //redux
-    const dispatch = useDispatch();
-    const reduxInfo = useSelector((state: RootState) => state.auth);
+    const dispatch = useAppDispatch();
+    const userInfo = useAppSelector((state) => state.auth);
+    const friends = useAppSelector((state) => state.friend);
+    const messages = useAppSelector((state) => state.message);
 
     //graphql
     const [verifiedUser, { error: verror, loading: vloading }] =
@@ -108,16 +113,16 @@ function Chat() {
     const viewport = useRef<HTMLDivElement>(null);
     const dummy = useRef<HTMLSpanElement>(null);
 
-    const [friends, setFriends] = useState<IUserInfo[]>([]);
-    const [userInfo, setUserInfo] = useState<IUserInfo>({
+    //const [friends, setFriends] = useState<IUserInfo[]>([]);
+    /*const [userInfo, setUserInfo] = useState<IUserInfo>({
         verified: true,
         avatarUrl: "",
         username: "",
         email: "",
         idRoom: "",
-    });
+    });*/
     const [actualMessage, setActualMessage] = useState<string>("");
-    const [messages, setMessages] = useState<IMessage[]>([]);
+    //const [messages, setMessages] = useState<IMessage[]>([]);
     const [lastMessageDate, setLastMessageDate] = useState<Date>();
     const [selectedWindow, setSelectedWindow] = useState<number>(1);
     const [selectedFriend, setSelectedFriend] = useState<number>(-1);
@@ -131,15 +136,17 @@ function Chat() {
     useEffect(() => {
         if (userInfo.username != "" && number === 0) {
             socket.on("all-msg", (message: IRecieveMessage[]) => {
-                setMessages(
-                    message.map((msg) => {
-                        return {
-                            message: msg.message,
-                            fromSelf: msg.username === userInfo.username,
-                            username: msg.username,
-                            id_room: msg.id_room,
-                        };
-                    })
+                dispatch(
+                    setMessages(
+                        message.map((msg) => {
+                            return {
+                                message: msg.message,
+                                fromSelf: msg.username === userInfo.username,
+                                username: msg.username,
+                                id_room: msg.id_room,
+                            } as IMessage;
+                        })
+                    )
                 );
 
                 viewport.current?.scrollTo({
@@ -149,15 +156,14 @@ function Chat() {
             });
 
             socket.on("msg", (message: IRecieveMessage) => {
-                setMessages((prevState) => [
-                    ...prevState,
-                    {
+                dispatch(
+                    addMessage({
                         message: message.message, //filter.clean(message.message),
                         fromSelf: message.username === userInfo.username,
                         username: message.username,
                         id_room: message.id_room,
-                    } as IMessage,
-                ]);
+                    } as IMessage)
+                );
 
                 /*if (message.update) {
                     setFriends((prevstate) => {
@@ -179,7 +185,8 @@ function Chat() {
             });
 
             socket.on("new-usr", (newFriend: IUserInfo) => {
-                setFriends([...friends, newFriend]);
+                //setFriends([...friends, newFriend]);
+                dispatch(addFriend(newFriend));
             });
 
             socket.on(
@@ -191,9 +198,10 @@ function Chat() {
                     users2: any;
                 }) => {
                     if (userInfo.username === update.user1) {
-                        setFriends(update.users1);
+                        //setFriends(update.users1);
+                        dispatch(setFriends(update.users1));
                     } else if (userInfo.username === update.user2) {
-                        setFriends(update.users2);
+                        dispatch(setFriends(update.users1));
                     }
                 }
             );
@@ -206,19 +214,19 @@ function Chat() {
         console.log(friends);
     }, [friends]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         console.log(messages);
-    }, [messages]);
+    }, [messages]);*/
 
-    useEffect(() => {
+    /*useEffect(() => {
         console.log(selectedFriend);
 
         if (selectedFriend >= 0) setShowChatSmall(true);
-    }, [selectedFriend]);
+    }, [selectedFriend]);*/
 
-    useEffect(() => {
-        if(reduxInfo.username !== "") console.log(reduxInfo);
-    }, [reduxInfo]);
+    /*useEffect(() => {
+        if (userInfo.username !== "") console.log(userInfo);
+    }, [userInfo]);*/
 
     useEffect(() => {
         if (!isAuthenticated()) {
@@ -246,10 +254,8 @@ function Chat() {
                 if (!userData.user)
                     return toast.error("No user provided", toastOptions);
 
-                setUserInfo(userData.user[0]);
-
                 //set redux user info
-                dispatch(setAuth(userData.user[0]));
+                dispatch(setUser(userData.user[0]));
 
                 if (!userData.user[0].verified) return setVisible(false);
 
@@ -268,7 +274,8 @@ function Chat() {
                         toastOptions
                     );
 
-                setFriends(usersData.user);
+                //set redux friends
+                dispatch(setFriends(usersData.user));
 
                 setVisible(false);
             } catch (e) {}
@@ -398,6 +405,22 @@ function Chat() {
         }
 
         setVisible(false);
+    };
+
+    const getNextUserMessageOnRoom = (
+        roomId: string,
+        index: number
+    ): number => {
+        let nextRoomMessage: number = -1;
+
+        for (let i = 0; i < messages.length; i++) {
+            if (i > index && messages[i].id_room === roomId) {
+                nextRoomMessage = i;
+                break;
+            }
+        }
+
+        return nextRoomMessage;
     };
 
     return (
@@ -532,17 +555,20 @@ function Chat() {
                                                     }
                                                     displayAvatar={
                                                         messages[index + 1]
-                                                            ? messages[
-                                                                  index + 1
-                                                              ].id_room ===
-                                                              message.id_room
+                                                            ? getNextUserMessageOnRoom(
+                                                                  message.id_room,
+                                                                  index
+                                                              ) !== -1
                                                                 ? messages[
-                                                                      index + 1
+                                                                      getNextUserMessageOnRoom(
+                                                                          message.id_room,
+                                                                          index
+                                                                      )
                                                                   ].username ===
                                                                   message.username
                                                                     ? false
                                                                     : true
-                                                                : false
+                                                                : true
                                                             : true
                                                     }
                                                 />
