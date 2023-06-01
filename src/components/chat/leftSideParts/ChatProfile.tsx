@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useAppSelector } from "../../../app/hooks";
+import {v4 as uuid} from 'uuid';
 
 //components
 import AccordionField from './AccordionField';
@@ -28,21 +30,6 @@ import { RiAttachmentLine } from "react-icons/ri";
 import menuStyle from "../../../utils/MantineStyles/MenuStyles";
 import accordionStyles from "../../../utils/MantineStyles/AccordionStyle";
 
-const fieldData = [
-    {
-        field: "Name",
-        content: "Patricio",
-    },
-    {
-        field: "Email",
-        content: "patrick@gmail.com",
-    },
-    {
-        field: "Location",
-        content: "Florida",
-    },
-];
-
 function ChatProfile() {
     const theme = useMantineTheme();
     const { colorScheme } = useMantineColorScheme();
@@ -50,8 +37,25 @@ function ChatProfile() {
     const AccordionStyles = accordionStyles();
     const MenuStyles = menuStyle();
 
+    const userInfo = useAppSelector((state) => state.auth);
+
+    const fieldData = [
+        {
+            field: "Name",
+            content: userInfo.username,
+        },
+        {
+            field: "Email",
+            content: userInfo.email,
+        },
+        {
+            field: "Location",
+            content: "Florida",
+        },
+    ];
+
     const items = fieldData.map((item) => (
-        <AccordionField {...item} key={item.field} />
+        <AccordionField {...item} key={uuid()} />
     ));
 
     return (
@@ -116,7 +120,7 @@ function ChatProfile() {
                             dark ? theme.colors.dark[7] : theme.colors.gray[7]
                         }
                     >
-                        Patricio estrella
+                        {userInfo.username}
                     </Text>
                     <Text fz={"lg"} color={dark ? "#9AA1B9" : "#858DA6"}>
                         <GoPrimitiveDot

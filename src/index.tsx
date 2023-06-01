@@ -4,7 +4,9 @@ import "./index.css";
 import App from "./App";
 import { AuthProvider } from "react-auth-kit";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import {apiRoute} from "./utils/configs";
+import { apiRoute } from "./utils/configs";
+import { store } from "./app/store";
+import { Provider } from "react-redux";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
@@ -17,15 +19,17 @@ const client = new ApolloClient({
 
 root.render(
     <React.StrictMode>
-        <ApolloProvider client={client}>
-            <AuthProvider
-                authType={"cookie"}
-                authName={"_auth"}
-                cookieDomain={window.location.hostname}
-                cookieSecure={false}
-            >
-                <App />
-            </AuthProvider>
-        </ApolloProvider>
+        <Provider store={store}>
+            <ApolloProvider client={client}>
+                <AuthProvider
+                    authType={"cookie"}
+                    authName={"_auth"}
+                    cookieDomain={window.location.hostname}
+                    cookieSecure={false}
+                >
+                    <App />
+                </AuthProvider>
+            </ApolloProvider>
+        </Provider>
     </React.StrictMode>
 );

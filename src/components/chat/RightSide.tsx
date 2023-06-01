@@ -1,5 +1,9 @@
 import React, { useEffect } from "react";
 
+//redux
+import { setSelectedFriend } from "../../features/chat/selectedFriend";
+import { useAppDispatch } from "../../app/hooks";
+
 //interfaces
 import { IUserInfo } from "../../interfaces/IApiResponses";
 
@@ -35,7 +39,6 @@ function RightSide({
     viewport,
     dummy,
     setShowChatSmall,
-    setSelectedFriend,
     friend,
 }: {
     children: JSX.Element | JSX.Element[];
@@ -45,7 +48,6 @@ function RightSide({
     viewport: React.RefObject<HTMLDivElement>;
     dummy: React.RefObject<HTMLSpanElement>;
     setShowChatSmall: React.Dispatch<React.SetStateAction<boolean>>;
-    setSelectedFriend: React.Dispatch<React.SetStateAction<number>>;
     friend: IUserInfo | undefined;
 }) {
     const theme = useMantineTheme();
@@ -56,6 +58,8 @@ function RightSide({
     const lessthan1600px = useMediaQuery(`(max-width: 1600px)`);
     const lessthan991px = useMediaQuery(`(max-width: 991px)`);
     const lessthan400px = useMediaQuery(`(max-width: 400px)`);
+
+    const dispatch = useAppDispatch();
 
     return (
         <Stack
@@ -82,7 +86,7 @@ function RightSide({
                             color={dark ? "#9FB4D2" : "#858DA6"}
                             onClick={() => {
                                 setShowChatSmall(false);
-                                setSelectedFriend(-1);
+                                dispatch(setSelectedFriend(-1));
                             }}
                         >
                             <IoCaretBackOutline />
@@ -133,8 +137,8 @@ function RightSide({
                 sx={(theme) => ({
                     width: "100%",
                     height: "76vh",
+                    padding: "5px"
                 })}
-                style={{ padding: "5px" }}
                 viewportRef={viewport}
             >
                 <Stack

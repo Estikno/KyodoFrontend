@@ -1,6 +1,8 @@
 import React from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { AnimationOnScroll } from "react-animation-on-scroll";
+import {v4 as uuid} from 'uuid';
+import { useNavigate } from "react-router-dom";
 
 //components
 import Navbar from "../components/navbar/Navbar";
@@ -65,6 +67,8 @@ const mockData = [
 ];
 
 function Home() {
+    const navigate = useNavigate();
+
     const theme = useMantineTheme();
     const { colorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
@@ -89,7 +93,7 @@ function Home() {
                 width: "100%",
             }}
             position="center"
-            key={data.text + data.title + index}
+            key={uuid()}
         >
             <AnimationOnScroll
                 offset={100}
@@ -284,10 +288,11 @@ function Home() {
                                     }),
                                 }}
                                 variant="default"
+                                onClick={() => navigate("/login")}
                             >
                                 <Text fz={"lg"}>Log in</Text>
                             </Button>
-                            <Button>
+                            <Button onClick={() => navigate("/register")}>
                                 <Text fz={"lg"}>Sign up</Text>
                             </Button>
                         </Group>

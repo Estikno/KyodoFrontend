@@ -4,6 +4,13 @@ import { ToastContainer, toast } from "react-toastify";
 import { io, Socket } from "socket.io-client";
 import cookie from "js-cookie";
 import { useLazyQuery, useMutation } from "@apollo/client";
+import { v4 as uuid } from "uuid";
+
+//redux
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { setUser } from "../features/auth/authSlice";
+import { setFriends, addFriend } from "../features/chat/friendSlice";
+import { addMessage, setMessages } from "../features/chat/messageSlice";
 
 //components
 import Friend from "../components/chat/Friend";
@@ -77,13 +84,19 @@ function Chat() {
     //creates a navigate function to navigate to another route
     const navigate = useNavigate();
 
+    //redux
+    const dispatch = useAppDispatch();
+    const userInfo = useAppSelector((state) => state.auth);
+    const friends = useAppSelector((state) => state.friend);
+    const messages = useAppSelector((state) => state.message);
+    const selectedFriend = useAppSelector((state) => state.selectedFriend);
+
     //graphql
     const [verifiedUser, { error: verror, loading: vloading }] =
         useLazyQuery(VERIFIEDUSER);
     const [getAllUsers, { error: gerror, loading: gloading }] =
         useLazyQuery(GETALLUSERS);
     const [updateUser, { error }] = useMutation(UPDATEUSER);
-
 
     //auth's funtions
     const isAuthenticated = useIsAuthenticated();
@@ -100,19 +113,9 @@ function Chat() {
     const viewport = useRef<HTMLDivElement>(null);
     const dummy = useRef<HTMLSpanElement>(null);
 
-    const [friends, setFriends] = useState<IUserInfo[]>([]);
-    const [userInfo, setUserInfo] = useState<IUserInfo>({
-        verified: true,
-        avatarUrl: "",
-        username: "",
-        email: "",
-        idRoom: "",
-    });
     const [actualMessage, setActualMessage] = useState<string>("");
-    const [messages, setMessages] = useState<IMessage[]>([]);
     const [lastMessageDate, setLastMessageDate] = useState<Date>();
     const [selectedWindow, setSelectedWindow] = useState<number>(1);
-    const [selectedFriend, setSelectedFriend] = useState<number>(-1);
     const [number, setNumber] = useState<number>(0);
     const [showChatSmall, setShowChatSmall] = useState<boolean>(false);
 
@@ -123,15 +126,17 @@ function Chat() {
     useEffect(() => {
         if (userInfo.username != "" && number === 0) {
             socket.on("all-msg", (message: IRecieveMessage[]) => {
-                setMessages(
-                    message.map((msg) => {
-                        return {
-                            message: msg.message,
-                            fromSelf: msg.username === userInfo.username,
-                            username: msg.username,
-                            id_room: msg.id_room,
-                        };
-                    })
+                dispatch(
+                    setMessages(
+                        message.map((msg) => {
+                            return {
+                                message: msg.message,
+                                fromSelf: msg.username === userInfo.username,
+                                username: msg.username,
+                                id_room: msg.id_room,
+                            } as IMessage;
+                        })
+                    )
                 );
 
                 viewport.current?.scrollTo({
@@ -141,15 +146,14 @@ function Chat() {
             });
 
             socket.on("msg", (message: IRecieveMessage) => {
-                setMessages((prevState) => [
-                    ...prevState,
-                    {
+                dispatch(
+                    addMessage({
                         message: message.message, //filter.clean(message.message),
                         fromSelf: message.username === userInfo.username,
                         username: message.username,
                         id_room: message.id_room,
-                    } as IMessage,
-                ]);
+                    } as IMessage)
+                );
 
                 /*if (message.update) {
                     setFriends((prevstate) => {
@@ -171,7 +175,8 @@ function Chat() {
             });
 
             socket.on("new-usr", (newFriend: IUserInfo) => {
-                setFriends([...friends, newFriend]);
+                //setFriends([...friends, newFriend]);
+                dispatch(addFriend(newFriend));
             });
 
             socket.on(
@@ -183,9 +188,10 @@ function Chat() {
                     users2: any;
                 }) => {
                     if (userInfo.username === update.user1) {
-                        setFriends(update.users1);
+                        //setFriends(update.users1);
+                        dispatch(setFriends(update.users1));
                     } else if (userInfo.username === update.user2) {
-                        setFriends(update.users2);
+                        dispatch(setFriends(update.users1));
                     }
                 }
             );
@@ -198,15 +204,19 @@ function Chat() {
         console.log(friends);
     }, [friends]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         console.log(messages);
-    }, [messages]);
+    }, [messages]);*/
 
     useEffect(() => {
         console.log(selectedFriend);
 
-        if(selectedFriend >= 0 ) setShowChatSmall(true);
+        if (selectedFriend >= 0) setShowChatSmall(true);
     }, [selectedFriend]);
+
+    /*useEffect(() => {
+        if (userInfo.username !== "") console.log(userInfo);
+    }, [userInfo]);*/
 
     useEffect(() => {
         if (!isAuthenticated()) {
@@ -234,7 +244,9 @@ function Chat() {
                 if (!userData.user)
                     return toast.error("No user provided", toastOptions);
 
-                setUserInfo(userData.user[0]);
+                //set redux user info
+                dispatch(setUser(userData.user[0]));
+
                 if (!userData.user[0].verified) return setVisible(false);
 
                 socket.emit("add-user", userData.user[0].username);
@@ -252,7 +264,8 @@ function Chat() {
                         toastOptions
                     );
 
-                setFriends(usersData.user);
+                //set redux friends
+                dispatch(setFriends(usersData.user));
 
                 setVisible(false);
             } catch (e) {}
@@ -270,7 +283,7 @@ function Chat() {
     const sendMessage = (event: React.FormEvent<Element>) => {
         event.preventDefault();
 
-        if (lastMessageDate) {
+        /*if (lastMessageDate) {
             const d1 = new Date();
             const subtractDate: number = Math.abs(
                 d1.getTime() - lastMessageDate.getTime()
@@ -283,7 +296,7 @@ function Chat() {
                     "Can't send message so quickly. Please wait a bit.",
                     toastOptions
                 );
-        }
+        }*/
 
         setLastMessageDate(new Date());
 
@@ -384,6 +397,22 @@ function Chat() {
         setVisible(false);
     };
 
+    const getNextUserMessageOnRoom = (
+        roomId: string,
+        index: number
+    ): number => {
+        let nextRoomMessage: number = -1;
+
+        for (let i = 0; i < messages.length; i++) {
+            if (i > index && messages[i].id_room === roomId) {
+                nextRoomMessage = i;
+                break;
+            }
+        }
+
+        return nextRoomMessage;
+    };
+
     return (
         <>
             <LoadingOverlay visible={visible} overlayBlur={8} />
@@ -433,33 +462,21 @@ function Chat() {
                                         : theme.colors.gray[1],
                                     padding: "0",
                                     minWidth: lessthan991px ? "" : "391px",
-                                    display: lessthan991px ? (showChatSmall ? "none" : "") : "",
+                                    display: lessthan991px
+                                        ? showChatSmall
+                                            ? "none"
+                                            : ""
+                                        : "",
                                     height: "100%",
                                 })}
                             >
                                 {selectedWindow === 0 ? (
                                     <ChatProfile />
                                 ) : selectedWindow === 1 ? (
-                                    <Chats
-                                        avatarUrl={userInfo?.avatarUrl}
-                                        username={userInfo?.username}
-                                    >
-                                        {friends.map((friend, index) => (
-                                            <Friend
-                                                name={friend.username}
-                                                key={friend.username}
-                                                avatarUrl={friend.avatarUrl}
-                                                onClick={() =>
-                                                    setSelectedFriend(index)
-                                                }
-                                            />
-                                        ))}
-                                    </Chats>
+                                    <Chats />
                                 ) : selectedWindow === 2 ? (
                                     <ChatSettings
                                         handleEditProfile={handleEditProfile}
-                                        avatarUrl={userInfo.avatarUrl}
-                                        username={userInfo.username}
                                         setVisible={setVisible}
                                     />
                                 ) : (
@@ -474,7 +491,11 @@ function Chat() {
                                         ? theme.colors.dark[2]
                                         : theme.colors.gray[2],
                                     height: lessthan991px ? "100vh" : "100%",
-                                    display: lessthan991px ? (showChatSmall ? "" : "none") : ""
+                                    display: lessthan991px
+                                        ? showChatSmall
+                                            ? ""
+                                            : "none"
+                                        : "",
                                 }}
                                 //className={classes.chat}
                             >
@@ -485,17 +506,18 @@ function Chat() {
                                     viewport={viewport}
                                     dummy={dummy}
                                     setShowChatSmall={setShowChatSmall}
-                                    setSelectedFriend={setSelectedFriend}
-                                    friend={(selectedFriend >= 0) ? friends[selectedFriend] : undefined}
+                                    friend={
+                                        selectedFriend >= 0
+                                            ? friends[selectedFriend]
+                                            : undefined
+                                    }
                                 >
                                     {selectedFriend >= 0 ? (
                                         messages.map((message, index) =>
                                             message.id_room ===
                                             friends[selectedFriend].idRoom ? (
                                                 <Message
-                                                    key={`${message.message}/${
-                                                        message.username
-                                                    }/${index.toString()}`}
+                                                    key={uuid()}
                                                     message={message.message}
                                                     position={
                                                         message.fromSelf
@@ -504,25 +526,26 @@ function Chat() {
                                                     }
                                                     displayAvatar={
                                                         messages[index + 1]
-                                                            ? messages[
-                                                                  index + 1
-                                                              ].id_room ===
-                                                              message.id_room
+                                                            ? getNextUserMessageOnRoom(
+                                                                  message.id_room,
+                                                                  index
+                                                              ) !== -1
                                                                 ? messages[
-                                                                      index + 1
+                                                                      getNextUserMessageOnRoom(
+                                                                          message.id_room,
+                                                                          index
+                                                                      )
                                                                   ].username ===
                                                                   message.username
                                                                     ? false
                                                                     : true
-                                                                : false
+                                                                : true
                                                             : true
                                                     }
                                                 />
                                             ) : (
                                                 <div
-                                                    key={`${message.message}/${
-                                                        message.username
-                                                    }/${index.toString()}`}
+                                                    key={uuid()}
                                                     style={{
                                                         display: "none",
                                                     }}
@@ -531,10 +554,7 @@ function Chat() {
                                         )
                                     ) : (
                                         <>
-                                            <Title
-                                                order={1}
-                                                key={Math.random()}
-                                            >
+                                            <Title order={1} key={uuid()}>
                                                 NO HAY USUARIOS
                                             </Title>
                                         </>
