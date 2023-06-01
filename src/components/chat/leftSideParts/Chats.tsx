@@ -1,6 +1,13 @@
 import React from "react";
+import { useAppSelector } from "../../../app/hooks";
 
+//redux
+import { setSelectedFriend } from "../../../features/chat/selectedFriend";
+import { useAppDispatch } from "../../../app/hooks";
+
+//components
 import FriendsContainer from "../FriendsContainer";
+import Friend from "../Friend";
 
 //mantine
 import {
@@ -17,18 +24,13 @@ import {
 import { AiFillSetting } from "react-icons/ai";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 
-function LeftSide({
-    children,
-    avatarUrl,
-    username,
-}: {
-    children: JSX.Element | JSX.Element[];
-    avatarUrl: string | undefined;
-    username: string | undefined;
-}) {
+function LeftSide() {
     const theme = useMantineTheme();
-    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const { colorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
+
+    const dispatch = useAppDispatch();
+    const friends = useAppSelector((state) => state.friend);
 
     return (
         <Stack
@@ -83,7 +85,16 @@ function LeftSide({
                     size="md"
                 />
             </Stack>
-            <FriendsContainer>{children}</FriendsContainer>
+            <FriendsContainer>
+                {friends.map((friend, index) => (
+                    <Friend
+                        name={friend.username}
+                        key={friend.username}
+                        avatarUrl={friend.avatarUrl}
+                        onClick={() => dispatch(setSelectedFriend(index))}
+                    />
+                ))}
+            </FriendsContainer>
         </Stack>
     );
 }

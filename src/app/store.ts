@@ -4,12 +4,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import AuthReducer from "../features/auth/authSlice";
 import FriendReducer from "../features/chat/friendSlice";
 import MessageSlice from "../features/chat/messageSlice";
+import SelectedFriendSlice from '../features/chat/selectedFriend';
 
 export const store = configureStore({
     reducer: {
         auth: AuthReducer,
         friend: FriendReducer,
         message: MessageSlice,
+        selectedFriend: SelectedFriendSlice
     },
 });
 

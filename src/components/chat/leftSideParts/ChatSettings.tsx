@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import cookie from "js-cookie";
+import { useAppSelector } from "../../../app/hooks";
 
 //options, helpers or utils already made by me
 import { toastOptions, specialCharacters } from "../../../utils/configs";
@@ -130,17 +131,6 @@ function PrivacyOptions({
     );
 }
 
-const fieldData = [
-    {
-        field: "Name",
-        content: "Patricio",
-    },
-    {
-        field: "Email",
-        content: "patrick@gmail.com",
-    },
-];
-
 const privacyData = [
     {
         field: "Profile Photo",
@@ -166,8 +156,6 @@ const privacyData = [
 
 function ChatGroups({
     handleEditProfile,
-    avatarUrl,
-    username,
     setVisible,
 }: {
     handleEditProfile: (
@@ -182,10 +170,11 @@ function ChatGroups({
             }
         >
     ) => void;
-    avatarUrl: string;
-    username: string;
     setVisible: (value: boolean) => void;
 }) {
+    //redux
+    const userInfo = useAppSelector((state) => state.auth);
+
     //mantine
     const theme = useMantineTheme();
     const { colorScheme } = useMantineColorScheme();
@@ -259,6 +248,17 @@ function ChatGroups({
             },
         },
     });
+
+    const fieldData = [
+        {
+            field: "Name",
+            content: userInfo.username,
+        },
+        {
+            field: "Email",
+            content: userInfo.email,
+        },
+    ];
 
     const items = fieldData.map((item) => (
         <AccordionField {...item} key={item.field} />
@@ -352,7 +352,12 @@ function ChatGroups({
                         onDrop={(images: FileWithPath[]) => {
                             changeAv(images[0]);
                         }}
-                        onReject={() => toast.error("Images have to be less than 5mb and only one image at a time", toastOptions)}
+                        onReject={() =>
+                            toast.error(
+                                "Images have to be less than 5mb and only one image at a time",
+                                toastOptions
+                            )
+                        }
                         maxSize={3 * 1024 ** 2}
                         classNames={_dropzonenStyle.classes}
                         maxFiles={1}
@@ -438,7 +443,7 @@ function ChatGroups({
                             classNames={_indicatorStyle.classes}
                         >
                             <Image
-                                src={avatarUrl}
+                                src={userInfo.avatarUrl}
                                 width="120px"
                                 alt="Profile image"
                             />
@@ -461,7 +466,7 @@ function ChatGroups({
                             dark ? theme.colors.dark[7] : theme.colors.gray[7]
                         }
                     >
-                        {username}
+                        {userInfo.username}
                     </Text>
                     {/*<Menu
                         shadow={"md"}
@@ -543,7 +548,7 @@ function ChatGroups({
                                         <Stack>
                                             <TextInput
                                                 variant="unstyled"
-                                                placeholder="estikno"
+                                                placeholder={userInfo.username}
                                                 label="Username"
                                                 radius="md"
                                                 size={
@@ -562,7 +567,7 @@ function ChatGroups({
                                             />
                                             <TextInput
                                                 variant="unstyled"
-                                                placeholder="you@email.com"
+                                                placeholder={userInfo.email}
                                                 label="Email"
                                                 radius="md"
                                                 size={
