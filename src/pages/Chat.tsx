@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { setUser } from "../features/auth/authSlice";
 import { setFriends, addFriend } from "../features/chat/friendSlice";
 import { addMessage, setMessages } from "../features/chat/messageSlice";
+import { addConnected, setConnectedUsers, IConnectedUser, modifyConnectedUsers } from "../features/chat/connectedUserSlice";
 
 //components
 import Friend from "../components/chat/Friend";
@@ -188,13 +189,24 @@ function Chat() {
                     users2: any;
                 }) => {
                     if (userInfo.username === update.user1) {
-                        //setFriends(update.users1);
                         dispatch(setFriends(update.users1));
                     } else if (userInfo.username === update.user2) {
                         dispatch(setFriends(update.users1));
                     }
                 }
             );
+
+            socket.on("connected-now", (connectedUsers: IConnectedUser[]) => {
+                dispatch(setConnectedUsers(connectedUsers));
+            });
+
+            socket.on("add-connected-user", (username: string) => {
+                dispatch(modifyConnectedUsers({username, connected: true}));
+            });
+
+            socket.on("off-connected-user", (username: string) => {
+                dispatch(modifyConnectedUsers({username, connected: false}));
+            });
 
             setNumber(1);
         }
@@ -209,7 +221,7 @@ function Chat() {
     }, [messages]);*/
 
     useEffect(() => {
-        console.log(selectedFriend);
+        //console.log(selectedFriend);
 
         if (selectedFriend >= 0) setShowChatSmall(true);
     }, [selectedFriend]);
@@ -250,6 +262,7 @@ function Chat() {
                 if (!userData.user[0].verified) return setVisible(false);
 
                 socket.emit("add-user", userData.user[0].username);
+                socket.emit("connected-users", userData.user[0].username);
 
                 //const usersData = await getAllUsers(token);
                 const { data: davs } = await getAllUsers({

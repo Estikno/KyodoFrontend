@@ -1,9 +1,8 @@
 import React from "react";
-import { useAppSelector } from "../../../app/hooks";
 
 //redux
-import { setSelectedFriend } from "../../../features/chat/selectedFriend";
-import { useAppDispatch } from "../../../app/hooks";
+import { setSelectedFriend } from "../../../features/chat/selectedFriendSlice";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 
 //components
 import FriendsContainer from "../FriendsContainer";
@@ -11,10 +10,7 @@ import Friend from "../Friend";
 
 //mantine
 import {
-    Group,
-    Text,
     Stack,
-    Image,
     Title,
     useMantineTheme,
     TextInput,
@@ -31,6 +27,17 @@ function LeftSide() {
 
     const dispatch = useAppDispatch();
     const friends = useAppSelector((state) => state.friend);
+    const connectedUsers = useAppSelector((state) => state.connectedUser);
+
+    const getIfConnected = (username: string): boolean => {
+        let connected: boolean = false;
+
+        connectedUsers.forEach((user) => {
+            if(username === user.username) connected = user.connected;
+        });
+
+        return connected;
+    };
 
     return (
         <Stack
@@ -92,6 +99,7 @@ function LeftSide() {
                         key={friend.username}
                         avatarUrl={friend.avatarUrl}
                         onClick={() => dispatch(setSelectedFriend(index))}
+                        connected={getIfConnected(friend.username)}
                     />
                 ))}
             </FriendsContainer>

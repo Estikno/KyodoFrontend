@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 //redux
-import { setSelectedFriend } from "../../features/chat/selectedFriend";
+import { setSelectedFriend } from "../../features/chat/selectedFriendSlice";
 import { useAppDispatch } from "../../app/hooks";
 
 //interfaces

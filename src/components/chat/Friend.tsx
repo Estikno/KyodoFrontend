@@ -13,7 +13,7 @@ import {
     useMantineColorScheme
 } from "@mantine/core";
 
-function Friend({ name, avatarUrl, onClick: _onClick }: { name: string; avatarUrl: string; onClick(): void; }) {
+function Friend({ name, avatarUrl, onClick: _onClick, connected }: { name: string; avatarUrl: string; onClick(): void; connected: boolean;}) {
     const theme = useMantineTheme();
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
@@ -34,7 +34,7 @@ function Friend({ name, avatarUrl, onClick: _onClick }: { name: string; avatarUr
         >
             <Group>
                <Indicator
-                    color="green"
+                    color={connected ? "green" : "red"}
                     size={12}
                     withBorder
                     position="bottom-end"
