@@ -6,7 +6,7 @@ import { IAuthResponse } from "../interfaces/IApiResponses";
  * Call the backend API for authentication to register a new user.
  * Returns an object with the status and user data.
  */
-export async function callRegister(username: string, email: string, password: string): Promise<IAuthResponse> {
+/*export async function callRegister(username: string, email: string, password: string): Promise<IAuthResponse> {
     const { data } = await axios.post(apiRoutes.registerRoute, {
         username,
         password,
@@ -14,20 +14,20 @@ export async function callRegister(username: string, email: string, password: st
     });
 
     return data;
-}
+}*/
 
 /**
  * Similar to callRegister, but for authentication to the login route.
  * Returns an object with the status and user data.
  */
-export async function callLogin(username: string, password: string): Promise<IAuthResponse> {
+/*export async function callLogin(username: string, password: string): Promise<IAuthResponse> {
     const { data } = await axios.post(apiRoutes.loginRoute, {
         username,
         password
     });
 
     return data;
-}
+}*/
 
 export async function changeAvatar(file: File, token: string): Promise<IAuthResponse> {
     const formData = new FormData();
@@ -42,7 +42,7 @@ export async function removeAvatar(token: string): Promise<IAuthResponse> {
     return data;
 }
 
-export async function changePassword(newPassword: string, oldPassword: string, token: string): Promise<IAuthResponse> {
+/*export async function changePassword(newPassword: string, oldPassword: string, token: string): Promise<IAuthResponse> {
     const {data} = await axios.put(apiRoutes.changePasswordRoute, {oldPassword, newPassword}, {headers: {token: token}});
     return data;
 }
@@ -76,4 +76,4 @@ export async function getRoom(token: string, frienUsername: string): Promise<IAu
 export async function emailVerification(token: string): Promise<IAuthResponse> {
     const { data } = await axios.get(`${apiRoutes.emailVerification}/${token}`);
     return data;
-}
+}*/

@@ -5,7 +5,6 @@ import { useMutation } from "@apollo/client";
 
 //options, helpers or utils already made by me
 import { toastOptions, specialCharacters } from "../utils/configs";
-import { callRegister } from "../utils/callApi";
 import { useSignIn, useIsAuthenticated, useSignOut } from "react-auth-kit";
 import { register as REGISTER, IRegister } from "../graphql/register";
 

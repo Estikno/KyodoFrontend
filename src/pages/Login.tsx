@@ -5,7 +5,6 @@ import { useMutation } from "@apollo/client";
 
 //options, helpers or utils components already made by me
 import { toastOptions, specialCharacters } from "../utils/configs";
-import { callLogin } from "../utils/callApi";
 import {
     useSignIn,
     useIsAuthenticated,

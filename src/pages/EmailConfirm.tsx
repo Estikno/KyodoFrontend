@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useParams } from "react-router";
+import { useMutation } from "@apollo/client";
 
 //options, helpers or utils already made by me
 import { toastOptions } from "../utils/configs";
-import { emailVerification } from "../utils/callApi";
+import {
+    emailVerification as EMAILVERIFICATION,
+    IEmailVerification,
+} from "../graphql/emailVerification";
 
 //components
 import ScreenMessage from "../components/ScreenMessage";
@@ -18,12 +22,22 @@ import { LoadingOverlay } from "@mantine/core";
 function EmailConfirm() {
     const { token } = useParams();
 
+    //graphql
+    const [emailVerification, { error, loading }] =
+        useMutation(EMAILVERIFICATION);
+
     const [isVerified, setIsVerified] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>(true);
 
     const emailData = async () => {
         if (token) {
-            const data: IAuthResponse = await emailVerification(token);
+            const { data: dav } = await emailVerification({
+                variables: {
+                    token: token,
+                },
+            });
+
+            const data: IEmailVerification = dav.login;
 
             if (!data.status) {
                 setVisible(false);
