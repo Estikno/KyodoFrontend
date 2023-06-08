@@ -136,7 +136,7 @@ function RightSide({
                 type="scroll"
                 sx={(theme) => ({
                     width: "100%",
-                    height: "76vh",
+                    height: lessthan991px ? "100%" : "76vh",
                     padding: "5px"
                 })}
                 viewportRef={viewport}
