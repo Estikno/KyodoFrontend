@@ -8,10 +8,19 @@ import { v4 as uuid } from "uuid";
 
 //redux
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { setUser } from "../features/auth/authSlice";
-import { setFriends, addFriend } from "../features/chat/friendSlice";
+import { setUser, deleteUser } from "../features/auth/authSlice";
+import {
+    setFriends,
+    addFriend,
+    addFriendWithVerification,
+} from "../features/chat/friendSlice";
 import { addMessage, setMessages } from "../features/chat/messageSlice";
-import { addConnected, setConnectedUsers, IConnectedUser, modifyConnectedUsers } from "../features/chat/connectedUserSlice";
+import {
+    addConnected,
+    setConnectedUsers,
+    IConnectedUser,
+    modifyConnectedUsers,
+} from "../features/chat/connectedUserSlice";
 
 //components
 import Friend from "../components/chat/Friend";
@@ -176,8 +185,7 @@ function Chat() {
             });
 
             socket.on("new-usr", (newFriend: IUserInfo) => {
-                //setFriends([...friends, newFriend]);
-                dispatch(addFriend(newFriend));
+                dispatch(addFriendWithVerification(newFriend));
             });
 
             socket.on(
@@ -189,10 +197,15 @@ function Chat() {
                     users2: any;
                 }) => {
                     if (userInfo.username === update.user1) {
+                        console.log("update user 1");
                         dispatch(setFriends(update.users1));
                     } else if (userInfo.username === update.user2) {
-                        dispatch(setFriends(update.users1));
+                        console.log("update user 2");
+                        dispatch(setFriends(update.users2));
                     }
+
+                    console.log("Mi ususario: " + userInfo.username);
+                    console.log("El update: " + update.user2);
                 }
             );
 
@@ -201,11 +214,11 @@ function Chat() {
             });
 
             socket.on("add-connected-user", (username: string) => {
-                dispatch(modifyConnectedUsers({username, connected: true}));
+                dispatch(modifyConnectedUsers({ username, connected: true }));
             });
 
             socket.on("off-connected-user", (username: string) => {
-                dispatch(modifyConnectedUsers({username, connected: false}));
+                dispatch(modifyConnectedUsers({ username, connected: false }));
             });
 
             setNumber(1);
@@ -426,6 +439,11 @@ function Chat() {
         return nextRoomMessage;
     };
 
+    /*const manual_disconnect = () => {
+        socket.emit("manual_disconnect", userInfo.username);
+        dispatch(deleteUser());
+    };*/
+
     return (
         <>
             <LoadingOverlay visible={visible} overlayBlur={8} />
@@ -465,6 +483,7 @@ function Chat() {
                                 <ChatNavbar
                                     setSelectedWindow={setSelectedWindow}
                                     selectedWindow={selectedWindow}
+                                    //manual_disconnect={manual_disconnect}
                                 />
                             </Grid.Col>
                             <Grid.Col

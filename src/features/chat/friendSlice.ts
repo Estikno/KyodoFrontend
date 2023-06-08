@@ -18,9 +18,19 @@ export const friendSlice = createSlice({
 
             return action.payload;
         },
+        addFriendWithVerification: (
+            state,
+            action: PayloadAction<IUserInfo>
+        ) => {
+            const possibleFriend = state.find(
+                (friend) => friend.username === action.payload.username
+            );
+
+            if (!possibleFriend) state.push(action.payload);;
+        },
     },
 });
 
-export const { addFriend, setFriends } = friendSlice.actions;
+export const { addFriend, setFriends, addFriendWithVerification } = friendSlice.actions;
 
 export default friendSlice.reducer;

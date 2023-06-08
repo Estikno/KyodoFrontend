@@ -110,9 +110,11 @@ const mockdata: NavbarLinkProps[] = [
 function ChatNavbar({
     setSelectedWindow,
     selectedWindow,
+    //manual_disconnect,
 }: {
     setSelectedWindow: React.Dispatch<React.SetStateAction<number>>;
     selectedWindow: number;
+    //manual_disconnect: () => void
 }) {
     const menuClass = menuStyle();
     const theme = useMantineTheme();
@@ -253,6 +255,7 @@ function ChatNavbar({
                         <Menu.Item
                             rightSection={<RiLogoutCircleRLine />}
                             onClick={(e) => {
+                                //manual_disconnect();
                                 _signOut();
                                 navigate("/login");
                             }}

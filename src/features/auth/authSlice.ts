@@ -22,9 +22,12 @@ export const authSlice = createSlice({
             state.idRoom = action.payload.idRoom;*/
             return {...action.payload}
         },
+        deleteUser: (state) => {
+            return initialState;
+        }
     },
 });
 
-export const { setUser } = authSlice.actions;
+export const { setUser, deleteUser } = authSlice.actions;
 
 export default authSlice.reducer;
