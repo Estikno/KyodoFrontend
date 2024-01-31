@@ -4,7 +4,7 @@
   <h1>Kyodo's Frontend</h1>
   
   <p>
-    The official Kyodo frontend you can host on your own system. 
+    The official Kyodo frontend you can host on your own system. (curretly discontinued)
   </p>
   
   
