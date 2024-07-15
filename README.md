@@ -59,8 +59,6 @@
 
 Welcome to the kyodo's chat frontend! Our frontend is designed to provide an intuitive and modern chat experience for users of all skill levels. With an easy to use interface you will have no problem using it.
 
-One of the great things about our frontend is that it's highly customizable and can be self-hosted, allowing you to tailor the chat experience to your specific needs. Our frontend is built on the latest technologies and is optimized for performance, ensuring that you always have a smooth and responsive chat experience. We understand the importance of user privacy and security, which is why our frontend is designed with encryption and other security features to keep your data safe.
-
 It's important to mention that this frontend is designed to work with the official kyodo backend, however you can create your own backend and use this frontend if needed.
 
 <!-- Screenshots -->
