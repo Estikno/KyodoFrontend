@@ -4,7 +4,7 @@
   <h1>Kyodo's Frontend</h1>
   
   <p>
-    The official Kyodo frontend you can host on your own system. (curretly discontinued)
+    The Kyodo frontend you can host on your own system. (curretly discontinued)
   </p>
   
   
@@ -57,10 +57,6 @@
 <!-- About the Project -->
 ## :star2: About the Project
 
-Welcome to the kyodo's chat frontend! Our frontend is designed to provide an intuitive and modern chat experience for users of all skill levels. With an easy to use interface you will have no problem using it.
-
-It's important to mention that this frontend is designed to work with the official kyodo backend, however you can create your own backend and use this frontend if needed.
-
 <!-- Screenshots -->
 ### :camera: Screenshots
 
@@ -111,18 +107,6 @@ To prepare the frontend for deployment simply run this command. It will generate
 ```bash
   npm run build
 ```
-
-<!-- Contributing -->
-## :wave: Contributing
-
-<a href="https://github.com/Estiknok/KyodoFrontend/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Estiknok/KyodoFrontend" />
-</a>
-
-
-Contributions are always welcome!
-
-See `contributing.md` for ways to get started.
 
 <!-- License -->
 ## :warning: License
